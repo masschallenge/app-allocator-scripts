@@ -1,3 +1,6 @@
+# Generates a set of random judges and startups per the distributions
+# given in classes.property.  Syntax:
+# python3 generate.py <judge-count> <startup-count>
 import sys
 from classes.entity import csv_output
 from classes.judge import Judge

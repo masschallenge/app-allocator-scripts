@@ -21,6 +21,11 @@ role = Property("role", [("Lawyer", 0.2),
                          ("Investor", 0.4),
                          ("Executive", 0.6),
                          ("Other", 1.0)])
+commitment = Property("commitment", [(30, 0.1),
+                                     (40, 0.3),
+                                     (50, 0.7),
+                                     (60, 0.9),
+                                     (70, 1.0)])
 
 
 def property_value(property, data):

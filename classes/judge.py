@@ -5,41 +5,47 @@ from classes.property import Property
 
 
 class Judge(Entity):
-    def __init__(self, commitment=10, data=None):
+    MAX_PANEL_SIZE = 10
+
+    def __init__(self, data=None):
         super().__init__()
-        self.commitment = commitment
-        self.startup = None
+        self.startups = []
         self.type = "judge"
         for property in Property.all_properties:
             self.add_property(property, data)
+        self.commitment = int(self.properties.get("commitment", 50))
 
     def __str__(self):
         return "Judge {}".format(self.id())
 
     def next_action(self, bins):
-        if self.startup:
-            return self.finish_startup(bins)
+        if self.startups:
+            return self.finish_startups(bins)
         else:
-            return self.find_startup(bins)
+            return self.find_startups(bins)
 
-    def finish_startup(self, bins):
-        print("{judge} finished with {startup}".format(
-                judge=self, startup=self.startup))
-        for bin in bins:
-            bin.update_startup(self.startup)
-        self.startup = None
+    def finish_startups(self, bins):
+        for startup in self.startups:
+            print("{judge},finished,{startup},".format(
+                    judge=self, startup=startup))
+            for bin in bins:
+                bin.update_startup(startup)
+        self.startups = []
         return True
 
-    def find_startup(self, bins):
-        if self.commitment > 0:
-            self.startup = self.next_startup(bins)
-            if self.startup:
-                assign(self, self.startup)
-                self.commitment -= 1
-                return True
-        print("{judge} is done".format(judge=self))
-        self.commitment = 0
-        return False
+    def find_startups(self, bins):
+        while self.commitment > 0:
+            if len(self.startups) >= Judge.MAX_PANEL_SIZE:
+                break
+            startup = self.next_startup(bins)
+            if startup:
+                assign(self, startup)
+            else:
+                break
+        if not self.startups:
+            print("{judge},done,,".format(judge=self))
+            self.commitment = 0
+        return self.startups != []
 
     def next_startup(self, bins):
         best_bin = self.best_bin(bins)
@@ -47,7 +53,7 @@ class Judge(Entity):
             result = best_bin.next_startup(self)
             if result:
                 result.update(bins, True)
-                print("{judge} working on {startup} from {bin}".format(
+                print("{judge},assigned,{startup},{bin}".format(
                         judge=self, startup=result, bin=best_bin))
                 return result
             else:

@@ -30,8 +30,9 @@ class ReadsBin(Bin):
             return self.counts[self.queue[0].id()]
 
     def status(self):
-        super().status()
         for startup in self.queue:
-            print("{startup} still needs {count} reads".format(
-                startup=startup,
-                count=self.count - self.counts[startup.id()]))
+            print("fail,Needs {count} reads,{startup},{bin}".format(
+                    count=self.counts[startup.id()],
+                    startup=startup,
+                    bin=self))
+        super().status()
