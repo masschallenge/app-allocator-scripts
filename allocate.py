@@ -54,11 +54,7 @@ judges, startups = read_entities(file)
 industry_bins = [IndustryBin(industry=value[0],
                              value=4*BIN_DEFAULT)
                  for value in industry.values]
-bins = industry_bins + [
-    FemaleBin(value=2*BIN_DEFAULT),
-    ReadsBin(),
-    SatisfiedBin()
-]
+bins = [ReadsBin(), FemaleBin(value=2*BIN_DEFAULT), SatisfiedBin()] + industry_bins
 add_startups(startups, bins)
 
 
