@@ -32,7 +32,8 @@ class Entity(object):
             
     def add_property(self, property, data=None):
         value = property_value(property, data)
-        self.properties[property.name] = value
+        if value is not None:
+            self.properties[property.name] = value
 
 
 def csv_output(entities):
