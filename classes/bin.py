@@ -3,11 +3,13 @@ from classes.assignments import has_been_assigned
 
 BIN_NO_VALUE = 0
 BIN_LOW_VALUE = 0.5
+BIN_DEFAULT = 1
 BIN_HIGH_VALUE = 100
 
 
 class Bin(object):
-    def __init__(self):
+    def __init__(self, value=BIN_DEFAULT):
+        self._value = value
         self.queue = []
 
     def __str__(self):
@@ -37,6 +39,10 @@ class Bin(object):
 
     def work_left(self):
         return len(self.queue) > 0
+
+    def value(self, judge):
+        if self.work_left():
+            return self._value
 
     def next_startup(self, judge):
         for startup in self.queue:

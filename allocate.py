@@ -7,10 +7,13 @@
 # script.
 import csv
 import sys
-from random import shuffle
+from random import choice
 
+from classes.bin import BIN_DEFAULT
 from classes.female_bin import FemaleBin
+from classes.industry_bin import IndustryBin
 from classes.judge import Judge
+from classes.property import industry
 from classes.reads_bin import ReadsBin
 from classes.satisfied_bin import SatisfiedBin
 from classes.startup import Startup
@@ -48,24 +51,27 @@ else:
     file = sys.stdin
 
 judges, startups = read_entities(file)
-bins = [ReadsBin(), SatisfiedBin(), FemaleBin()]
+industry_bins = [IndustryBin(industry=value[0],
+                             value=4*BIN_DEFAULT)
+                 for value in industry.values]
+bins = industry_bins + [
+    FemaleBin(value=2*BIN_DEFAULT),
+    ReadsBin(),
+    SatisfiedBin()
+]
 add_startups(startups, bins)
 
 
 while work_left(bins):
-    judges = [judge for judge in judges
-              if judge.remaining > 0 or judge.startups]
     if not judges:
         print("done,No more judges,,")
         break
-    shuffle(judges)
-    actions_taken = 0
-    for judge in judges:
-        if judge.next_action(bins):
-            actions_taken += 1
-    if actions_taken == 0:
-        print("done,No actions taken,,")
-        break
+    judge = choice(judges)
+    if not judge.next_action(bins):
+        if judge.remaining > 0:
+            print("Removing judge {judge} with non-zero remainder {remaining}".format(
+                    judge=judge, reamining=judge.remaining))
+        judges.remove(judge)
 
 # Assessor
 for bin in bins:

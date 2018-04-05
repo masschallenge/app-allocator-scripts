@@ -13,8 +13,12 @@ class Property(object):
 name = Property("name")
 gender = Property("gender", [("female", 0.25),
                              ("male", 1.0)])
-industry = Property("industry", [("high-tech", 0.6),
-                                 ("social impact", 1.0)])
+
+industry = Property("industry",[("Energy / Clean Tech", 0.05),
+                                ("General", 0.40),
+                                ("Healthcare / Life Sciences", 0.56),
+                                ("High Tech", 0.95),
+                                ("Social Impact", 1.0)])
 program = Property("program", [("Boston", 0.6),
                                ("Switzerland", 0.8),
                                ("Israel", 1.0)])

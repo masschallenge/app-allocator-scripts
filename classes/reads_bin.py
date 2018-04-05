@@ -25,10 +25,6 @@ class ReadsBin(Bin):
             self.counts[startup.id()] = count - 1
         super().update_startup(startup, True)
 
-    def value(self, judge):
-        if self.work_left():
-            return self.counts[self.queue[0].id()]
-
     def status(self):
         for startup in self.queue:
             print("fail,Needs {count} reads,{startup},{bin}".format(

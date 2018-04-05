@@ -10,4 +10,4 @@ class FemaleBin(Bin):
 
     def value(self, judge):
         if judge.properties["gender"] == "female":
-            return BIN_HIGH_VALUE
+            return super().value(judge)
