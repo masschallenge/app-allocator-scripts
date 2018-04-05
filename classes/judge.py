@@ -1,7 +1,11 @@
+from random import random
 from classes.assignments import assign
 from classes.bin import BIN_NO_VALUE
 from classes.entity import Entity
 from classes.property import Property
+
+
+CHANCE_OF_FAIL = 0.04
 
 
 class Judge(Entity):
@@ -13,10 +17,7 @@ class Judge(Entity):
         self.type = "judge"
         for property in Property.all_properties:
             self.add_property(property, data)
-        self.commitment = int(self.properties.get("commitment", 50))
-
-    def __str__(self):
-        return "Judge {}".format(self.id())
+        self.remaining = int(self.properties.get("commitment", 50))
 
     def next_action(self, bins):
         if self.startups:
@@ -26,15 +27,23 @@ class Judge(Entity):
 
     def finish_startups(self, bins):
         for startup in self.startups:
-            print("{judge},finished,{startup},".format(
-                    judge=self, startup=startup))
+            action = "finished"
+            keep = False
+            if self.fails(startup):
+                action = "fail"
+                keep = True
+            print("{judge},{action},{startup},".format(
+                    judge=self, action=action, startup=startup))
             for bin in bins:
-                bin.update_startup(startup)
+                bin.update_startup(startup, keep)
         self.startups = []
         return True
 
+    def fails(self, startup):
+        return random() <= CHANCE_OF_FAIL
+
     def find_startups(self, bins):
-        while self.commitment > 0:
+        while self.remaining > 0:
             if len(self.startups) >= Judge.MAX_PANEL_SIZE:
                 break
             startup = self.next_startup(bins)
@@ -44,7 +53,7 @@ class Judge(Entity):
                 break
         if not self.startups:
             print("{judge},done,,".format(judge=self))
-            self.commitment = 0
+            self.remaining = 0
         return self.startups != []
 
     def next_startup(self, bins):

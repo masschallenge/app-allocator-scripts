@@ -1,7 +1,7 @@
 from classes.property import property_value
 
-CSV_HEADER = "type,industry,program,role,gender,commitment"
-CSV_FORMAT = "{type},{industry},{program},{role},{gender},{commitment}"
+CSV_HEADER = "type,name,industry,program,role,gender,commitment,completed"
+CSV_FORMAT = "{type},{name},{industry},{program},{role},{gender},{commitment},{completed}"
 
 
 class Entity(object):
@@ -10,9 +10,11 @@ class Entity(object):
     def __init__(self):
         Entity.count += 1
         self.properties = { "id": Entity.count }
+        self.type = "entity"
 
     def __str__(self):
-        return "Entity {}".format(self.id())
+        return self.properties.get(
+            "name", "{type} {id}".format(type=self.type, id=self.id()))
 
     def id(self):
         return self.properties["id"]
@@ -20,11 +22,13 @@ class Entity(object):
     def csv(self):
         return CSV_FORMAT.format(
             type=self.type,
+            name=str(self),
             industry=self.properties.get("industry", ""),
             program=self.properties.get("program", ""),
             role=self.properties.get("role", ""),
             gender=self.properties.get("gender", ""),
-            commitment=self.properties.get("commitment", ""))
+            commitment=self.properties.get("commitment", ""),
+            completed=self.properties.get("completed", ""))
             
     def add_property(self, property, data=None):
         value = property_value(property, data)

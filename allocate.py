@@ -54,7 +54,7 @@ add_startups(startups, bins)
 
 while work_left(bins):
     judges = [judge for judge in judges
-              if judge.commitment > 0 or judge.startups]
+              if judge.remaining > 0 or judge.startups]
     if not judges:
         print("done,No more judges,,")
         break
