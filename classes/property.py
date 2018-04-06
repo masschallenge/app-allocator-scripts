@@ -47,5 +47,6 @@ def property_value(property, data):
 def random_value(values):
     if values:
         cutoff = random()
-        return next(value for value, limit in values if cutoff >= limit, None)
+        return next((value for value, limit in values if cutoff >= limit),
+                    None)
     return None

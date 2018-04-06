@@ -44,20 +44,20 @@ class Judge(Entity):
 
     def find_startups(self, bins):
         while self.remaining > 0:
-            self.find_one_startup(bins)
+            if not self.find_one_startup(bins):
+                break
         if not self.startups:
             print("{judge},done,,".format(judge=self))
             self.remaining = 0
         return self.startups != []
 
     def find_one_startup(self, bins):
-        if len(self.startups) >= Judge.MAX_PANEL_SIZE:
-            break
-        startup = self.next_startup(bins)
-        if startup:
-            assign(self, startup)
-        else:
-            break
+        if len(self.startups) < Judge.MAX_PANEL_SIZE:
+            startup = self.next_startup(bins)
+            if startup:
+                assign(self, startup)
+                return True
+        return False
 
     def next_startup(self, bins):
         best_bin = self.best_bin(bins)
