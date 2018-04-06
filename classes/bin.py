@@ -17,10 +17,10 @@ class Bin(object):
 
     def status(self):
         if self.queue:
-            print("fail,Queue has {count} applications,,{bin}".format(
+            print("fail,{bin},Queue has {count} applications,".format(
                     bin=self, count=len(self.queue)))
         else:
-            print("success,Is empty,,{bin}".format(bin=self))
+            print("success,{bin},Is empty,".format(bin=self))
 
     def add_startup(self, startup):
         result = self.match(startup)

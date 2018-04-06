@@ -5,7 +5,7 @@ from classes.entity import Entity
 from classes.property import Property
 
 
-CHANCE_OF_FAIL = 0.04
+CHANCE_OF_PASS = 0.04
 
 
 class Judge(Entity):
@@ -29,25 +29,25 @@ class Judge(Entity):
         for startup in self.startups:
             action = "finished"
             keep = False
-            if self.fails(startup):
-                action = "fail"
+            if self.passes(startup):
+                action = "pass"
                 keep = True
-            print("{judge},{action},{startup},".format(
+            print("{action},{judge},{startup},".format(
                     judge=self, action=action, startup=startup))
             for bin in bins:
                 bin.update_startup(startup, keep)
         self.startups = []
         return True
 
-    def fails(self, startup):
-        return random() <= CHANCE_OF_FAIL
+    def passes(self, startup):
+        return random() <= CHANCE_OF_PASS
 
     def find_startups(self, bins):
         while self.remaining > 0:
             if not self.find_one_startup(bins):
                 break
         if not self.startups:
-            print("{judge},done,,".format(judge=self))
+            print("done,{judge},,".format(judge=self))
             self.remaining = 0
         return self.startups != []
 
@@ -65,7 +65,7 @@ class Judge(Entity):
             result = best_bin.next_startup(self)
             if result:
                 result.update(bins, True)
-                print("{judge},assigned,{startup},{bin}".format(
+                print("assigned,{judge},{startup},{bin}".format(
                         judge=self, startup=result, bin=best_bin))
                 return result
             else:

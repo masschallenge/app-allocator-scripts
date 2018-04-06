@@ -62,7 +62,7 @@ add_startups(startups, bins)
 
 while work_left(bins):
     if not judges:
-        print("done,No more judges,,")
+        print("done,allocate.py,No more judges,")
         break
     judge = choice(judges)
     if not judge.next_action(bins):
