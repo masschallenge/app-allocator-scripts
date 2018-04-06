@@ -41,12 +41,11 @@ completed = Property("completed", [(30, 0.1),
 def property_value(property, data):
     if data:
         return data.get(property.name)
-    return random_value(property.values)
+    return next_value_below_cutoff(property.values, random())
 
 
-def random_value(values):
+def next_value_below_cutoff(values, cutoff):
     if values:
-        cutoff = random()
         return next((value for value, limit in values if cutoff >= limit),
                     None)
     return None
