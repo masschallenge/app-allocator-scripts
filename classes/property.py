@@ -46,6 +46,5 @@ def property_value(property, data):
 
 def next_value_below_cutoff(values, cutoff):
     if values:
-        return next((value for value, limit in values if cutoff >= limit),
-                    None)
+        return next((value for value, limit in values if cutoff < limit), None)
     return None

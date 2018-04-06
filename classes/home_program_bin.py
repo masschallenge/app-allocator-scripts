@@ -7,7 +7,7 @@ from classes.bin import (
 
 class HomeProgramBin(Bin):
     name_format = "{} Home Program Bin"
-    
+
     def __init__(self, value, weight=BIN_DEFAULT_WEIGHT):
         super().__init__(weight)
         self.program = value
@@ -23,5 +23,3 @@ class HomeProgramBin(Bin):
             return super().weight(judge)
         else:
             return BIN_NO_WEIGHT
-
-
