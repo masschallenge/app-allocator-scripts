@@ -54,19 +54,18 @@ judges, startups = read_entities(file)
 industry_bins = [IndustryBin(industry=value[0],
                              value=4*BIN_DEFAULT)
                  for value in industry.values]
-bins = [ReadsBin(), FemaleBin(value=2*BIN_DEFAULT), SatisfiedBin()] + industry_bins
+bins = [ReadsBin(),
+        FemaleBin(value=2*BIN_DEFAULT),
+        SatisfiedBin()] + industry_bins
 add_startups(startups, bins)
 
 
 while work_left(bins):
     if not judges:
-        print("done,No more judges,,")
+        print("done,allocate.py,No more judges,")
         break
     judge = choice(judges)
     if not judge.next_action(bins):
-        if judge.remaining > 0:
-            print("Removing judge {judge} with non-zero remainder {remaining}".format(
-                    judge=judge, reamining=judge.remaining))
         judges.remove(judge)
 
 # Assessor

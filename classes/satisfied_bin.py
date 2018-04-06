@@ -15,4 +15,4 @@ class SatisfiedBin(Bin):
         return BIN_LOW_VALUE
 
     def status(self):
-        print("success,Always statisfied,,{bin}".format(bin=self))
+        print("success,{bin},Always statisfied,".format(bin=self))

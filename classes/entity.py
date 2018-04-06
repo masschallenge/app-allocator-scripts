@@ -1,7 +1,15 @@
 from classes.property import property_value
 
-CSV_HEADER = "type,name,industry,program,role,gender,commitment,completed"
-CSV_FORMAT = "{type},{name},{industry},{program},{role},{gender},{commitment},{completed}"
+CSV_COLUMNS = ["type",
+               "name",
+               "industry",
+               "program",
+               "role",
+               "gender",
+               "commitment",
+               "completed"]
+CSV_HEADER = ",".join(CSV_COLUMNS)
+CSV_FORMAT = "{%s}" % "},{".join(CSV_COLUMNS) + "}"
 
 
 class Entity(object):
@@ -9,7 +17,7 @@ class Entity(object):
 
     def __init__(self):
         Entity.count += 1
-        self.properties = { "id": Entity.count }
+        self.properties = {"id": Entity.count}
         self.type = "entity"
 
     def __str__(self):
@@ -29,7 +37,7 @@ class Entity(object):
             gender=self.properties.get("gender", ""),
             commitment=self.properties.get("commitment", ""),
             completed=self.properties.get("completed", ""))
-            
+
     def add_property(self, property, data=None):
         value = property_value(property, data)
         if value is not None:
