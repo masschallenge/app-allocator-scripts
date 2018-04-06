@@ -1,13 +1,13 @@
 from classes.bin import (
-    BIN_DEFAULT,
+    BIN_DEFAULT_WEIGHT,
     Bin,
 )
 
 
 class IndustryBin(Bin):
-    def __init__(self, industry, value=BIN_DEFAULT):
-        super().__init__(value)
-        self.industry = industry
+    def __init__(self, value, weight=BIN_DEFAULT_WEIGHT):
+        super().__init__(weight)
+        self.industry = value
 
     def __str__(self):
         return "{} Industry Bin".format(self.industry)
@@ -15,6 +15,6 @@ class IndustryBin(Bin):
     def match(self, startup):
         return startup.properties["industry"] == self.industry
 
-    def value(self, judge):
+    def weight(self, judge):
         if judge.properties["industry"] == self.industry:
-            return super().value(judge)
+            return super().weight(judge)

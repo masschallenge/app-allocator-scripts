@@ -1,6 +1,6 @@
 from random import random
 from classes.assignments import assign
-from classes.bin import BIN_NO_VALUE
+from classes.bin import BIN_NO_WEIGHT
 from classes.entity import Entity
 from classes.property import Property
 
@@ -74,10 +74,10 @@ class Judge(Entity):
 
     def best_bin(self, bins):
         result = None
-        best_value = BIN_NO_VALUE
+        highest_weight = BIN_NO_WEIGHT
         for bin in bins:
-            value = bin.value(self)
-            if value and value > best_value:
-                best_value = value
+            weight = bin.weight(self)
+            if weight and weight > highest_weight:
+                highest_weight = weight
                 result = bin
         return result

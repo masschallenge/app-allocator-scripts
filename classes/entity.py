@@ -9,7 +9,7 @@ CSV_COLUMNS = ["type",
                "commitment",
                "completed"]
 CSV_HEADER = ",".join(CSV_COLUMNS)
-CSV_FORMAT = "{%s}" % "},{".join(CSV_COLUMNS) + "}"
+CSV_FORMAT = "{%s}" % ("},{".join(CSV_COLUMNS))
 
 
 class Entity(object):

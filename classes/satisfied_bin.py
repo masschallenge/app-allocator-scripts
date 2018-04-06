@@ -1,5 +1,5 @@
 from classes.bin import (
-    BIN_LOW_VALUE,
+    BIN_LOW_WEIGHT,
     Bin,
 )
 
@@ -11,8 +11,8 @@ class SatisfiedBin(Bin):
     def update_startup(self, startup, keep=False):
         super().update_startup(startup, True)
 
-    def value(self, judge):
-        return BIN_LOW_VALUE
+    def weight(self, judge):
+        return BIN_LOW_WEIGHT
 
     def status(self):
         print("success,{bin},Always statisfied,".format(bin=self))
