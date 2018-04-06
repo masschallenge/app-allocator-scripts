@@ -1,5 +1,6 @@
 from classes.bin import (
     BIN_DEFAULT,
+    BIN_NO_VALUE,
     Bin,
 )
 
@@ -18,11 +19,9 @@ class HomeProgramBin(Bin):
         return startup.properties['program'] == self.program
 
     def value(self, judge):
-        if judge.properties['industry'] == self.program:
+        if judge.properties['program'] == self.program:
             return super().value(judge)
         else:
-            #None? mixed-type returns are ugly
-            pass
-            
+            return BIN_NO_VALUE
 
 

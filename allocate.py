@@ -53,9 +53,9 @@ else:
     file = sys.stdin
 
 judges, startups = read_entities(file)
-industry_bins = [IndustryBin(industry=value[0],
+industry_bins = [IndustryBin(industry=value,
                              value=4*BIN_DEFAULT)
-                 for value in industry.values]
+                 for value, _ in industry.values]
 program_bins = [HomeProgramBin(program=value,
                                value=3*BIN_DEFAULT)
                 for value, _ in program.values]
