@@ -11,8 +11,10 @@ from random import choice
 
 from classes.bin import BIN_DEFAULT
 from classes.female_bin import FemaleBin
+from classes.home_program_bin import HomeProgramBin
 from classes.industry_bin import IndustryBin
 from classes.judge import Judge
+from classes.property import program
 from classes.property import industry
 from classes.reads_bin import ReadsBin
 from classes.satisfied_bin import SatisfiedBin
@@ -54,9 +56,12 @@ judges, startups = read_entities(file)
 industry_bins = [IndustryBin(industry=value[0],
                              value=4*BIN_DEFAULT)
                  for value in industry.values]
+program_bins = [HomeProgramBin(program=value,
+                               value=3*BIN_DEFAULT)
+                for value, _ in program.values]
 bins = [ReadsBin(),
         FemaleBin(value=2*BIN_DEFAULT),
-        SatisfiedBin()] + industry_bins
+        SatisfiedBin()] + industry_bins + program_bins
 add_startups(startups, bins)
 
 

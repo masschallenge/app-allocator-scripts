@@ -17,7 +17,7 @@ class Judge(Entity):
         self.type = "judge"
         for property in Property.all_properties:
             self.add_property(property, data)
-        self.remaining = int(self.properties.get("commitment", 50))
+        self.remaining = int(self.properties.get("commitment", 50) or 0) 
 
     def next_action(self, bins):
         if self.startups:
