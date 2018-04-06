@@ -1,5 +1,5 @@
 from classes.bin import (
-    BIN_HIGH_VALUE,
+    BIN_HIGH_WEIGHT,
     Bin,
 )
 
@@ -8,6 +8,6 @@ class FemaleBin(Bin):
     def __str__(self):
         return "At Least One Female Read Bin"
 
-    def value(self, judge):
+    def weight(self, judge):
         if judge.properties["gender"] == "female":
-            return super().value(judge)
+            return super().weight(judge)

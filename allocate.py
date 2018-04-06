@@ -9,7 +9,7 @@ import csv
 import sys
 from random import choice
 
-from classes.bin import BIN_DEFAULT
+from classes.bin import BIN_DEFAULT_WEIGHT
 from classes.female_bin import FemaleBin
 from classes.home_program_bin import HomeProgramBin
 from classes.industry_bin import IndustryBin
@@ -47,21 +47,28 @@ def work_left(bins):
     return False
 
 
+def bin_factory(klass, values, weight):
+    return [klass(value=value, weight=weight)
+            for value in values]
+
+
 if len(sys.argv) > 1:
     file = open(sys.argv[1], newline="")
 else:
     file = sys.stdin
 
 judges, startups = read_entities(file)
-industry_bins = [IndustryBin(industry=value,
-                             value=4*BIN_DEFAULT)
-                 for value, _ in industry.values]
-program_bins = [HomeProgramBin(program=value,
-                               value=3*BIN_DEFAULT)
-                for value, _ in program.values]
-bins = [ReadsBin(),
-        FemaleBin(value=2*BIN_DEFAULT),
-        SatisfiedBin()] + industry_bins + program_bins
+
+bins = ([ReadsBin(),
+        FemaleBin(weight=2*BIN_DEFAULT_WEIGHT),
+        SatisfiedBin()] +
+        bin_factory(IndustryBin,
+                    values=[value for value, _ in industry.values],
+                    weight=4*BIN_DEFAULT_WEIGHT) +
+        bin_factory(HomeProgramBin,
+                    values=[value for value, _ in program.values],
+                    weight=3*BIN_DEFAULT_WEIGHT))
+
 add_startups(startups, bins)
 
 

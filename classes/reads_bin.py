@@ -2,7 +2,7 @@ from classes.bin import Bin
 
 
 class ReadsBin(Bin):
-    def __init__(self, count=5):
+    def __init__(self, count=4):
         super().__init__()
         self.count = count
         self.counts = {}
