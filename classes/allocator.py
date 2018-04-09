@@ -27,6 +27,7 @@ class Allocator(object):
         self.judges = []
         self.startups = []
         self.bins = []
+        self.output_rows = []
 
     def read_entities(self):
         if self.filepath is None:
@@ -67,20 +68,21 @@ class Allocator(object):
         
     def allocate (self):
 
-        while self.work_left(bins):
+        while self.work_left():
             if not self.judges:
                 self.output("done,allocate.py,No more judges,")
                 break
-            judge = choice(judges)
-            judge.next_action(bins)
+            judge = choice(self.judges)
+            judge.next_action(self.bins)
             self.output(judge.status_mesg)
             if not judge.has_more_work:
-                judges.remove(judge)
+                self.judges.remove(judge)
 
     def assess(self):
-        
+        for line in self.output_rows:
+            print (line)
         for bin in self.bins:
-            print (bin.status())
+            bin.status()
 
                 
 def bin_factory(klass, values, weight):
