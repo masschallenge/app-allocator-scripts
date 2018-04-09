@@ -32,12 +32,12 @@ class Judge(Entity):
             if self.passes(startup):
                 action = "pass"
                 keep = True
-            print("{action},{judge},{startup},".format(
-                    judge=self, action=action, startup=startup))
+            self.status_mesg = ("{action},{judge},{startup},".format(
+                judge=self, action=action, startup=startup))
             for bin in bins:
                 bin.update_startup(startup, keep)
         self.startups = []
-        return True
+        self.has_more_work = True
 
     def passes(self, startup):
         return random() <= CHANCE_OF_PASS
@@ -47,17 +47,17 @@ class Judge(Entity):
             if not self.find_one_startup(bins):
                 break
         if not self.startups:
-            print("done,{judge},,".format(judge=self))
+            self.status_mesg = ("done,{judge},,".format(judge=self))
             self.remaining = 0
-        return self.startups != []
+        self.has_more_work = self.startups != []
 
     def find_one_startup(self, bins):
         if len(self.startups) < Judge.MAX_PANEL_SIZE:
             startup = self.next_startup(bins)
             if startup:
                 assign(self, startup)
-                return True
-        return False
+                self.has_more_work = True
+        self.has_more_work = False
 
     def next_startup(self, bins):
         best_bin = self.best_bin(bins)
@@ -65,12 +65,12 @@ class Judge(Entity):
             result = best_bin.next_startup(self)
             if result:
                 result.update(bins, True)
-                print("assigned,{judge},{startup},{bin}".format(
+                self.status_mesg = ("assigned,{judge},{startup},{bin}".format(
                         judge=self, startup=result, bin=best_bin))
-                return result
+                self.has_more_work = result
             else:
                 other_bins = [bin for bin in bins if bin != best_bin]
-                return self.next_startup(other_bins)
+                self.has_more_work = self.next_startup(other_bins)
 
     def best_bin(self, bins):
         result = None
