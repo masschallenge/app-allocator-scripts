@@ -3,14 +3,13 @@
 # python3 generate.py <judge-count> <startup-count>
 import sys
 from classes.entity import csv_output
+from classes.generator import Generator
 from classes.judge import Judge
 from classes.startup import Startup
 
 
-JUDGE_COUNT = int(sys.argv[1])
-judges = [Judge() for i in range(JUDGE_COUNT)]
+generator = Generator(judge_count=int(sys.argv[1]),
+                      startup_count=int(sys.argv[2]))
+                      
 
-STARTUP_COUNT = int(sys.argv[2])
-startups = [Startup() for i in range(STARTUP_COUNT)]
-
-csv_output(judges + startups)
+csv_output(generator.judges + generator.startups)
