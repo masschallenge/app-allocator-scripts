@@ -11,4 +11,4 @@ class Event(object):
         return template.format(**self.fields)
 
     def update(self, **kwargs):
-        self.__dict__.update(kwargs)
+        self.fields.update(kwargs)

@@ -21,6 +21,7 @@ from classes.satisfied_bin import SatisfiedBin
 from classes.startup import Startup
 
 
+
 class Allocator(object):
     def __init__(self, filepath=None):
         self.filepath = filepath
@@ -30,12 +31,15 @@ class Allocator(object):
         self.events = []
         self.ticks = 0
 
-    def read_entities(self):
+
+    def _file(self):
         if self.filepath is None:
-            file = sys.stdin
+            return sys.stdin
         else:
-            file = open(self.filepath)
-        with file:
+            return open(self.filepath)
+        
+    def read_entities(self):
+        with self._file() as file:
             reader = csv.DictReader(file)
             for row in reader:
                 if row["type"] == "judge":
@@ -65,9 +69,7 @@ class Allocator(object):
 
         
     def allocate (self):
-        while self.work_left():
-            if not self.judges:
-                break
+        while self.work_left() and self.judges:
             judge = choice(self.judges)
             judge.next_action(self.bins)
             while judge.events:
