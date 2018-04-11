@@ -17,6 +17,7 @@ from classes.judge import Judge
 from classes.property import program
 from classes.property import industry
 from classes.reads_bin import ReadsBin
+from classes.role_bin import RoleBin
 from classes.satisfied_bin import SatisfiedBin
 from classes.startup import Startup
 
@@ -40,6 +41,11 @@ def add_startups(startups, bins):
             bin.add_startup(startup)
 
 
+def calc_capacity(judges, bins):
+    for bin in bins:
+        bin.calc_capacity(judges)
+
+
 def work_left(bins):
     for bin in bins:
         if bin.work_left():
@@ -59,17 +65,31 @@ else:
 
 judges, startups = read_entities(file)
 
-bins = ([ReadsBin(),
-        FemaleBin(weight=2*BIN_DEFAULT_WEIGHT),
-        SatisfiedBin()] +
+FEMALE_WEIGHT = 2
+ROLE_WEIGHT = 3
+HOME_PROGRAM_WEIGHT = 4
+JUDGE_ZSCORE_WEIGHT = 5
+INDUSTRY_WEIGHT = 2
+
+bins = ([ReadsBin(count=4),
+         FemaleBin(weight=FEMALE_WEIGHT*BIN_DEFAULT_WEIGHT),
+         SatisfiedBin(),
+         RoleBin(value="Executive",
+                 weight=ROLE_WEIGHT*BIN_DEFAULT_WEIGHT,
+                 count=2),
+         RoleBin(value="Lawyer",
+                 weight=ROLE_WEIGHT*BIN_DEFAULT_WEIGHT),
+         RoleBin(value="Investor",
+                 weight=ROLE_WEIGHT*BIN_DEFAULT_WEIGHT)] +
         bin_factory(IndustryBin,
                     values=[value for value, _ in industry.values],
-                    weight=4*BIN_DEFAULT_WEIGHT) +
+                    weight=INDUSTRY_WEIGHT*BIN_DEFAULT_WEIGHT) +
         bin_factory(HomeProgramBin,
                     values=[value for value, _ in program.values],
-                    weight=3*BIN_DEFAULT_WEIGHT))
+                    weight=HOME_PROGRAM_WEIGHT*BIN_DEFAULT_WEIGHT))
 
 add_startups(startups, bins)
+calc_capacity(judges, bins)
 
 
 while work_left(bins):

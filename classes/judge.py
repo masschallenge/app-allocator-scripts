@@ -35,7 +35,7 @@ class Judge(Entity):
             print("{action},{judge},{startup},".format(
                     judge=self, action=action, startup=startup))
             for bin in bins:
-                bin.update_startup(startup, keep)
+                bin.update(self, startup, keep)
         self.startups = []
         return True
 
@@ -76,7 +76,7 @@ class Judge(Entity):
         result = None
         highest_weight = BIN_NO_WEIGHT
         for bin in bins:
-            weight = bin.weight(self)
+            weight = bin.adjusted_weight(self)
             if weight and weight > highest_weight:
                 highest_weight = weight
                 result = bin

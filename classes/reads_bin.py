@@ -1,9 +1,12 @@
-from classes.bin import Bin
+from classes.bin import (
+    BIN_DEFAULT_WEIGHT,
+    Bin,
+)
 
 
 class ReadsBin(Bin):
-    def __init__(self, count=4):
-        super().__init__()
+    def __init__(self, weight=BIN_DEFAULT_WEIGHT, count=1):
+        super().__init__(weight=weight)
         self.count = count
         self.counts = {}
 
@@ -20,15 +23,7 @@ class ReadsBin(Bin):
         if not keep:
             count = self.counts[startup.id()]
             if count <= 1:
-                super().update_startup(startup, False)
+                super().update_startup(startup=startup, keep=False)
                 return
             self.counts[startup.id()] = count - 1
         super().update_startup(startup, True)
-
-    def status(self):
-        for startup in self.queue:
-            print("fail,{bin},{startup},Needs {count} reads".format(
-                    count=self.counts[startup.id()],
-                    startup=startup,
-                    bin=self))
-        super().status()
