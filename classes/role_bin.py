@@ -10,9 +10,10 @@ class RoleBin(ReadsBin):
     def __str__(self):
         return "{} Role Bin".format(self.role)
 
-    def weight(self, judge):
-        if judge.properties["role"] == self.role:
-            return super().weight(judge)
+    def match(self, entity):
+        if entity.properties.get("role"):
+            return entity.properties["role"] == self.role
+        return True
 
     def update_startup(self, startup, keep=False):
         super().update_startup(startup=startup, keep=keep)

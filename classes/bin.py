@@ -34,7 +34,7 @@ class Bin(object):
             if self.weight(judge):
                 self.capacity += int(judge.properties["commitment"])
 
-    def match(self, startup):
+    def match(self, entity):
         return True
 
     def update(self, judge, startup, keep):
@@ -51,8 +51,8 @@ class Bin(object):
     def work_left(self):
         return len(self.queue) > 0
 
-    def weight(self, judge):
-        if self.work_left():
+    def weight(self, judge, field=None):
+        if self.match(judge) and self.work_left():
             return self._weight
 
     def adjusted_weight(self, judge):
