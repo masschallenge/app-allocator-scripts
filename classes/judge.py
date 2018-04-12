@@ -3,7 +3,7 @@ from classes.assignments import assign
 from classes.bin import BIN_NO_WEIGHT
 from classes.entity import Entity
 from classes.property import Property
-
+from classes.event import Event
 
 CHANCE_OF_PASS = 0.04
 
@@ -14,6 +14,7 @@ class Judge(Entity):
     def __init__(self, data=None):
         super().__init__()
         self.startups = []
+        self.events = []
         self.type = "judge"
         for property in Property.all_properties:
             self.add_property(property, data)
@@ -32,12 +33,11 @@ class Judge(Entity):
             if self.passes(startup):
                 action = "pass"
                 keep = True
-            print("{action},{judge},{startup},".format(
-                    judge=self, action=action, startup=startup))
+            self.add_event(action=action)
             for bin in bins:
                 bin.update(self, startup, keep)
         self.startups = []
-        return True
+        self.has_more_work = True
 
     def passes(self, startup):
         return random() <= CHANCE_OF_PASS
@@ -47,31 +47,34 @@ class Judge(Entity):
             if not self.find_one_startup(bins):
                 break
         if not self.startups:
-            print("done,{judge},,".format(judge=self))
+            self.add_event("done")
             self.remaining = 0
-        return self.startups != []
+        self.has_more_work = self.startups != []
 
     def find_one_startup(self, bins):
         if len(self.startups) < Judge.MAX_PANEL_SIZE:
             startup = self.next_startup(bins)
             if startup:
                 assign(self, startup)
-                return True
-        return False
+                self.has_more_work = True
+        self.has_more_work = False
 
     def next_startup(self, bins):
         best_bin = self.best_bin(bins)
         if best_bin:
-            result = best_bin.next_startup(self)
-            if result:
-                result.update(bins, True)
-                print("assigned,{judge},{startup},{bin}".format(
-                        judge=self, startup=result, bin=best_bin))
-                return result
+            startup = best_bin.next_startup(self)
+            if startup:
+                startup.update(bins, True)
+                self.add_event("assigned", startup=startup, bin=best_bin)
+                self.has_more_work = True
+                return startup
             else:
                 other_bins = [bin for bin in bins if bin != best_bin]
-                return self.next_startup(other_bins)
-
+                startup = self.next_startup(other_bins)
+                self.has_more_work = bool(startup)
+                return startup
+        return None
+    
     def best_bin(self, bins):
         result = None
         highest_weight = BIN_NO_WEIGHT
@@ -81,3 +84,11 @@ class Judge(Entity):
                 highest_weight = weight
                 result = bin
         return result
+
+    def add_event(self, action,
+                  startup="",
+                  bin=""):
+        self.events.append(Event(action=action,
+                                 judge=self,
+                                 startup=startup,
+                                 bin=bin))
