@@ -87,12 +87,12 @@ class Allocator(object):
         while self.work_left() and self.judges:
             judge = choice(self.judges)
             judge.next_action(self.bins)
-            self.register_judge_events()
+            self.register_judge_events(judge)
             if not judge.has_more_work:
                 self.judges.remove(judge)
             self.ticks += 1
 
-    def register_judge_events(judge):
+    def register_judge_events(self, judge):
         while judge.events:
             self.add_event(judge.events.pop(0))
 
