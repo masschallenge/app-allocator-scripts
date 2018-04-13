@@ -10,6 +10,6 @@ from classes.startup import Startup
 
 generator = Generator(judge_count=int(sys.argv[1]),
                       startup_count=int(sys.argv[2]))
-                      
+
 
 csv_output(generator.judges + generator.startups)

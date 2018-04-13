@@ -37,13 +37,12 @@ class Allocator(object):
         self.events = []
         self.ticks = 0
 
-
     def _file(self):
         if self.filepath is None:
             return sys.stdin
         else:
             return open(self.filepath)
-        
+
     def read_entities(self):
         with self._file() as file:
             reader = csv.DictReader(file)
@@ -84,7 +83,7 @@ class Allocator(object):
                         values=[value for value, _ in program.values],
                         weight=HOME_PROGRAM_WEIGHT*BIN_DEFAULT_WEIGHT))
 
-    def allocate (self):
+    def allocate(self):
         while self.work_left() and self.judges:
             judge = choice(self.judges)
             judge.next_action(self.bins)
@@ -96,7 +95,7 @@ class Allocator(object):
     def register_judge_events(judge):
         while judge.events:
             self.add_event(judge.events.pop(0))
-            
+
     def assess_allocations(self):
         for event in self.events:
             print (event.to_csv())
@@ -109,9 +108,8 @@ class Allocator(object):
     def add_event(self, event):
         event.update(time=self.ticks)
         self.events.append(event)
-                
+
+
 def bin_factory(klass, values, weight):
     return [klass(value=value, weight=weight)
             for value in values]
-
-

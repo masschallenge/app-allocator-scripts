@@ -27,7 +27,7 @@ if len(sys.argv) > 1:
     filepath = sys.argv[1]
 else:
     filepath = None
-    
+
 
 allocator = Allocator(filepath)
 allocator.read_entities()

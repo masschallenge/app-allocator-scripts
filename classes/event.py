@@ -1,9 +1,10 @@
 from collections import OrderedDict
 
+
 class Event(object):
     def __init__(self, **kwargs):
-        self.fields= OrderedDict(
-            {"time":"", "action":"", "judge":"", "startup":"", "bin":""})
+        self.fields = OrderedDict(
+            {"time": "", "action": "", "judge": "", "startup": "", "bin": ""})
         self.fields.update(kwargs)
 
     def to_csv(self):

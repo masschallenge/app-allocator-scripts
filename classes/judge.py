@@ -74,7 +74,7 @@ class Judge(Entity):
                 self.has_more_work = bool(startup)
                 return startup
         return None
-    
+
     def best_bin(self, bins):
         result = None
         highest_weight = BIN_NO_WEIGHT
