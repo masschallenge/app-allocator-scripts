@@ -69,6 +69,7 @@ class Allocator(object):
         self.bins = (
             [ReadsBin(),
              SatisfiedBin(),
+             FemaleBin(weight=FEMALE_WEIGHT*BIN_DEFAULT_WEIGHT),
              RoleBin(value="Executive",
                      weight=ROLE_WEIGHT*BIN_DEFAULT_WEIGHT,
                      count=2),
