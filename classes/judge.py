@@ -35,7 +35,7 @@ class Judge(Entity):
                 keep = True
             self.add_event(action=action)
             for bin in bins:
-                bin.update_startup(startup, keep)
+                bin.update(self, startup, keep)
         self.startups = []
         self.has_more_work = True
 
@@ -74,12 +74,12 @@ class Judge(Entity):
                 self.has_more_work = bool(startup)
                 return startup
         return None
-    
+
     def best_bin(self, bins):
         result = None
         highest_weight = BIN_NO_WEIGHT
         for bin in bins:
-            weight = bin.weight(self)
+            weight = bin.adjusted_weight(self)
             if weight and weight > highest_weight:
                 highest_weight = weight
                 result = bin

@@ -12,9 +12,5 @@ class IndustryBin(Bin):
     def __str__(self):
         return "{} Industry Bin".format(self.industry)
 
-    def match(self, startup):
-        return startup.properties["industry"] == self.industry
-
-    def weight(self, judge):
-        if judge.properties["industry"] == self.industry:
-            return super().weight(judge)
+    def match(self, entity):
+        return entity.properties["industry"] == self.industry
