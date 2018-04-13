@@ -51,7 +51,7 @@ class Bin(object):
     def work_left(self):
         return len(self.queue) > 0
 
-    def weight(self, judge, field=None):
+    def weight(self, judge):
         if self.match(judge) and self.work_left():
             return self._weight
 
