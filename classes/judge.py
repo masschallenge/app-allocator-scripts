@@ -33,7 +33,7 @@ class Judge(Entity):
             if self.passes(startup):
                 action = "pass"
                 keep = True
-            self.add_event(action=action)
+            self.add_event(action=action, startup=startup)
             for bin in bins:
                 bin.update(self, startup, keep)
         self.startups = []
@@ -44,7 +44,8 @@ class Judge(Entity):
 
     def find_startups(self, bins):
         while self.remaining > 0:
-            if not self.find_one_startup(bins):
+            self.find_one_startup(bins)
+            if not self.has_more_work:
                 break
         if not self.startups:
             self.add_event("done")
@@ -57,6 +58,7 @@ class Judge(Entity):
             if startup:
                 assign(self, startup)
                 self.has_more_work = True
+                return
         self.has_more_work = False
 
     def next_startup(self, bins):
