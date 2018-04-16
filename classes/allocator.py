@@ -12,12 +12,11 @@ from random import choice
 from classes.event import Event
 from classes.heuristic import find_heuristic
 from classes.judge import Judge
-from classes.property import program
-from classes.property import industry
 from classes.startup import Startup
 
 
 RANDOM_SELECTION_HEURISTIC = ""
+
 
 class Allocator(object):
     def __init__(self, filepath, heuristic):

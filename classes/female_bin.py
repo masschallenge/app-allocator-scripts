@@ -1,7 +1,4 @@
-from classes.bin import (
-    BIN_HIGH_WEIGHT,
-    Bin,
-)
+from classes.bin import Bin
 
 
 class FemaleBin(Bin):

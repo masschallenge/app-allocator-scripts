@@ -15,4 +15,5 @@ help:
 
 
 code-check:
-	pycodestyle *.py */*.py
+	@pycodestyle *.py */*.py
+	@flake8 *.py */*.py

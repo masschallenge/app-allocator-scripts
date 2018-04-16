@@ -1,6 +1,4 @@
 from random import random
-from classes.assignments import assign
-from classes.bin import BIN_NO_WEIGHT
 from classes.entity import Entity
 from classes.property import Property
 from classes.event import Event

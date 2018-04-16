@@ -4,8 +4,6 @@
 import sys
 from classes.entity import csv_output
 from classes.generator import Generator
-from classes.judge import Judge
-from classes.startup import Startup
 
 
 generator = Generator(judge_count=int(sys.argv[1]),

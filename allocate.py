@@ -5,9 +5,7 @@
 
 # TODO: Output should be as a CSV that can then assessed by a new assess.py
 # script.
-import csv
 import sys
-from random import choice
 
 from classes.allocator import (
     Allocator,
