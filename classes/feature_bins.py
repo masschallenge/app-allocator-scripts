@@ -21,6 +21,8 @@ INDUSTRY_WEIGHT = 2
 
 
 class FeatureBins(object):
+    name = "feature_bins"
+
     def __init__(self):
         self.bins = []
 

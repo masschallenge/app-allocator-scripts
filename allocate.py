@@ -9,13 +9,12 @@ import sys
 
 from classes.allocator import (
     Allocator,
-    RANDOM_SELECTION_HEURISTIC,
 )
 from classes.event import Event
 
 
 filename = None
-heuristic = RANDOM_SELECTION_HEURISTIC
+heuristic = ""
 
 if len(sys.argv) > 1:
     filepath = sys.argv[1]

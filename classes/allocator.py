@@ -15,15 +15,14 @@ from classes.judge import Judge
 from classes.startup import Startup
 
 
-RANDOM_SELECTION_HEURISTIC = ""
-
-
 class Allocator(object):
     def __init__(self, filepath, heuristic):
         self.filepath = filepath
         self.judges = []
         self.startups = []
         self.heuristic = find_heuristic(heuristic)
+        Event(action="heuristic",
+              subject=self.heuristic.name)
 
     def _file(self):
         if self.filepath is None:
