@@ -9,6 +9,7 @@ import csv
 import sys
 from random import choice
 
+from classes.event import Event
 from classes.heuristic import find_heuristic
 from classes.judge import Judge
 from classes.property import program
@@ -23,9 +24,7 @@ class Allocator(object):
         self.filepath = filepath
         self.judges = []
         self.startups = []
-        self.events = []
         self.heuristic = find_heuristic(heuristic)
-        self.ticks = 0
 
     def _file(self):
         if self.filepath is None:
@@ -49,21 +48,11 @@ class Allocator(object):
         while self.heuristic.work_left() and self.judges:
             judge = choice(self.judges)
             self.heuristic.next_action(judge)
-            self.register_judge_events(judge)
-            if not judge.has_more_work:
+            if judge.remaining <= 0 and not judge.startups:
                 self.judges.remove(judge)
-            self.ticks += 1
-
-    def register_judge_events(self, judge):
-        while judge.events:
-            self.add_event(judge.events.pop(0))
-
-    def add_event(self, event):
-        event.update(time=self.ticks)
-        self.events.append(event)
 
     def assess(self):
-        for event in self.events:
-            print (event.to_csv())
-        print("done,allocate.py,No more judges,")
+        Event(action="done",
+              subject="allocate.py",
+              description="No more judges")
         self.heuristic.assess()

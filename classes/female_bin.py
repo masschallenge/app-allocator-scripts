@@ -9,5 +9,5 @@ class FemaleBin(Bin):
         return "At Least One Female Read Bin"
 
     def weight(self, judge):
-        if judge.properties["gender"] == "female":
+        if judge.properties["gender"].startswith("f"):
             return super().weight(judge)

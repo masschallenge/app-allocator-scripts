@@ -13,6 +13,7 @@ from classes.allocator import (
     Allocator,
     RANDOM_SELECTION_HEURISTIC,
 )
+from classes.event import Event
 
 
 filename = None
@@ -29,3 +30,6 @@ allocator.read_entities()
 allocator.setup()
 allocator.allocate()
 allocator.assess()
+
+for event in Event.all_events:
+    print (event.to_csv())

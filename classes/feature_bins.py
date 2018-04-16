@@ -1,4 +1,9 @@
-from classes.bin import BIN_DEFAULT_WEIGHT
+from classes.assignments import assign
+from classes.bin import (
+    BIN_DEFAULT_WEIGHT,
+    BIN_NO_WEIGHT,
+)
+from classes.event import Event
 from classes.female_bin import FemaleBin
 from classes.home_program_bin import HomeProgramBin
 from classes.industry_bin import IndustryBin
@@ -56,11 +61,62 @@ class FeatureBins(object):
                         weight=HOME_PROGRAM_WEIGHT*BIN_DEFAULT_WEIGHT))
 
     def next_action(self, judge):
-        judge.next_action(self.bins)
+        for event in judge.complete_startups():
+            for bin in self.bins:
+                bin.update(judge,
+                           event.fields["object"],
+                           event.fields["action"] == "pass")
+        self.find_startups(judge)
+
+    def find_startups(self, judge):
+        while judge.needs_another_startup():
+            startup = self.find_one_startup(judge)
+            if not startup:
+                break
+        if not judge.startups:
+            judge.mark_as_done()
+
+    def find_one_startup(self, judge):
+        startup, best_bin = find_best_bin(self.bins, judge)
+        if startup:
+            Event(action=best_bin,
+                  subject=startup,
+                  object=judge,
+                  description="{} left".format(len(best_bin.queue)))
+            self.update_bins(startup, judge, True)
+            assign(judge, startup)
+        return startup
 
     def assess(self):
         for bin in self.bins:
             bin.status()
+
+    def update_bins(self, startup, judge, keep):
+        for bin in self.bins:
+            if bin.weight(judge):
+                bin.update_startup(startup, keep)
+
+
+def find_best_bin(bins, judge):
+    next_bin = find_next_bin(bins, judge)
+    if next_bin:
+        next_startup = next_bin.next_startup(judge)
+        if next_startup:
+            return next_startup, next_bin
+        other_bins = [bin for bin in bins if bin != next_bin]
+        return find_best_bin(other_bins, judge)
+    return None, None
+
+
+def find_next_bin(bins, judge):
+    result = None
+    highest_weight = BIN_NO_WEIGHT
+    for bin in bins:
+        weight = bin.adjusted_weight(judge)
+        if weight and weight > highest_weight:
+            highest_weight = weight
+            result = bin
+    return result
 
 
 def bin_factory(klass, values, weight):
