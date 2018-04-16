@@ -1,7 +1,5 @@
 from random import choice
 
-from classes.assignments import assign
-
 
 class RandomSelection(object):
     name = "random"
@@ -12,10 +10,11 @@ class RandomSelection(object):
     def work_left(self):
         return True
 
-    def next_action(self, judge):
-        judge.complete_startups()
-        while judge.needs_another_startup():
-            assign(judge, choice(self.startups))
+    def process_judge_events(self, events):
+        pass
+
+    def find_one_startup(self, judge):
+        return choice(self.startups)
 
     def assess(self):
         pass

@@ -1,4 +1,3 @@
-from classes.assignments import assign
 from classes.bin import (
     BIN_DEFAULT_WEIGHT,
     BIN_NO_WEIGHT,
@@ -62,21 +61,12 @@ class FeatureBins(object):
                         values=[value for value, _ in program.values],
                         weight=HOME_PROGRAM_WEIGHT*BIN_DEFAULT_WEIGHT))
 
-    def next_action(self, judge):
-        for event in judge.complete_startups():
+    def process_judge_events(self, events):
+        for event in events:
             for bin in self.bins:
-                bin.update(judge,
+                bin.update(event.fields["subject"],
                            event.fields["object"],
                            event.fields["action"] == "pass")
-        self.find_startups(judge)
-
-    def find_startups(self, judge):
-        while judge.needs_another_startup():
-            startup = self.find_one_startup(judge)
-            if not startup:
-                break
-        if not judge.startups:
-            judge.mark_as_done()
 
     def find_one_startup(self, judge):
         startup, best_bin = find_best_bin(self.bins, judge)
@@ -86,7 +76,6 @@ class FeatureBins(object):
                   object=judge,
                   description="{} left".format(len(best_bin.queue)))
             self.update_bins(startup, judge, True)
-            assign(judge, startup)
         return startup
 
     def assess(self):
