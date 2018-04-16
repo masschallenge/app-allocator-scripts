@@ -47,16 +47,19 @@ class Allocator(object):
         while self.heuristic.work_left() and self.judges:
             judge = choice(self.judges)
             self.heuristic.process_judge_events(judge.complete_startups())
-            while judge.needs_another_startup():
-                startup = self.heuristic.find_one_startup(judge)
-                if startup:
-                    assign(judge, startup)
-                else:
-                    break
-            if not judge.startups:
-                judge.mark_as_done()
+            self.assign_startups(judge)
             if judge.remaining <= 0 and not judge.startups:
                 self.judges.remove(judge)
+
+    def assign_startups(self, judge):
+        while judge.needs_another_startup():
+            startup = self.heuristic.find_one_startup(judge)
+            if startup:
+                assign(judge, startup)
+            else:
+                break
+        if not judge.startups:
+            judge.mark_as_done()
 
     def assess(self):
         Event(action="done",

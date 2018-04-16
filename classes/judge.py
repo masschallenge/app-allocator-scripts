@@ -20,16 +20,14 @@ class Judge(Entity):
 
     def complete_startups(self):
         events = []
-        if self.startups:
-            for startup in self.startups:
-                action = "finished"
-                if self.passes(startup):
-                    action = "pass"
-                events.append(Event(action=action,
-                                    subject=self,
-                                    object=startup))
-            self.startups = []
-            self.has_more_work = True
+        for startup in self.startups:
+            action = "finished"
+            if self.passes(startup):
+                action = "pass"
+            events.append(Event(action=action,
+                                subject=self,
+                                object=startup))
+        self.startups = []
         return events
 
     def passes(self, startup):
