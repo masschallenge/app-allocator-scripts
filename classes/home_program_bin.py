@@ -1,6 +1,5 @@
 from classes.bin import (
     BIN_DEFAULT_WEIGHT,
-    BIN_NO_WEIGHT,
     Bin,
 )
 
@@ -15,11 +14,5 @@ class HomeProgramBin(Bin):
     def __str__(self):
         return self.name_format.format(self.program)
 
-    def match(self, startup):
-        return startup.properties['program'] == self.program
-
-    def weight(self, judge):
-        if judge.properties['program'] == self.program:
-            return super().weight(judge)
-        else:
-            return BIN_NO_WEIGHT
+    def match(self, entity):
+        return entity.properties['program'] == self.program

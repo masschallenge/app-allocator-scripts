@@ -43,6 +43,12 @@ class Entity(object):
         if value is not None:
             self.properties[property.name] = value
 
+    def add_fields_to_name(self, fields):
+        name = self.properties["name"]
+        for field in fields:
+            name += "-{value}".format(value=self.properties[field])
+        self.properties["name"] = name
+
 
 def csv_output(entities):
     print(CSV_HEADER)

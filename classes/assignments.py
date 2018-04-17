@@ -3,8 +3,7 @@ assignments = {}
 
 def assign(judge, startup):
     if startup:
-        judge.startups.append(startup)
-        judge.remaining -= 1
+        judge.add_startup(startup)
         judge_assignments = assignments.get(judge.id(), set())
         judge_assignments.add(startup.id())
         assignments[judge.id()] = judge_assignments
