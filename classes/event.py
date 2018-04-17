@@ -6,11 +6,11 @@ class Event(object):
     ticks = 0
 
     def __init__(self, **kwargs):
-        self.fields = OrderedDict({"time": Event.ticks,
-                                   "action": "",
-                                   "subject": "",
-                                   "object": "",
-                                   "description": ""})
+        self.fields = OrderedDict([("time", Event.ticks),
+                                   ("action", ""),
+                                   ("subject", ""),
+                                   ("object", ""),
+                                   ("description", "")])
         Event.ticks += 1
         self.fields.update(kwargs)
         Event.all_events.append(self)
