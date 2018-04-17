@@ -50,6 +50,10 @@ class Allocator(object):
             self.assign_startups(judge)
             if judge.remaining <= 0 and not judge.startups:
                 self.judges.remove(judge)
+        description = "{} heuristic is done.".format(self.heuristic.name)
+        Event(action="done",
+              subject="allocate.py",
+              description=description)
 
     def assign_startups(self, judge):
         while judge.needs_another_startup():
@@ -62,7 +66,4 @@ class Allocator(object):
             judge.mark_as_done()
 
     def assess(self):
-        Event(action="done",
-              subject="allocate.py",
-              description="No more judges")
         self.heuristic.assess()
