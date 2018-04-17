@@ -7,9 +7,7 @@
 # script.
 import sys
 
-from classes.allocator import (
-    Allocator,
-)
+from classes.allocator import Allocator
 from classes.event import Event
 
 
