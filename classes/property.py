@@ -10,7 +10,7 @@ class Property(object):
         Property.all_properties.append(self)
 
 
-name = Property("name")
+name = Property("name",)
 gender = Property("gender", [("female", 0.25),
                              ("male", 1.0)])
 
