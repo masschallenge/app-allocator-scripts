@@ -25,7 +25,4 @@ allocator.read_entities()
 allocator.setup()
 allocator.allocate()
 
-
-for event in Event.all_events:
-    print (Event.headers())
-    print (event.to_csv())
+print (Event.all_events_as_csv())
