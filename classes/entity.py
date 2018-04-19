@@ -44,7 +44,7 @@ class Entity(object):
             self.properties[property.name] = value
 
     def add_fields_to_name(self, fields):
-        name = self.properties.get("name") or self._generated_name()
+        name = self.properties.get("name", self._generated_name())
         for field in fields:
             name += "-{value}".format(value=self.properties[field])
         self.properties["name"] = name
