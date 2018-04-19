@@ -44,10 +44,13 @@ class Entity(object):
             self.properties[property.name] = value
 
     def add_fields_to_name(self, fields):
-        name = self.properties["name"]
+        name = self.properties.get("name", self._generated_name())
         for field in fields:
             name += "-{value}".format(value=self.properties[field])
         self.properties["name"] = name
+
+    def _generated_name(self):
+        return "%s-%s" % (self.type, self.properties['id'])
 
 
 def csv_output(entities):
