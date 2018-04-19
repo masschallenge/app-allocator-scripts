@@ -51,10 +51,11 @@ class Entity(object):
 
     def _generated_name(self):
         return "%s-%s" % (self.type, self.properties['id'])
-        
+
     def __getitem__(self, key):
         return self.properties.get(key, "BLANK")
-    
+
+
 def csv_output(entities):
     print(CSV_HEADER)
     for entity in entities:

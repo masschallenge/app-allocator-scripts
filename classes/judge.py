@@ -14,7 +14,7 @@ class Judge(Entity):
         self.startups = []
         self.type = "judge"
         for property in Property.all_properties:
-            self.add_property(property, data)        
+            self.add_property(property, data)
         self.remaining = int(self.properties.get("commitment", 50))
 
     def complete_startups(self):

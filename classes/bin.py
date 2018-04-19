@@ -1,5 +1,4 @@
 from classes.assignments import has_been_assigned
-from classes.event import Event
 
 
 BIN_NO_WEIGHT = 0

@@ -15,7 +15,7 @@ class Event(object):
         self.update_headers(kwargs.keys())
 
     def to_csv(self):
-        fields = {field:"" for field in self.headers}
+        fields = {field: "" for field in self.headers}
         fields.update(self.fields)
         template = (",".join(["{%s}" % key for key in self.headers]))
         return template.format(**fields)

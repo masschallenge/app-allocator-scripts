@@ -10,7 +10,6 @@ import sys
 from random import choice
 
 from classes.assignments import assign
-from classes.event import Event
 from classes.heuristic import find_heuristic
 from classes.judge import Judge
 from classes.startup import Startup
