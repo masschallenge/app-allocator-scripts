@@ -11,7 +11,7 @@ Assignment = namedtuple("Assignment", ["judge", "startup"])
 
 
 def increment_assignment_count(startup, metric_name, analysis):
-    name = startup.properties['name']
+    name = startup['name']
     analysis[name][metric_name] += 1
 
     
@@ -22,7 +22,7 @@ def female_judge(assignment, analysis):
 
 def role_distribution(assignment, analysis):
     judge, startup = assignment
-    metric_name = "%s_reads" % judge.properties['role']
+    metric_name = "%s_reads" % judge['role']
     increment_assignment_count(startup, metric_name, analysis)
 
 def program_match(assignment, analysis):
@@ -39,7 +39,9 @@ def industry_match(assignment, analysis):
         increment_assignment_count(startup, metric_name, analysis)
 
 
-    
+def total_reads(assignment, analysis):
+    _, startup = assignment
+    increment_assignment_count(startup, 'total_reads', analysis)
     
 class AllocationAnalyzer(object):
     def __init__(self):
@@ -47,7 +49,8 @@ class AllocationAnalyzer(object):
         self.startups = {}
         self.assigned = []
         self.completed = []
-        self.metrics = [female_judge,
+        self.metrics = [total_reads,
+                        female_judge,
                         role_distribution,
                         program_match,
                         industry_match]
@@ -66,10 +69,10 @@ class AllocationAnalyzer(object):
         for row in reader:
             if row['type'] == "judge":
                 judge = Judge(data=row)
-                self.judges[judge.properties['name']] = judge
+                self.judges[judge['name']] = judge
             elif row['type'] == "startup":
                 startup = Startup(data=row)
-                self.startups[startup.properties['name']] = startup
+                self.startups[startup['name']] = startup
             else:
                 print("Couldn't read row: %s" % ",".join(row))
                 
@@ -85,11 +88,12 @@ class AllocationAnalyzer(object):
     
                                
     def analyze(self, assignments):
-        analysis = {startup.properties['name']: defaultdict(int)
+        analysis = {startup['name']: defaultdict(int)
                     for startup in self.startups.values()}
         for assignment in assignments:
             for metric_fn in self.metrics:
                 metric_fn(assignment, analysis)
+
         return analysis
         
             
