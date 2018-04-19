@@ -96,6 +96,27 @@ class AllocationAnalyzer(object):
         
         return read_counts
 
+    def summarize(self, read_counts):
+        summary = defaultdict(int)
+        maxes = defaultdict(int)
+        mins = defaultdict(int)
+        for app, count_dict in read_counts.items():
+            for metric, count in count_dict.items():
+                summary[metric] += count
+                maxes[metric] = max(maxes[metric], count)
+                mins[metric] = max(mins[metric], -count)
+        total_applications = len(self.startups)
+        total_judges = len(self.judges)
+        for metric, count in list(summary.items()):
+            summary['average %s' % metric] = count / total_applications
+        for metric, val in list(maxes.items()):
+            summary['max %s' % metric] = val
+        for metric, val in list(mins.items()):
+            summary['min %s' % metric] = -val
+        
+        summary['total_applications'] = total_applications        
+        summary['total_judges'] = total_judges
+        return summary
 
 def quick_setup():
     aa = AllocationAnalyzer()
