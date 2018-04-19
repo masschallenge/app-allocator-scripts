@@ -15,7 +15,6 @@ class Judge(Entity):
         self.type = "judge"
         for property in Property.all_properties:
             self.add_property(property, data)        
-        self.add_fields_to_name(["industry", "program", "role", "gender"])
         self.remaining = int(self.properties.get("commitment", 50))
 
     def complete_startups(self):
@@ -46,3 +45,6 @@ class Judge(Entity):
     def mark_as_done(self):
         Event(action="done", subject=self)
         self.remaining = 0
+
+    def is_female(self):
+        return self.properties.get('gender', "").startswith('f')

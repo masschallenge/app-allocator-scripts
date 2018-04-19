@@ -2,16 +2,56 @@ from csv import DictReader
 from collections import (
     defaultdict,
     Counter,
+    namedtuple,
     OrderedDict,
 )
 from classes.judge import Judge
 from classes.startup import Startup
+Assignment = namedtuple("Assignment", ["judge", "startup"])
 
+
+def increment_assignment_count(startup, metric_name, analysis):
+    name = startup.properties['name']
+    analysis[name][metric_name] += 1
+
+    
+def female_judge(assignment, analysis):
+    judge, startup = assignment
+    if judge.is_female():
+        increment_assignment_count(startup, 'female_reads', analysis)
+
+def role_distribution(assignment, analysis):
+    judge, startup = assignment
+    metric_name = "%s_reads" % judge.properties['role']
+    increment_assignment_count(startup, metric_name, analysis)
+
+def program_match(assignment, analysis):
+    judge, startup = assignment
+    metric_name = "home_program_reads"
+    if startup['program'] == judge['program']:
+        increment_assignment_count(startup, metric_name, analysis)
+
+
+def industry_match(assignment, analysis):
+    judge, startup = assignment
+    metric_name = "matching_industry_reads"
+    if startup['industry'] == judge['industry']:
+        increment_assignment_count(startup, metric_name, analysis)
+
+
+    
+    
 class AllocationAnalyzer(object):
     def __init__(self):
         self.judges = {}
         self.startups = {}
-
+        self.assigned = []
+        self.completed = []
+        self.metrics = [female_judge,
+                        role_distribution,
+                        program_match,
+                        industry_match]
+        
     def read_scenario_from_csv(self, input_file):
         with open(input_file) as file:
             reader = DictReader(file)
@@ -22,24 +62,36 @@ class AllocationAnalyzer(object):
             reader = DictReader(file)            
             self.process_allocations_from_csv(reader)
 
-    def read_preferences(self, input_file):
-        with open(input_file) as file:
-            preferences = file.readlines()
-        self.process_preferences
-
     def process_scenario_from_csv(self, reader):
         for row in reader:
             if row['type'] == "judge":
                 judge = Judge(data=row)
-                self.judges[judge.properties['id']] = judge
+                self.judges[judge.properties['name']] = judge
             elif row['type'] == "startup":
                 startup = Startup(data=row)
-                self.startups[startup.properties['id']] = startup
+                self.startups[startup.properties['name']] = startup
             else:
                 print("Couldn't read row: %s" % ",".join(row))
                 
     def process_allocations_from_csv(self, reader):
         for row in reader:
+            judge = self.judges.get(row['subject'])
+            startup = self.startups.get(row['object'])
+            if row['action'] == "assigned":
+                self.assigned.append(Assignment(judge, startup))
+                
+            elif row['action'] == "finished":
+                self.completed.append(Assignment(judge, startup))
+    
+                               
+    def analyze(self, assignments):
+        analysis = {startup.properties['name']: defaultdict(int)
+                    for startup in self.startups.values()}
+        for assignment in assignments:
+            for metric_fn in self.metrics:
+                metric_fn(assignment, analysis)
+        return analysis
+        
             
                 
 #     def calc_all_stats(self):
@@ -247,3 +299,10 @@ class AllocationAnalyzer(object):
 
 # def mean(collection):
 #     return float(sum(collection)) / len(collection)
+
+
+def quick_setup():
+    aa = AllocationAnalyzer()
+    aa.read_scenario_from_csv('example.csv')
+    aa.read_allocations_from_csv('tmp.out')
+    return aa
