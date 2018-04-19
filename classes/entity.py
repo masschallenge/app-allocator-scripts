@@ -51,8 +51,8 @@ class Entity(object):
 
     def _generated_name(self):
         return "%s-%s" % (self.type, self.properties['id'])
-        
-    
+
+
 def csv_output(entities):
     print(CSV_HEADER)
     for entity in entities:
