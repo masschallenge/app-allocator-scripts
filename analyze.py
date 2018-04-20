@@ -1,7 +1,22 @@
 from classes.allocation_analyzer import quick_setup
-from sys import stdout
+from sys import (
+    argv,
+    stdout,
+)
 
-aa = quick_setup()
+
+if len(argv) > 1:
+    scenario = argv[1]
+else:
+    scenario = "example.csv"
+if len(argv) > 2:
+    allocation = argv[2]
+else:
+    allocation = "tmp.out"
+
+
+
+aa = quick_setup(scenario, allocation)
 assigned_summary = aa.summarize(aa.analyze(aa.assigned))
 completed_summary = aa.summarize(aa.analyze(aa.completed))
 
