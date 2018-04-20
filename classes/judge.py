@@ -45,6 +45,3 @@ class Judge(Entity):
     def mark_as_done(self):
         Event(action="done", subject=self)
         self.remaining = 0
-
-    def is_female(self):
-        return self.properties.get('gender', "").startswith('f')
