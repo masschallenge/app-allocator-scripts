@@ -1,27 +1,35 @@
-
-
-def true_func(*args):
-    return True
-
-def increment_read_count(application, output_key, counts_dict):
-    startup_name = application['name']
-    counts_dict[startup_name][output_key] += 1
-
 class Metric(object):
-    def __init__(self):
-        self.condition = true_func
-        self.satisfied_apps = set()
+    def __init__(self, target):
+        self.target = target
+        self.unsatisfied_apps = set()
+        self.total = 0
+        self.max_count = 0
+
+
+    def condition(self, judge, application):
+        return True
     
     def evaluate(self, assignment, counts_dict):
         judge, application = assignment
         if self.condition(judge, application):
-            increment_read_count(application,
-                                 self.output_key(),
-                                 counts_dict)
+            self.total += 1
+            self.increment_read_count(application,
+                                      counts_dict)
+        self.update_max(application['name'], counts_dict)
         if self.satisfied(application, counts_dict):
-            self.satisfied_apps.add(application)
+            self.unsatisfied_apps.discard(application)
         else:
-            self.satisfied_apps.discard(application)
-            
+            self.unsatisfied_apps.add(application)
+
+    def update_max(self, startup_name, counts_dict):
+        app_count = counts_dict[startup_name][self.output_key()]
+        self.max_count = max(self.max_count, app_count)
+        
     def satisfied(self, application, counts_dict):
-        return True
+        return counts_dict[application['name']][self.output_key()] >= self.target
+
+    def increment_read_count(self, application, counts_dict):
+        startup_name = application['name']
+        counts_dict[startup_name][self.output_key()] += 1
+
+        

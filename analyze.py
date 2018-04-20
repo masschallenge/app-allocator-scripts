@@ -26,6 +26,5 @@ output.append("\n\nCompleted Application Stats\n------------------\n")
 output.extend("\n".join(["%s: %s" % (key, val) for key, val in completed_summary.items()]))
 
 stdout.writelines(output)
-
-
+print()
 

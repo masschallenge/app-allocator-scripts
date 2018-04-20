@@ -12,6 +12,7 @@ from classes.industry_match_metric import IndustryMatchMetric
 from classes.total_reads_metric import TotalReadsMetric
 
 Assignment = namedtuple("Assignment", ["judge", "startup"])
+TOTAL_READS_TARGET = 5
 
 class AllocationAnalyzer(object):
     def __init__(self):
@@ -19,9 +20,9 @@ class AllocationAnalyzer(object):
         self.startups = {}
         self.assigned = []
         self.completed = []
-        self.metrics = [ProgramMatchMetric(),
-                        IndustryMatchMetric(),
-                        TotalReadsMetric(),]
+        self.metrics = [ProgramMatchMetric(1),
+                        IndustryMatchMetric(1),
+                        TotalReadsMetric(TOTAL_READS_TARGET),]
         self.metrics.extend([
             JudgeRoleDistributionMetric('Lawyer', 1),
             JudgeRoleDistributionMetric('Executive', 2),
@@ -77,17 +78,17 @@ class AllocationAnalyzer(object):
         summary = defaultdict(int)
         maxes = defaultdict(int)
         misses = defaultdict(list)
-        for app, count_dict in read_counts.items():
-            for metric, count in count_dict.items():
-                summary[metric] += count
-                maxes[metric] = max(maxes[metric], count)
         total_applications = len(self.startups)
         total_judges = len(self.judges)
         for metric, count in list(summary.items()):
             summary['average %s' % metric] = count / total_applications
         for metric, val in list(maxes.items()):
             summary['max %s' % metric] = val
-
+        for metric in self.metrics:
+            summary['total %s' % metric.output_key()] = metric.total 
+            summary['max %s'  % metric.output_key()] = metric.max_count
+            summary['missed %s' % metric.output_key()] = len(metric.unsatisfied_apps)
+            
         summary['total_applications'] = total_applications
         summary['total_judges'] = total_judges
         return summary
