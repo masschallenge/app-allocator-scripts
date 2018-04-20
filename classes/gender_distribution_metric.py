@@ -1,8 +1,14 @@
 from classes.metric import Metric
 
-def judge_gender(judge, application):
-    return "Gender '%s'" % judge['gender']
-
 class GenderDistributionMetric(Metric):
-    name = "Gender"
-    output_key = judge_gender
+    def __init__(self, gender, target):
+        super().__init__()
+        self.gender = gender
+        self.target = target
+
+    def output_key(self):
+        return "Gender '%s'" % self.gender
+
+    def condition(self, judge, application):
+        return judge['gender'] == self.gender
+    
