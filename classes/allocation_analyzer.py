@@ -31,20 +31,9 @@ class AllocationAnalyzer(object):
         self.metrics.extend([
             GenderDistributionMetric('male', 0),
             GenderDistributionMetric('female', 1)])
-                            
-                        
 
-    def read_scenario_from_csv(self, input_file):
-        with open(input_file) as file:
-            reader = DictReader(file)
-            self.process_scenario_from_csv(reader)
-
-    def read_allocations_from_csv(self, input_file):
-        with open(input_file) as file:
-            reader = DictReader(file)
-            self.process_allocations_from_csv(reader)
-
-    def process_scenario_from_csv(self, reader):
+    def process_scenario_from_csv(self, input_file):
+        reader = open_csv_reader(input_file)
         for row in reader:
             if row['type'] == "judge":
                 judge = Judge(data=row)
@@ -55,7 +44,8 @@ class AllocationAnalyzer(object):
             else:
                 print("Couldn't read row: %s" % ",".join(row))
 
-    def process_allocations_from_csv(self, reader):
+    def process_allocations_from_csv(self, input_file):
+        reader = open_csv_reader(input_file)        
         for row in reader:
             judge = self.judges.get(row['subject'])
             startup = self.startups.get(row['object'])
@@ -85,10 +75,10 @@ class AllocationAnalyzer(object):
         for metric, val in list(maxes.items()):
             summary['max %s' % metric] = val
         for metric in self.metrics:
-            summary['total %s' % metric.output_key()] = metric.total 
+            summary['total %s' % metric.output_key()] = metric.total
             summary['max %s'  % metric.output_key()] = metric.max_count
             summary['missed %s' % metric.output_key()] = len(metric.unsatisfied_apps)
-            
+
         summary['total_applications'] = total_applications
         summary['total_judges'] = total_judges
         return summary
@@ -96,6 +86,12 @@ class AllocationAnalyzer(object):
 
 def quick_setup(scenario='example.csv', allocation='tmp.out'):
     aa = AllocationAnalyzer()
-    aa.read_scenario_from_csv(scenario)
-    aa.read_allocations_from_csv(allocation)
+    aa.process_scenario_from_csv(scenario)
+    aa.process_allocations_from_csv(allocation)
     return aa
+
+
+def open_csv_reader(input_file):
+    file = open(input_file)
+    reader = DictReader(file)
+    return reader
