@@ -53,7 +53,7 @@ class Entity(object):
         return "%s-%s" % (self.type, self.properties['id'])
 
     def __getitem__(self, key):
-        return self.properties.get(key, "BLANK")
+        return self.properties.get(key, "")
 
 
 def csv_output(entities):

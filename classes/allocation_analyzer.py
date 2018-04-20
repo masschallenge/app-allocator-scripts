@@ -13,10 +13,10 @@ def increment_assignment_count(startup, metric_name, analysis):
     analysis[name][metric_name] += 1
 
 
-def female_judge(assignment, read_counts):
+def gender_distribution(assignment, read_counts):
     judge, startup = assignment
-    if judge.is_female():
-        increment_assignment_count(startup, 'female_reads', read_counts)
+    metric_name = "%s_reads" % judge['gender']
+    increment_assignment_count(startup, metric_name, read_counts)
 
 
 def role_distribution(assignment, read_counts):
@@ -51,7 +51,7 @@ class AllocationAnalyzer(object):
         self.assigned = []
         self.completed = []
         self.metrics = [total_reads,
-                        female_judge,
+                        gender_distribution,
                         role_distribution,
                         program_match,
                         industry_match]
@@ -119,8 +119,8 @@ class AllocationAnalyzer(object):
         return summary
 
 
-def quick_setup():
+def quick_setup(scenario='example.csv', allocation='tmp.out'):
     aa = AllocationAnalyzer()
-    aa.read_scenario_from_csv('example.csv')
-    aa.read_allocations_from_csv('tmp.out')
+    aa.read_scenario_from_csv(scenario)
+    aa.read_allocations_from_csv(allocation)
     return aa
