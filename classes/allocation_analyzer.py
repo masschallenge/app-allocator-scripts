@@ -5,44 +5,13 @@ from collections import (
 )
 from classes.judge import Judge
 from classes.startup import Startup
+from classes.gender_distribution_metric import GenderDistributionMetric
+from classes.judge_role_distribution_metric import JudgeRoleDistributionMetric
+from classes.program_match_metric import ProgramMatchMetric
+from classes.industry_match_metric import IndustryMatchMetric
+from classes.total_reads_metric import TotalReadsMetric
+
 Assignment = namedtuple("Assignment", ["judge", "startup"])
-
-
-def increment_assignment_count(startup, metric_name, analysis):
-    name = startup['name']
-    analysis[name][metric_name] += 1
-
-
-def gender_distribution(assignment, read_counts):
-    judge, startup = assignment
-    metric_name = "%s_reads" % judge['gender']
-    increment_assignment_count(startup, metric_name, read_counts)
-
-
-def role_distribution(assignment, read_counts):
-    judge, startup = assignment
-    metric_name = "%s_reads" % judge['role']
-    increment_assignment_count(startup, metric_name, read_counts)
-
-
-def program_match(assignment, read_counts):
-    judge, startup = assignment
-    metric_name = "home_program_reads"
-    if startup['program'] == judge['program']:
-        increment_assignment_count(startup, metric_name, read_counts)
-
-
-def industry_match(assignment, read_counts):
-    judge, startup = assignment
-    metric_name = "matching_industry_reads"
-    if startup['industry'] == judge['industry']:
-        increment_assignment_count(startup, metric_name, read_counts)
-
-
-def total_reads(assignment, read_counts):
-    _, startup = assignment
-    increment_assignment_count(startup, 'total_reads', read_counts)
-
 
 class AllocationAnalyzer(object):
     def __init__(self):
@@ -50,11 +19,12 @@ class AllocationAnalyzer(object):
         self.startups = {}
         self.assigned = []
         self.completed = []
-        self.metrics = [total_reads,
-                        gender_distribution,
-                        role_distribution,
-                        program_match,
-                        industry_match]
+        self.metrics = [GenderDistributionMetric,
+                        JudgeRoleDistributionMetric,
+                        ProgramMatchMetric,
+                        IndustryMatchMetric,
+                        TotalReadsMetric,]
+                        
 
     def read_scenario_from_csv(self, input_file):
         with open(input_file) as file:
@@ -91,8 +61,8 @@ class AllocationAnalyzer(object):
         read_counts = {startup['name']: defaultdict(int)
                        for startup in self.startups.values()}
         for assignment in assignments:
-            for metric_fn in self.metrics:
-                metric_fn(assignment, read_counts)
+            for metric in self.metrics:
+                metric.evaluate(metric, assignment, read_counts)
 
         return read_counts
 
