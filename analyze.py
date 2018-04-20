@@ -17,14 +17,12 @@ else:
 
 
 aa = quick_setup(scenario, allocation)
-assigned_summary = aa.summarize(aa.analyze(aa.assigned))
-completed_summary = aa.summarize(aa.analyze(aa.completed))
+for summary, word in [(aa.summarize(aa.analyze(aa.assigned)), "Assigned"),
+                      (aa.summarize(aa.analyze(aa.completed)), "Completed")]:
+    print("\n%s Application Stats\n------------------\n" % word)
+    print("\n".join(["%s: %s" % (key, val)
+                     for key, val in summary.items()]))
 
-output = ["\nAssigned Application Stats\n------------------\n"]
-output.extend("\n".join(["%s: %s" % (key, val) for key, val in assigned_summary.items()]))
-output.append("\n\nCompleted Application Stats\n------------------\n")
-output.extend("\n".join(["%s: %s" % (key, val) for key, val in completed_summary.items()]))
 
-stdout.writelines(output)
 print()
 
