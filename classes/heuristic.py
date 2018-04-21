@@ -1,7 +1,8 @@
 from classes.feature_bins import FeatureBins
+from classes.ordered_queues import OrderedQueues
 from classes.random_selection import RandomSelection
 
-HEURISTICS = [RandomSelection, FeatureBins]
+HEURISTICS = [RandomSelection, FeatureBins, OrderedQueues]
 
 
 def find_heuristic(name):
