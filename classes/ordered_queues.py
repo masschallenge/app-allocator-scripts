@@ -37,9 +37,6 @@ class OrderedQueues(object):
         self.add_queues(feature_options)
         self.queues.append(Queue(count=OrderedQueues.expected_reads))
         self.add_startups(startups)
-        for queue in self.queues:
-            print("{queue}: {count}".format(queue=queue,
-                                            count=len(queue.items)))
 
     def add_queues(self, slots):
         # slots is an OrderDicts of possible options for each feature
