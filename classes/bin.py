@@ -1,5 +1,4 @@
 from classes.assignments import has_been_assigned
-from classes.event import Event
 
 
 BIN_NO_WEIGHT = 0
@@ -15,19 +14,6 @@ class Bin(object):
 
     def __str__(self):
         return "Generic Bin"
-
-    def status(self):
-        action = "success"
-        object = ""
-        description = "Is empty"
-        if self.queue:
-            action = "fail"
-            object = self.queue[0]
-            description = "{} unread".format(len(self.queue))
-        Event(action=action,
-              subject=self,
-              object=object,
-              description=description)
 
     def add_startup(self, startup):
         result = self.match(startup)
