@@ -15,7 +15,6 @@ else:
     allocation = "tmp.out"
 
 
-
 aa = quick_setup(scenario, allocation)
 for summary, word in [(aa.summarize(aa.analyze(aa.assigned)), "Assigned"),
                       (aa.summarize(aa.analyze(aa.completed)), "Completed")]:
@@ -25,4 +24,3 @@ for summary, word in [(aa.summarize(aa.analyze(aa.assigned)), "Assigned"),
 
 
 print()
-

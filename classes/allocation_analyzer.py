@@ -14,6 +14,7 @@ from classes.total_reads_metric import TotalReadsMetric
 Assignment = namedtuple("Assignment", ["judge", "startup"])
 TOTAL_READS_TARGET = 5
 
+
 class AllocationAnalyzer(object):
     def __init__(self):
         self.judges = {}
@@ -22,7 +23,7 @@ class AllocationAnalyzer(object):
         self.completed = []
         self.metrics = [ProgramMatchMetric(1),
                         IndustryMatchMetric(1),
-                        TotalReadsMetric(TOTAL_READS_TARGET),]
+                        TotalReadsMetric(TOTAL_READS_TARGET)]
         self.metrics.extend([
             JudgeRoleDistributionMetric('Lawyer', 1),
             JudgeRoleDistributionMetric('Executive', 2),
@@ -45,7 +46,7 @@ class AllocationAnalyzer(object):
                 print("Couldn't read row: %s" % ",".join(row))
 
     def process_allocations_from_csv(self, input_file):
-        reader = open_csv_reader(input_file)        
+        reader = open_csv_reader(input_file)
         for row in reader:
             judge = self.judges.get(row['subject'])
             startup = self.startups.get(row['object'])
@@ -76,8 +77,9 @@ class AllocationAnalyzer(object):
             summary['max %s' % metric] = val
         for metric in self.metrics:
             summary['total %s' % metric.output_key()] = metric.total
-            summary['max %s'  % metric.output_key()] = metric.max_count
-            summary['missed %s' % metric.output_key()] = len(metric.unsatisfied_apps)
+            summary['max %s' % metric.output_key()] = metric.max_count
+            missed_count = len(metric.unsatisfied_apps)
+            summary['missed %s' % metric.output_key()] = missed_count
 
         summary['total_applications'] = total_applications
         summary['total_judges'] = total_judges

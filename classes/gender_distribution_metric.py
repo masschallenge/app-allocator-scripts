@@ -1,5 +1,6 @@
 from classes.metric import Metric
 
+
 class GenderDistributionMetric(Metric):
     def __init__(self, gender, target):
         super().__init__(target)
@@ -10,4 +11,3 @@ class GenderDistributionMetric(Metric):
 
     def condition(self, judge, application):
         return judge['gender'] == self.gender
-    

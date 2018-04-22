@@ -5,10 +5,9 @@ class Metric(object):
         self.total = 0
         self.max_count = 0
 
-
     def condition(self, judge, application):
         return True
-    
+
     def evaluate(self, assignment, counts_dict):
         judge, application = assignment
         if self.condition(judge, application):
@@ -24,12 +23,11 @@ class Metric(object):
     def update_max(self, startup_name, counts_dict):
         app_count = counts_dict[startup_name][self.output_key()]
         self.max_count = max(self.max_count, app_count)
-        
+
     def satisfied(self, application, counts_dict):
-        return counts_dict[application['name']][self.output_key()] >= self.target
+        app_counts = counts_dict[application['name']]
+        return app_counts[self.output_key()] >= self.target
 
     def increment_read_count(self, application, counts_dict):
         startup_name = application['name']
         counts_dict[startup_name][self.output_key()] += 1
-
-        
