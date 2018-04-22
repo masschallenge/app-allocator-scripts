@@ -13,4 +13,3 @@ class Startup(Entity):
         self.add_property(name, data)
         self.add_property(industry, data)
         self.add_property(program, data)
-        self.add_fields_to_name(["industry", "program"])

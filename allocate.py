@@ -24,7 +24,5 @@ allocator = Allocator(filepath, heuristic)
 allocator.read_entities()
 allocator.setup()
 allocator.allocate()
-allocator.assess()
 
-for event in Event.all_events:
-    print (event.to_csv())
+print (Event.all_events_as_csv())
