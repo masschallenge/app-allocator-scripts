@@ -68,7 +68,6 @@ class AllocationAnalyzer(object):
     def summarize(self, read_counts):
         summary = defaultdict(int)
         maxes = defaultdict(int)
-        misses = defaultdict(list)
         total_applications = len(self.startups)
         total_judges = len(self.judges)
         for metric, count in list(summary.items()):
