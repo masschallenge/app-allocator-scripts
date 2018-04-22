@@ -13,9 +13,13 @@ class SpecificFeature(Feature):
             if self.option_specs is None:
                 return [(option, self.count)]
             else:
-                for spec in self.option_specs:
-                    if spec.option == option:
-                        return [(option, spec.count)]
+                return self.spec_count(option)
+        return []
+
+    def spec_count(self, option):
+        for spec in self.option_specs:
+            if spec.option == option:
+                return [(option, spec.count)]
         return []
 
     def initial_options(self, judges, startups):

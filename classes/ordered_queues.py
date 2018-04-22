@@ -114,8 +114,7 @@ def calc_option_counts(field, option_counts, judge):
     result = []
     for option, count in option_counts:
         if judge.properties.get(field, None) == option:
-            if count > 1:
-                result.append((option, count - 1))
-        else:
+            count = count - 1
+        if count > 0:
             result.append((option, count))
     return result
