@@ -103,3 +103,5 @@ ENV/
 *.out
 *~
 test_data/
+
+.pytest_cache
