@@ -1,9 +1,10 @@
-from classes.bin import Bin
+from app_allocator.classes.bin import Bin
 
+FEMALE_BIN_STRING = "At Least One Female Read Bin"
 
 class FemaleBin(Bin):
     def __str__(self):
-        return "At Least One Female Read Bin"
+        return FEMALE_BIN_STRING
 
     def weight(self, judge):
         if judge.properties["gender"].startswith("f"):

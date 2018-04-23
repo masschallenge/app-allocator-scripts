@@ -1,8 +1,9 @@
-from classes.bin import (
+from app_allocator.classes.bin import (
     BIN_DEFAULT_WEIGHT,
     Bin,
 )
 
+READS_BIN_STRING = "Read Bin"
 
 class ReadsBin(Bin):
     def __init__(self, weight=BIN_DEFAULT_WEIGHT, count=1):
@@ -11,7 +12,7 @@ class ReadsBin(Bin):
         self.counts = {}
 
     def __str__(self):
-        return "Read Bin"
+        return READS_BIN_STRING
 
     def add_startup(self, startup):
         matches = super().add_startup(startup)

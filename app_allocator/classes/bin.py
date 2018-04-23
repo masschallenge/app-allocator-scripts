@@ -1,4 +1,4 @@
-from classes.assignments import has_been_assigned
+from app_allocator.classes.assignments import has_been_assigned
 
 
 BIN_NO_WEIGHT = 0
