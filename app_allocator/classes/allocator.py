@@ -58,5 +58,3 @@ class Allocator(object):
         if not judge.startups:
             judge.mark_as_done()
 
-    def assess(self):
-        self.heuristic.assess()

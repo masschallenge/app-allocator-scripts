@@ -1,12 +1,14 @@
-from classes.bin import (
+from app_allocator.classes.bin import (
     BIN_LOW_WEIGHT,
     Bin,
 )
 
 
 class SatisfiedBin(Bin):
+    name_string = "Satisfied Bin"
+    
     def __str__(self):
-        return "Satisfied Bin"
+        return self.name_string
 
     def update_startup(self, startup, keep=False):
         super().update_startup(startup, True)
@@ -16,6 +18,3 @@ class SatisfiedBin(Bin):
 
     def adjusted_weight(self, judge):
         return self.weight(judge)/float(self.capacity)
-
-    def status(self):
-        print("success,{bin},Always statisfied,".format(bin=self))

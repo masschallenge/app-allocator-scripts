@@ -78,10 +78,6 @@ class FeatureBins(object):
             self.update_bins(startup, judge, True)
         return startup
 
-    def assess(self):
-        for bin in self.bins:
-            bin.status()
-
     def update_bins(self, startup, judge, keep):
         for bin in self.bins:
             if bin.weight(judge):
