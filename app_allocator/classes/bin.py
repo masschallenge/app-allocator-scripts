@@ -8,12 +8,13 @@ BIN_HIGH_WEIGHT = 100
 
 
 class Bin(object):
+    name_string = "Generic Bin"
     def __init__(self, weight=BIN_DEFAULT_WEIGHT):
         self._weight = weight
         self.queue = []
 
     def __str__(self):
-        return "Generic Bin"
+        return self.name_string
 
     def add_startup(self, startup):
         result = self.match(startup)
