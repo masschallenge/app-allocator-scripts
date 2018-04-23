@@ -108,6 +108,9 @@ class OrderedQueues(object):
                 Event(action="fail",
                       subject=queue,
                       description="{} item(s) left".format(remaining))
+            else:
+                Event(action="complete",
+                      subject=queue)
 
 
 def calc_option_counts(field, option_counts, judge):
