@@ -1,4 +1,4 @@
-from app_allocator_scripts.classes.property import (
+from app_allocator.classes.property import (
     Property,
     property_value,
 )

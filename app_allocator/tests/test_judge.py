@@ -1,8 +1,8 @@
 import mock
 from random import random
-from app_allocator_scripts.classes.judge import Judge
-from app_allocator_scripts.classes.event import Event
-from app_allocator_scripts.classes.startup import Startup
+from app_allocator.classes.judge import Judge
+from app_allocator.classes.event import Event
+from app_allocator.classes.startup import Startup
 
 def always_pass(*args, **kwargs):
     return True
@@ -29,7 +29,7 @@ class TestJudge(object):
         event_startups = [event.fields['object'] for event in events]
         assert all([startup in event_startups for startup in startups])
 
-    @mock.patch("app_allocator_scripts.classes.judge.Judge.passes", always_pass)
+    @mock.patch("app_allocator.classes.judge.Judge.passes", always_pass)
     def test_judge_passes_on_startups(self):
         judge = Judge()
         judge.startups = [Startup() for _ in range(10)]
