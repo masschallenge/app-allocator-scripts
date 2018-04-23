@@ -1,6 +1,7 @@
 from app_allocator_scripts.classes.judge import Judge
 from app_allocator_scripts.classes.event import Event
 
+
 class TestJudge(object):
     def test_judge_mark_as_done_creates_event(self):
         judge = Judge()
