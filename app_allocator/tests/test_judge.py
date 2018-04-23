@@ -1,5 +1,5 @@
-from app_allocator_scripts.classes.judge import Judge
-from app_allocator_scripts.classes.event import Event
+from app_allocator.classes.judge import Judge
+from app_allocator.classes.event import Event
 
 
 class TestJudge(object):
