@@ -1,7 +1,7 @@
 from random import random
-from classes.entity import Entity
-from classes.property import Property
-from classes.event import Event
+from app_allocator.classes.entity import Entity
+from app_allocator.classes.property import Property
+from app_allocator.classes.event import Event
 
 CHANCE_OF_PASS = 0.04
 

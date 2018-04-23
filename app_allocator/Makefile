@@ -16,3 +16,11 @@ help:
 
 code-check:
 	@flake8 *.py */*.py
+
+test:
+	@pytest
+
+
+coverage:
+	@pytest --cov --cov-report=term --cov-report=html --cov-config .coveragerc
+
