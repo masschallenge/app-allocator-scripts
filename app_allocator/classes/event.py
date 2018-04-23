@@ -22,6 +22,7 @@ class Event(object):
 
     def update(self, **kwargs):
         self.fields.update(kwargs)
+        self.update_headers(kwargs.keys())
 
     @classmethod
     def update_headers(cls, field_names):
