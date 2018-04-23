@@ -1,4 +1,4 @@
-from classes.property import property_value
+from app_allocator_scripts.classes.property import property_value
 
 CSV_COLUMNS = ["type",
                "name",
