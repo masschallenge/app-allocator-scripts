@@ -1,4 +1,4 @@
-from classes.bin import (
+from app_allocator.classes.bin import (
     BIN_LOW_WEIGHT,
     Bin,
 )

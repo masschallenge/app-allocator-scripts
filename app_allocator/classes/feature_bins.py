@@ -1,16 +1,16 @@
-from classes.bin import (
+from app_allocator.classes.bin import (
     BIN_DEFAULT_WEIGHT,
     BIN_NO_WEIGHT,
 )
-from classes.event import Event
-from classes.female_bin import FemaleBin
-from classes.home_program_bin import HomeProgramBin
-from classes.industry_bin import IndustryBin
-from classes.property import program
-from classes.property import industry
-from classes.reads_bin import ReadsBin
-from classes.role_bin import RoleBin
-from classes.satisfied_bin import SatisfiedBin
+from app_allocator.classes.event import Event
+from app_allocator.classes.female_bin import FemaleBin
+from app_allocator.classes.home_program_bin import HomeProgramBin
+from app_allocator.classes.industry_bin import IndustryBin
+from app_allocator.classes.property import program
+from app_allocator.classes.property import industry
+from app_allocator.classes.reads_bin import ReadsBin
+from app_allocator.classes.role_bin import RoleBin
+from app_allocator.classes.satisfied_bin import SatisfiedBin
 
 FEMALE_WEIGHT = 2
 ROLE_WEIGHT = 3

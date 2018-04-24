@@ -1,8 +1,5 @@
-from classes.allocation_analyzer import quick_setup
-from sys import (
-    argv,
-    stdout,
-)
+from app_allocator.classes.allocation_analyzer import quick_setup
+from sys import argv
 
 
 if len(argv) > 1:

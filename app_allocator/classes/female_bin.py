@@ -1,4 +1,4 @@
-from classes.bin import Bin
+from app_allocator.classes.bin import Bin
 
 
 class FemaleBin(Bin):
