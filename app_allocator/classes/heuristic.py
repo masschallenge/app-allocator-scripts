@@ -1,5 +1,5 @@
-from classes.feature_bins import FeatureBins
-from classes.random_selection import RandomSelection
+from app_allocator.classes.feature_bins import FeatureBins
+from app_allocator.classes.random_selection import RandomSelection
 
 HEURISTICS = [RandomSelection, FeatureBins]
 

@@ -1,5 +1,5 @@
-from classes.startup import Startup
-from classes.judge import Judge
+from app_allocator.classes.startup import Startup
+from app_allocator.classes.judge import Judge
 
 
 class Generator(object):

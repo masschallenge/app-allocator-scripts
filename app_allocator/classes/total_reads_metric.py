@@ -1,4 +1,4 @@
-from classes.metric import Metric
+from app_allocator.classes.metric import Metric
 
 
 class TotalReadsMetric(Metric):
