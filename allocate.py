@@ -7,8 +7,8 @@
 # script.
 import sys
 
-from classes.allocator import Allocator
-from classes.event import Event
+from app_allocator.classes.allocator import Allocator
+from app_allocator.classes.event import Event
 
 
 filename = None

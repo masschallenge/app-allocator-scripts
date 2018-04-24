@@ -4,7 +4,9 @@ targets = \
 target_help = \
   'help - Prints this help message.' \
   ' ' \
-  'code-check - Runs pycodestyle on all files in the repo'
+  'code-check - Runs pycodestyle on all files in the repo' \
+  'test - runs tests' \
+  'coverage - runs tests and produces terminal and html reports'
 
 
 help:
@@ -13,14 +15,11 @@ help:
 	    echo $$t; done
 	@echo
 
-
 code-check:
 	@flake8 *.py */*.py
 
 test:
 	@pytest
 
-
 coverage:
 	@pytest --cov --cov-report=term --cov-report=html --cov-config .coveragerc
-

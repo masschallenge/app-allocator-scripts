@@ -1,5 +1,5 @@
-from classes.entity import Entity
-from classes.property import (
+from app_allocator.classes.entity import Entity
+from app_allocator.classes.property import (
     industry,
     name,
     program,
