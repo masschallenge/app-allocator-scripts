@@ -1,4 +1,4 @@
-from classes.metric import Metric
+from app_allocator.classes.metric import Metric
 
 
 def judge_role(judge, application):

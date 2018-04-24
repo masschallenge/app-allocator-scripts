@@ -1,4 +1,4 @@
-from classes.allocation_analyzer import quick_setup
+from app_allocator.classes.allocation_analyzer import quick_setup
 from sys import argv
 
 

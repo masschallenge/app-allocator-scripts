@@ -1,5 +1,5 @@
-from classes.bin import BIN_DEFAULT_WEIGHT
-from classes.reads_bin import ReadsBin
+from app_allocator.classes.bin import BIN_DEFAULT_WEIGHT
+from app_allocator.classes.reads_bin import ReadsBin
 
 
 class RoleBin(ReadsBin):

@@ -3,13 +3,13 @@ from collections import (
     defaultdict,
     namedtuple,
 )
-from classes.judge import Judge
-from classes.startup import Startup
-from classes.gender_distribution_metric import GenderDistributionMetric
-from classes.judge_role_distribution_metric import JudgeRoleDistributionMetric
-from classes.program_match_metric import ProgramMatchMetric
-from classes.industry_match_metric import IndustryMatchMetric
-from classes.total_reads_metric import TotalReadsMetric
+from app_allocator.classes.judge import Judge
+from app_allocator.classes.startup import Startup
+from app_allocator.classes.gender_distribution_metric import GenderDistributionMetric
+from app_allocator.classes.judge_role_distribution_metric import JudgeRoleDistributionMetric
+from app_allocator.classes.program_match_metric import ProgramMatchMetric
+from app_allocator.classes.industry_match_metric import IndustryMatchMetric
+from app_allocator.classes.total_reads_metric import TotalReadsMetric
 
 Assignment = namedtuple("Assignment", ["judge", "startup"])
 TOTAL_READS_TARGET = 5
