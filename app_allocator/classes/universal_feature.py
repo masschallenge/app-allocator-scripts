@@ -1,4 +1,4 @@
-from classes.feature import Feature
+from app_allocator.classes.feature import Feature
 
 
 class UniversalFeature(Feature):

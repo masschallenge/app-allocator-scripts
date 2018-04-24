@@ -1,5 +1,5 @@
-from classes.feature import Feature
-from classes.option_spec import OptionSpec
+from app_allocator.classes.feature import Feature
+from app_allocator.classes.option_spec import OptionSpec
 
 
 class SpecificFeature(Feature):

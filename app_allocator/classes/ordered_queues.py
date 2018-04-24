@@ -1,12 +1,12 @@
 from collections import OrderedDict
-from classes.event import Event
-from classes.option_spec import OptionSpec
-from classes.queue import (
+from app_allocator.classes.event import Event
+from app_allocator.classes.option_spec import OptionSpec
+from app_allocator.classes.queue import (
     Queue,
     extended_queue,
 )
-from classes.specific_feature import SpecificFeature
-from classes.universal_feature import UniversalFeature
+from app_allocator.classes.specific_feature import SpecificFeature
+from app_allocator.classes.universal_feature import UniversalFeature
 
 
 SPECIFIC_QUEUE = "specific"
