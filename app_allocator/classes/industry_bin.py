@@ -6,6 +6,7 @@ from app_allocator.classes.bin import (
 
 class IndustryBin(Bin):
     name_format = "{} Industry Bin"
+
     def __init__(self, value, weight=BIN_DEFAULT_WEIGHT):
         super().__init__(weight)
         self.industry = value

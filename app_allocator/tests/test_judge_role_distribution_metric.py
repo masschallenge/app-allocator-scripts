@@ -5,6 +5,7 @@ from app_allocator.classes.startup import Startup
 INDUSTRY = "Stargazing"
 TARGET = 3
 
+
 class TestIndustryMatchMetric(object):
     def test_condition(self):
         metric = IndustryMatchMetric(TARGET)
@@ -12,5 +13,3 @@ class TestIndustryMatchMetric(object):
         startup = Startup()
         startup.properties['industry'] = judge['industry']
         assert metric.condition(judge, startup)
-
-        

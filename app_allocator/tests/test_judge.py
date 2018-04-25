@@ -4,8 +4,10 @@ from app_allocator.classes.judge import Judge
 from app_allocator.classes.event import Event
 from app_allocator.classes.startup import Startup
 
+
 def always_pass(*args, **kwargs):
     return True
+
 
 class TestJudge(object):
     def test_judge_mark_as_done_creates_event(self):
@@ -35,15 +37,15 @@ class TestJudge(object):
         judge.startups = [Startup() for _ in range(10)]
         judge.complete_startups()
         actions = [event.fields['action'] for event in Event.all_events[-10:]]
-        assert all([action=='pass' for action in actions])
-        
+        assert all([action == 'pass' for action in actions])
+
     def test_needs_another_startup_returns_true_when_startup_needed(self):
         judge = Judge()
         judge.startups = [Startup() for _ in range(Judge.MAX_PANEL_SIZE - 1)]
         judge.remaining = 1
         assert judge.needs_another_startup()
 
-    def test_needs_another_startup_returns_false_when_judge_has_no_capacity(self):
+    def test_needs_another_startup_false_when_judge_has_no_capacity(self):
         judge = Judge()
         judge.startups = [Startup() for _ in range(Judge.MAX_PANEL_SIZE - 1)]
         judge.remaining = 0
@@ -64,4 +66,3 @@ class TestJudge(object):
         assert Event.ticks == prior_ticks + 1
         assert event.fields['object'] == startup
         assert event.fields['action'] == "assigned"
-    

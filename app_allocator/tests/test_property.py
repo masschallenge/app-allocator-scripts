@@ -9,4 +9,3 @@ class TestProperty(object):
         prop = Property("color")
         data = {'color': "Blue"}
         assert property_value(prop, data) == "Blue"
-    

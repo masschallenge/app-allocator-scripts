@@ -1,6 +1,6 @@
 class LinearSelection(object):
     'Simple and predictable heuristic for testing'
-    
+
     name = "linear"
 
     def setup(self, judges, startups):

@@ -1,6 +1,5 @@
 from app_allocator.classes.assignments import has_been_assigned
 
-
 BIN_NO_WEIGHT = 0
 BIN_LOW_WEIGHT = 0.5
 BIN_DEFAULT_WEIGHT = 1
@@ -9,6 +8,7 @@ BIN_HIGH_WEIGHT = 100
 
 class Bin(object):
     name_string = "Generic Bin"
+
     def __init__(self, weight=BIN_DEFAULT_WEIGHT):
         self._weight = weight
         self.queue = []

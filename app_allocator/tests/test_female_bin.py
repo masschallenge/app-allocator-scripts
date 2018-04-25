@@ -7,6 +7,7 @@ from app_allocator.classes.startup import Startup
 
 WEIGHT = 23
 
+
 class TestFemaleBin(object):
     def test_weight(self):
         bin = FemaleBin(WEIGHT)

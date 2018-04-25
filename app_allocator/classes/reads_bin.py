@@ -5,6 +5,7 @@ from app_allocator.classes.bin import (
 
 READS_BIN_STRING = "Read Bin"
 
+
 class ReadsBin(Bin):
     def __init__(self, weight=BIN_DEFAULT_WEIGHT, count=1):
         super().__init__(weight=weight)

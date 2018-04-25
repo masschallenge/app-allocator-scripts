@@ -3,6 +3,7 @@ from app_allocator.tests.utils import assert_only_these_fields_in_csv_row
 
 event_fields = {'a': 'bcdef', 'b': 'cdefghi'}
 
+
 class TestEvent(object):
     def test_event_to_csv(self):
         event = Event(**event_fields)

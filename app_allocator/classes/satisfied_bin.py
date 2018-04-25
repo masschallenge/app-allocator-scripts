@@ -6,7 +6,7 @@ from app_allocator.classes.bin import (
 
 class SatisfiedBin(Bin):
     name_string = "Satisfied Bin"
-    
+
     def __str__(self):
         return self.name_string
 

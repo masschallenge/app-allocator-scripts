@@ -7,13 +7,14 @@ from app_allocator.tests.utils import assert_only_these_fields_in_csv_row
 
 test_property = Property('color', [('blue', 1.0)])
 
+
 class TestEntity(object):
     def test_str_name_exists(self):
         entity = Entity()
         name = "Joe Smith"
         entity.properties['name'] = name
         assert str(entity) == name
- 
+
     def test_str_no_name_exists(self):
         entity = Entity()
         assert str(entity) == "%s %d" % (entity.type, entity.id())
@@ -21,7 +22,7 @@ class TestEntity(object):
     def test_csv_no_values_set(self):
         entity = Entity()
         fields = [str(entity),
-                  entity.type,]
+                  entity.type]
         assert_only_these_fields_in_csv_row(fields, entity.csv())
 
     def test_getitem(self):

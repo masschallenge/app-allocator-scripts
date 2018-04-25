@@ -7,6 +7,7 @@ from app_allocator.classes.startup import Startup
 
 WEIGHT = 23
 
+
 class TestReadsBin(object):
     def test_str(self):
         bin = ReadsBin(WEIGHT)
@@ -31,4 +32,3 @@ class TestReadsBin(object):
         bin.add_startup(startup)
         bin.update_startup(startup)
         assert startup in bin.queue
-        

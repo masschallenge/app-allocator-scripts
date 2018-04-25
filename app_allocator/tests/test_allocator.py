@@ -8,8 +8,9 @@ from app_allocator.tests.utils import (
     startup_data,
 )
 
+
 class TestAllocator(object):
-    
+
     @mock.patch('app_allocator.classes.allocator.Allocator._file',
                 simple_test_scenario_csv)
     def test_read_entities_creates_startups(self):
@@ -18,7 +19,7 @@ class TestAllocator(object):
         assert len(allocator.startups) == 1
         startup = allocator.startups[0]
         assert startup['name'] == startup_data.name
-        
+
     @mock.patch('app_allocator.classes.allocator.Allocator._file',
                 simple_test_scenario_csv)
     def test_read_entities_creates_judges(self):
@@ -32,11 +33,10 @@ class TestAllocator(object):
                 simple_test_scenario_csv)
     def test_allocator_setup_calls_heuristic_setup(self):
         allocator = Allocator("some_file.csv", "linear")
-        allocator.read_entities()        
+        allocator.read_entities()
         allocator.setup()
         assert allocator.heuristic.startups == allocator.startups
-        assert allocator.heuristic.judges == allocator.judges        
-
+        assert allocator.heuristic.judges == allocator.judges
 
     @mock.patch('app_allocator.classes.allocator.Allocator._file',
                 multiple_startup_scenario_csv)
@@ -47,8 +47,7 @@ class TestAllocator(object):
         judge = allocator.judges[0]
         allocator.assign_startups(judge)
         assert len(judge.startups) == 10
-       
- 
+
     @mock.patch('app_allocator.classes.allocator.Allocator._file',
                 no_startup_scenario_csv)
     def test_allocator_assign_startups_no_startups_available(self):
@@ -56,9 +55,9 @@ class TestAllocator(object):
         allocator.read_entities()
         allocator.setup()
         judge = allocator.judges[0]
-        allocator.assign_startups(judge)        
+        allocator.assign_startups(judge)
         assert len(judge.startups) == 0
-        
+
     @mock.patch('app_allocator.classes.allocator.Allocator._file',
                 multiple_startup_scenario_csv)
     def test_allocate_all_judges(self):
@@ -67,4 +66,3 @@ class TestAllocator(object):
         allocator.setup()
         allocator.allocate()
         assert len(allocator.judges) == 0
-        

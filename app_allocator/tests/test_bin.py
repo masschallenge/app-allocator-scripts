@@ -22,10 +22,10 @@ class TestBin(object):
     def test_update(self):
         bin = Bin()
         startup = Startup()
-        bin.add_startup(startup)        
+        bin.add_startup(startup)
         judge = Judge()
         bin.calc_capacity([judge])
-        prior_capacity = bin.capacity        
+        prior_capacity = bin.capacity
         bin.update(judge, startup, False)
         assert bin.capacity == prior_capacity - 1
 
@@ -49,12 +49,11 @@ class TestBin(object):
         bin.add_startup(startup)
         judge = Judge()
         assert bin.next_startup(judge) == startup
-        
-    def test_next_startup_already_reviewed(self): 
+
+    def test_next_startup_already_reviewed(self):
         bin = Bin()
         startup = Startup()
         bin.add_startup(startup)
         judge = Judge()
         assign(judge, startup)
-        assert bin.next_startup(judge) == None
-   
+        assert bin.next_startup(judge) is None
