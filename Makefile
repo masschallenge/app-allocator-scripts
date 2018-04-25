@@ -16,7 +16,7 @@ help:
 	@echo
 
 code-check:
-	@pycodestyle *.py */*.py
+	@pycodestyle *.py */*.py */*/*.py
 	@flake8 *.py */*.py
 
 test:
