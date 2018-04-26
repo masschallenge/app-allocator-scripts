@@ -13,7 +13,8 @@ def _allocator(filepath="some/file/path", heuristic="linear"):
         allocator = Allocator("some/file/path", heuristic)
         allocator.read_entities()
         return allocator
-    
+
+
 def set_up_allocator(filepath="some/file/path", heuristic="linear"):
     allocator = _allocator()
     allocator.setup()

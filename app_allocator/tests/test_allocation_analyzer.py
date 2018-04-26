@@ -11,6 +11,7 @@ from app_allocator.tests.utils import (
 def fake_open_csv_reader(input_file):
     return DictReader(input_file)
 
+
 def get_analyzer(scenario=None, allocations=None):
     analyzer = AllocationAnalyzer()
     if scenario:
@@ -18,6 +19,7 @@ def get_analyzer(scenario=None, allocations=None):
     if allocations:
         analyzer.process_allocations_from_csv(allocations)
     return analyzer
+
 
 class TestAllocationAnalyzer(object):
 
@@ -45,7 +47,7 @@ class TestAllocationAnalyzer(object):
            fake_open_csv_reader)
     def test_analyze_simple_allocation(self):
         analyzer = get_analyzer(scenario=simple_test_scenario_csv(),
-                                allocations=simple_allocation_csv())        
+                                allocations=simple_allocation_csv())
         startup = analyzer.assigned[0].startup
         read_counts = analyzer.analyze(analyzer.assigned)
         assert startup['name'] in read_counts.keys()
