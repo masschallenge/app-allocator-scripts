@@ -29,13 +29,14 @@ class OrderedQueues(object):
 
     def __init__(self):
         self.queues = []
+        self.field_queues = {}
 
     def setup(self, judges, startups):
         feature_options = OrderedDict([
                 (feature.field, feature.initial_options(judges, startups))
                 for feature in OrderedQueues.features])
         self.add_queues(feature_options)
-        self.queues.append(Queue(count=OrderedQueues.expected_reads))
+        # self.queues.append(Queue(count=OrderedQueues.expected_reads))
         self.add_startups(startups)
 
     def add_queues(self, slots):
@@ -46,13 +47,25 @@ class OrderedQueues(object):
 
     def add_queues_for_slot(self, field, slot):
         higher_queues = []
-        lower_queues = []
+        field_options = []
         for option in slot:
-            field_option = {field: option}
-            lower_queues.append(Queue(field_option))
+            field_options.append((field, option))
             for queue in self.queues:
-                higher_queues.append(extended_queue(queue, field_option))
-        self.queues = higher_queues + self.queues + lower_queues
+                higher_queues.append(extended_queue(queue, {field: option}))
+        self.queues = higher_queues + self.queues
+        self.add_field_option_queues(field_options)
+
+    def add_field_option_queues(self, field_options):
+        for field, option in field_options:
+            self.add_field_option_queue(field, option)
+
+    def add_field_option_queue(self, field, option):
+        queue = Queue(constraints={field: option})
+        self.queues.append(queue)
+        field_queues = self.field_queues.get(field, {})
+        field_queues[option] = queue
+        self.field_queues[field] = field_queues
+        return queue
 
     def add_startups(self, startups):
         # Note: This is O(|startups| * |self.queues|).  We could speed this
@@ -86,7 +99,20 @@ class OrderedQueues(object):
             new_option_counts = calc_option_counts(field, option_counts, judge)
             if new_option_counts:
                 new_needs[field] = new_option_counts
+                self.queue_for_need(startup, field, new_option_counts)
         OrderedQueues.startup_needs[startup] = new_needs
+
+    def queue_for_need(self, startup, field, new_option_counts):
+        for option, _ in new_option_counts:
+            queue = self.find_queue_for_field_option(field, option)
+            if startup not in queue.items:
+                queue.items.append(startup)
+
+    def find_queue_for_field_option(self, field, option):
+        queues_for_field = self.field_queues.get(field, {})
+        if option in queues_for_field:
+            return queues_for_field[option]
+        return self.add_field_option_queue(field, option)
 
     def initial_needs(self, startup):
         needs = {}
