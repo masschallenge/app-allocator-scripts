@@ -13,6 +13,11 @@ def _allocator(filepath="some/file/path", heuristic="linear"):
         allocator = Allocator("some/file/path", heuristic)
         allocator.read_entities()
         return allocator
+    
+def _set_up_allocator(filepath="some/file/path", heuristic="linear"):
+    allocator = _allocator()
+    allocator.setup()
+    return allocator
 
 
 class TestAllocator(object):
@@ -36,16 +41,14 @@ class TestAllocator(object):
     @mock.patch('app_allocator.classes.allocator.Allocator._file',
                 simple_test_scenario_csv)
     def test_allocator_setup_calls_heuristic_setup(self):
-        allocator = _allocator()
-        allocator.setup()
+        allocator = set_up_allocator()
         assert allocator.heuristic.startups == allocator.startups
         assert allocator.heuristic.judges == allocator.judges
 
     @mock.patch('app_allocator.classes.allocator.Allocator._file',
                 multiple_startup_scenario_csv)
     def test_allocator_assign_startups_startups_available(self):
-        allocator = _allocator()
-        allocator.setup()
+        allocator = set_up_allocator()
         judge = allocator.judges[0]
         allocator.assign_startups(judge)
         assert len(judge.startups) == 10
@@ -53,8 +56,7 @@ class TestAllocator(object):
     @mock.patch('app_allocator.classes.allocator.Allocator._file',
                 no_startup_scenario_csv)
     def test_allocator_assign_startups_no_startups_available(self):
-        allocator = _allocator()
-        allocator.setup()
+        allocator = set_up_allocator()
         judge = allocator.judges[0]
         allocator.assign_startups(judge)
         assert len(judge.startups) == 0
@@ -62,7 +64,7 @@ class TestAllocator(object):
     @mock.patch('app_allocator.classes.allocator.Allocator._file',
                 multiple_startup_scenario_csv)
     def test_allocate_all_judges(self):
-        allocator = _allocator()
+        allocator = set_up_allocator()
         allocator.setup()
         allocator.allocate()
         assert len(allocator.judges) == 0
