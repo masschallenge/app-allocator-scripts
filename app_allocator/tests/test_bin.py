@@ -17,7 +17,7 @@ class TestBin(object):
 
     def test_str(self):
         bin = Bin()
-        assert str(bin) == Bin.name_string
+        assert str(bin) == "Generic Bin"
 
     def test_update(self):
         bin = Bin()

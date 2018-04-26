@@ -7,14 +7,19 @@ BIN_HIGH_WEIGHT = 100
 
 
 class Bin(object):
-    name_string = "Generic Bin"
+    name_format = "{} Bin"
 
-    def __init__(self, weight=BIN_DEFAULT_WEIGHT):
+    def __init__(self,
+                 property_value="generic",
+                 property_name="",
+                 weight=BIN_DEFAULT_WEIGHT):
+        self.property_value = property_value
+        self.property_name = property_name
         self._weight = weight
         self.queue = []
 
     def __str__(self):
-        return self.name_string
+        return self.name_format.format(self.property_value).title()
 
     def add_startup(self, startup):
         result = self.match(startup)
@@ -29,6 +34,9 @@ class Bin(object):
                 self.capacity += int(judge.properties["commitment"])
 
     def match(self, entity):
+        if self.property_name:
+            return (entity.properties.get(self.property_name) ==
+                    self.property_value)
         return True
 
     def update(self, judge, startup, keep):

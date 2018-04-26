@@ -3,7 +3,7 @@ from app_allocator.classes.bin import (
     BIN_NO_WEIGHT,
 )
 from app_allocator.classes.event import Event
-from app_allocator.classes.female_bin import FemaleBin
+from app_allocator.classes.gender_bin import GenderBin
 from app_allocator.classes.home_program_bin import HomeProgramBin
 from app_allocator.classes.industry_bin import IndustryBin
 from app_allocator.classes.property import program
@@ -46,7 +46,8 @@ class FeatureBins(object):
         self.bins = (
             [ReadsBin(),
              SatisfiedBin(),
-             FemaleBin(weight=FEMALE_WEIGHT*BIN_DEFAULT_WEIGHT),
+             GenderBin(value="female",
+                       weight=FEMALE_WEIGHT*BIN_DEFAULT_WEIGHT),
              RoleBin(value="Executive",
                      weight=ROLE_WEIGHT*BIN_DEFAULT_WEIGHT,
                      count=2),

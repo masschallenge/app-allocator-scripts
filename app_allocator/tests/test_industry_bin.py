@@ -8,7 +8,6 @@ OTHER_INDUSTRY = "Ceramics"
 
 class TestIndustryBin(object):
     def test_str(self):
-
         bin = IndustryBin(INDUSTRY, WEIGHT)
         assert str(bin) == IndustryBin.name_format.format(INDUSTRY)
 

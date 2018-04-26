@@ -3,18 +3,17 @@ from app_allocator.classes.bin import (
     Bin,
 )
 
-READS_BIN_STRING = "Read Bin"
-
-
 class ReadsBin(Bin):
     def __init__(self, weight=BIN_DEFAULT_WEIGHT, count=1):
-        super().__init__(weight=weight)
+        super().__init__(property_name="reads",
+                         property_value="",
+                         weight=weight)
         self.count = count
         self.counts = {}
 
-    def __str__(self):
-        return READS_BIN_STRING
-
+    def match(self, judge):
+        return True
+    
     def add_startup(self, startup):
         matches = super().add_startup(startup)
         if matches:

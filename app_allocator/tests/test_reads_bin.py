@@ -1,7 +1,4 @@
-from app_allocator.classes.reads_bin import (
-    READS_BIN_STRING,
-    ReadsBin,
-)
+from app_allocator.classes.reads_bin import ReadsBin
 from app_allocator.classes.judge import Judge
 from app_allocator.classes.startup import Startup
 
@@ -9,9 +6,6 @@ WEIGHT = 23
 
 
 class TestReadsBin(object):
-    def test_str(self):
-        bin = ReadsBin(WEIGHT)
-        assert str(bin) == READS_BIN_STRING
 
     def test_add_startup(self):
         bin = ReadsBin(WEIGHT)
