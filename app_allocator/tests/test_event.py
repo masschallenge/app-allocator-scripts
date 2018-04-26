@@ -13,12 +13,12 @@ class TestEvent(object):
     def test_update_event_existing_field(self):
         event = Event(**EVENT_FIELDS)
         event.update(**{'b': VALUE})
-        assert event.fields['b'] == value
+        assert event.fields['b'] == VALUE
 
     def test_update_event_new_field(self):
         event = Event(**EVENT_FIELDS)
         event.update(**{'c': VALUE})
-        assert event.fields['c'] == value
+        assert event.fields['c'] == VALUE
 
     def test_header_row(self):
         event = Event(**EVENT_FIELDS)

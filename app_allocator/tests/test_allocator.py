@@ -14,7 +14,7 @@ def _allocator(filepath="some/file/path", heuristic="linear"):
         allocator.read_entities()
         return allocator
     
-def _set_up_allocator(filepath="some/file/path", heuristic="linear"):
+def set_up_allocator(filepath="some/file/path", heuristic="linear"):
     allocator = _allocator()
     allocator.setup()
     return allocator
