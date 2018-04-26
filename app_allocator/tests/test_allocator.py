@@ -65,6 +65,5 @@ class TestAllocator(object):
                 multiple_startup_scenario_csv)
     def test_allocate_all_judges(self):
         allocator = set_up_allocator()
-        allocator.setup()
         allocator.allocate()
         assert len(allocator.judges) == 0
