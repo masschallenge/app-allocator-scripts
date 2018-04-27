@@ -5,8 +5,8 @@ from app_allocator.tests.utils import (
     simple_test_scenario_csv,
     no_startup_scenario_csv,
     multiple_startup_scenario_csv,
-    judge_data,
-    startup_data,
+    EXAMPLE_JUDGE_DATA,
+    EXAMPLE_STARTUP_DATA,
 )
 
 
@@ -30,7 +30,7 @@ class TestAllocator(object):
         allocator = _allocator()
         assert len(allocator.startups) == 1
         startup = allocator.startups[0]
-        assert startup['name'] == startup_data.name
+        assert startup['name'] == EXAMPLE_STARTUP_DATA.name
 
     @mock.patch('app_allocator.classes.allocator.Allocator._file',
                 simple_test_scenario_csv)
@@ -38,7 +38,7 @@ class TestAllocator(object):
         allocator = _allocator()
         assert len(allocator.judges) == 1
         judge = allocator.judges[0]
-        assert judge['name'] == judge_data.name
+        assert judge['name'] == EXAMPLE_JUDGE_DATA.name
 
     @mock.patch('app_allocator.classes.allocator.Allocator._file',
                 simple_test_scenario_csv)

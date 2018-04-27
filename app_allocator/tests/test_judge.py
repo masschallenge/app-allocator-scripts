@@ -25,7 +25,7 @@ class TestJudge(object):
     def test_complete_startups_creates_events_for_all_startups(self):
         judge = Judge()
         startups = [Startup() for _ in range(10)]
-        judge.startups = startups[:]
+        judge.startups = list(startups)
         events = judge.complete_startups()
         event_startups = [event.fields['object'] for event in events]
         assert all([startup in event_startups for startup in startups])

@@ -2,16 +2,7 @@ from collections import namedtuple
 from io import StringIO
 
 
-def assert_only_these_fields_in_csv_row(fields, csv_row):
-    csv_fields = set(csv_row.split(","))
-    fields = [str(field) for field in fields]
-    csv_fields.discard("")
-    assert len(csv_fields) == len(fields)
-    for field in fields:
-        assert field in csv_fields
-
-
-scenario_headers = ['type',
+SCENARIO_HEADERS = ['type',
                     'name',
                     'industry',
                     'program',
@@ -20,61 +11,70 @@ scenario_headers = ['type',
                     'commitment',
                     'completed']
 
-header_row = ','.join(scenario_headers)
+HEADER_ROW = ','.join(SCENARIO_HEADERS)
 
-EntityData = namedtuple("EntityData", scenario_headers)
+EntityData = namedtuple("EntityData", SCENARIO_HEADERS)
 
-judge_data = EntityData('judge',
-                        '27-user@example.com',
-                        'High Tech',
-                        'Boston',
-                        'Executive',
-                        'female',
-                        '10',
-                        '10')
-startup_data = EntityData('startup',
-                          'Organization 4676',
-                          'General',
-                          'Boston',
-                          '',
-                          '',
-                          '',
-                          '')
+EXAMPLE_JUDGE_DATA = EntityData('judge',
+                                '27-user@example.com',
+                                'High Tech',
+                                'Boston',
+                                'Executive',
+                                'female',
+                                '10',
+                                '10')
+EXAMPLE_STARTUP_DATA = EntityData('startup',
+                                  'Organization 4676',
+                                  'General',
+                                  'Boston',
+                                  '',
+                                  '',
+                                  '',
+                                  '')
 
 
-def pseudofile(header_row=header_row, data_rows=[]):
+def pseudofile(header_row=HEADER_ROW, data_rows=[]):
     csv_rows = [','.join(row) for row in data_rows]
     content = "\n".join([header_row] + csv_rows)
     return StringIO(content)
 
 
 def simple_test_scenario_csv(*args):
-    return pseudofile(data_rows=[judge_data, startup_data])
+    return pseudofile(data_rows=[EXAMPLE_JUDGE_DATA, EXAMPLE_STARTUP_DATA])
 
 
-ten_startups = [EntityData('startup', 'Startup %d' % i, 'General', 'Boston',
+TEN_STARTUPS = [EntityData('startup', 'Startup %d' % i, 'General', 'Boston',
                            '', '', '', '')
                 for i in range(10)]
 
 
-def multiple_startup_scenario_csv(*args):
-    return pseudofile(data_rows=[judge_data] + ten_startups)
+ALLOCATION_HEADERS = ['time', 'action', 'subject', 'object']
+ALLOCATION_HEADER_ROW = ','.join(ALLOCATION_HEADERS)
+Allocation = namedtuple('Allocation', ALLOCATION_HEADERS)
 
-
-def no_startup_scenario_csv(*args):
-    return pseudofile(data_rows=[judge_data])
-
-
-allocation_headers = ['time', 'action', 'subject', 'object']
-allocation_header_row = ','.join(allocation_headers)
-Allocation = namedtuple('Allocation', allocation_headers)
-
-simple_allocation_data = ('0',
+SIMPLE_ALLOCATION_DATA = ('0',
                           'assigned',
                           '27-user@example.com',
                           'Organization 4676')
 
 
 def simple_allocation_csv(*args):
-    return pseudofile(header_row=allocation_header_row,
-                      data_rows=[simple_allocation_data])
+    return pseudofile(header_row=ALLOCATION_HEADER_ROW,
+                      data_rows=[SIMPLE_ALLOCATION_DATA])
+
+
+def multiple_startup_scenario_csv(*args):
+    return pseudofile(data_rows=[EXAMPLE_JUDGE_DATA] + TEN_STARTUPS)
+
+
+def no_startup_scenario_csv(*args):
+    return pseudofile(data_rows=[EXAMPLE_JUDGE_DATA])
+
+
+def assert_only_these_fields_in_csv_row(fields, csv_row):
+    csv_fields = set(csv_row.split(","))
+    fields = [str(field) for field in fields]
+    csv_fields.discard("")
+    assert len(csv_fields) == len(fields)
+    for field in fields:
+        assert field in csv_fields
