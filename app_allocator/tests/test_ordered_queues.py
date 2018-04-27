@@ -79,7 +79,7 @@ class TestOrderedQueues(object):
     def test_no_application(self):
         allocator = _allocator(applications=[])
         judge = allocator.judges[0]
-        assert allocator.heuristic.find_one_application(judge) == None
+        assert allocator.heuristic.find_one_application(judge) is None
 
     def test_assess_failure(self):
         event_count = len(Event.all_events)
