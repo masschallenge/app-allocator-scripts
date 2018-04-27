@@ -9,6 +9,11 @@ target_help = \
   'coverage - runs tests and produces terminal and html reports'
 
 
+VENV = venv
+ACTIVATE_SCRIPT = $(VENV)/bin/activate
+ACTIVATE = export PYTHONPATH=.; . $(ACTIVATE_SCRIPT)
+
+
 help:
 	@echo "Valid targets are:\n"
 	@for t in $(target_help) ; do \
@@ -19,8 +24,16 @@ code-check:
 	@pycodestyle *.py */*.py */*/*.py
 	@flake8 *.py */*.py
 
-test:
-	@pytest
+$(VENV): Makefile requirements.txt
+	@pip install virtualenv
+	@rm -rf $(VENV)
+	@virtualenv -p `which python3` $@
+	@touch $(ACTIVATE_SCRIPT)
+	@$(ACTIVATE) ; \
+	DJANGO_VERSION=$(DJANGO_VERSION) pip install -r requirements.txt
 
-coverage:
-	@pytest --cov --cov-report=term --cov-report=html --cov-config .coveragerc
+test: $(VENV)
+	@$(ACTIVATE) ; pytest
+
+coverage: $(VENV)
+	@$(ACTIVATE) ; pytest --cov=app_allocator --cov-report=term --cov-report=html
