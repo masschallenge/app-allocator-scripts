@@ -55,12 +55,12 @@ class TestAllocator(object):
     @mock.patch('app_allocator.classes.allocator.Allocator._file',
                 multiple_startup_scenario_csv)
     def test_allocator_assign_startups_startups_available(self):
-        allocator_assign_startups_helper(10)
+        self.allocator_assign_startups_helper(10)
 
     @mock.patch('app_allocator.classes.allocator.Allocator._file',
                 no_startup_scenario_csv)
     def test_allocator_assign_startups_no_startups_available(self):
-        allocator_assign_startups_helper(0)
+        self.allocator_assign_startups_helper(0)
 
     @mock.patch('app_allocator.classes.allocator.Allocator._file',
                 multiple_startup_scenario_csv)

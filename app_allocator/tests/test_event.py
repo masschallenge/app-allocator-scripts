@@ -17,10 +17,10 @@ class TestEvent(object):
         assert event.fields[field] == VALUE
 
     def test_update_event_existing_field(self):
-        update_event_helper('b')
+        self.update_event_helper('b')
 
     def test_update_event_new_field(self):
-        update_event_helper('c')
+        self.update_event_helper('c')
 
     def test_header_row(self):
         event = Event(**EVENT_FIELDS)
