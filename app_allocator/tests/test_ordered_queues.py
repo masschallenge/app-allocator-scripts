@@ -82,15 +82,15 @@ class TestOrderedQueues(object):
         assert allocator.heuristic.find_one_application(judge) is None
 
     def test_assess_failure(self):
-        event_count = len(Event.all_events)
-        _allocator().heuristic.assess()
-        assert event_count + 1 == len(Event.all_events)
-        assert any([event.fields["action"] == "fail"
-                    for event in Event.all_events])
+        assess_helper(_allocator(), "fail")
 
     def test_assess_success(self):
+        assess_helper(_finished_allocator(), "complete")
+
+    def assess_helper(self, allocator, expected):
         event_count = len(Event.all_events)
-        _finished_allocator().heuristic.assess()
+        allocator.heuristic.assess()
         assert event_count + 1 == len(Event.all_events)
-        assert any([event.fields["action"] == "complete"
+        assert any([event.fields["action"] == expected
                     for event in Event.all_events])
+        
