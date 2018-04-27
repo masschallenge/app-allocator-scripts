@@ -36,4 +36,4 @@ test: $(VENV)
 	@$(ACTIVATE) ; pytest
 
 coverage: $(VENV)
-	@$(ACTIVATE) ; pytest --cov --cov-report=term --cov-report=html --cov-config .coveragerc
+	@$(ACTIVATE) ; pytest --cov=app_allocator --cov-report=term --cov-report=html
