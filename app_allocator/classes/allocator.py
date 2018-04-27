@@ -59,4 +59,4 @@ class Allocator(object):
             judge.mark_as_done()
 
     def assess(self):
-        return self.heuristic.assess()
+        self.heuristic.assess()
