@@ -31,7 +31,7 @@ class SpecificFeature(Feature):
     def _infer_option_specs(self, judges, startups):
         judge_options = self._options_with_counts(judges)
         startup_options = self._options_with_counts(startups)
-        return _sort_options(judge_options, startup_options)
+        return _shared_options_by_scarcity(judge_options, startup_options)
 
     def _options_with_counts(self, entities):
         options = {}
@@ -47,8 +47,9 @@ class SpecificFeature(Feature):
 # options with counts.  E.g., {"Israel": 100, "Boston": 200}
 # The result is the set of shared options ordered by the ratio
 # of the count in options1 divided by the count in options2.
-def _sort_options(options1, options2):
-    options = set(options1.keys()).intersection(options2.keys())
+def _shared_options_by_scarcity(options1, options2):
+    shared_options = set(options1.keys()).intersection(options2.keys())
     weighted_options = [(options1[option]/float(options2[option]),
-                         option) for option in options]
-    return [OptionSpec(option) for _, option in sorted(weighted_options)]
+                         option) for option in shared_options]
+    return [OptionSpec(option) for _, option in
+            sorted(weighted_options, key=lambda pair: pair[0])]
