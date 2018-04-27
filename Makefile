@@ -13,6 +13,8 @@ VENV = venv
 ACTIVATE_SCRIPT = $(VENV)/bin/activate
 ACTIVATE = export PYTHONPATH=.; . $(ACTIVATE_SCRIPT)
 
+PROJECT_PYFILES = *.py app_allocator/*.py app_allocator/*/*.py
+
 
 help:
 	@echo "Valid targets are:\n"
@@ -21,8 +23,7 @@ help:
 	@echo
 
 code-check:
-	@pycodestyle *.py */*.py */*/*.py
-	@flake8 *.py */*.py
+	@flake8 $(PROJECT_PYFILES)
 
 $(VENV): Makefile requirements.txt
 	@pip install virtualenv

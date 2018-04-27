@@ -1,6 +1,5 @@
 from csv import DictReader
 from mock import patch
-from io import StringIO
 from app_allocator.classes.allocation_analyzer import AllocationAnalyzer
 from app_allocator.tests.utils import (
     simple_test_scenario_csv,

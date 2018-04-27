@@ -1,5 +1,4 @@
 import mock
-from random import random
 from app_allocator.classes.judge import Judge
 from app_allocator.classes.event import Event
 from app_allocator.classes.startup import Startup

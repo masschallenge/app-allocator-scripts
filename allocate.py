@@ -26,4 +26,4 @@ allocator.setup()
 allocator.allocate()
 allocator.assess()
 
-print (Event.all_events_as_csv())
+print(Event.all_events_as_csv())

@@ -1,8 +1,8 @@
-import mock
 from app_allocator.classes.event import Event
 from app_allocator.classes.judge import Judge
 from app_allocator.classes.random_selection import RandomSelection
 from app_allocator.classes.startup import Startup
+
 
 def _random_selection():
     result = RandomSelection()
