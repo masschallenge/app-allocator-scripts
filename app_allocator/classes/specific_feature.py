@@ -8,8 +8,8 @@ class SpecificFeature(Feature):
         super().__init__(field, option_specs)
         self.count = count
 
-    def option_states(self, startup):
-        option = startup.properties.get(self.field)
+    def option_states(self, application):
+        option = application.properties.get(self.field)
         if option is not None:
             if self.option_specs is None:
                 return [OptionState(option, self.count)]
@@ -23,15 +23,15 @@ class SpecificFeature(Feature):
                 return [OptionState(option, spec.count)]
         return []
 
-    def initial_options(self, judges, startups):
+    def initial_options(self, judges, applications):
         if self.option_specs is None:
-            self.option_specs = self._infer_option_specs(judges, startups)
+            self.option_specs = self._infer_option_specs(judges, applications)
         return [spec.option for spec in self.option_specs]
 
-    def _infer_option_specs(self, judges, startups):
+    def _infer_option_specs(self, judges, applications):
         judge_options = self._options_with_counts(judges)
-        startup_options = self._options_with_counts(startups)
-        return _shared_options_by_scarcity(judge_options, startup_options)
+        application_options = self._options_with_counts(applications)
+        return _shared_options_by_scarcity(judge_options, application_options)
 
     def _options_with_counts(self, entities):
         options = {}

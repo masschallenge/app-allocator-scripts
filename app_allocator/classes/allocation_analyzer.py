@@ -4,21 +4,21 @@ from collections import (
     namedtuple,
 )
 from app_allocator.classes.judge import Judge
-from app_allocator.classes.startup import Startup
+from app_allocator.classes.application import Application
 from app_allocator.classes.gender_distribution_metric import GenderDistributionMetric
 from app_allocator.classes.judge_role_distribution_metric import JudgeRoleDistributionMetric
 from app_allocator.classes.program_match_metric import ProgramMatchMetric
 from app_allocator.classes.industry_match_metric import IndustryMatchMetric
 from app_allocator.classes.total_reads_metric import TotalReadsMetric
 
-Assignment = namedtuple("Assignment", ["judge", "startup"])
+Assignment = namedtuple("Assignment", ["judge", "application"])
 TOTAL_READS_TARGET = 5
 
 
 class AllocationAnalyzer(object):
     def __init__(self):
         self.judges = {}
-        self.startups = {}
+        self.applications = {}
         self.assigned = []
         self.completed = []
         self.metrics = [ProgramMatchMetric(1),
@@ -39,9 +39,9 @@ class AllocationAnalyzer(object):
             if row['type'] == "judge":
                 judge = Judge(data=row)
                 self.judges[judge['name']] = judge
-            elif row['type'] == "startup":
-                startup = Startup(data=row)
-                self.startups[startup['name']] = startup
+            elif row['type'] == "application":
+                application = Application(data=row)
+                self.applications[application['name']] = application
             else:
                 print("Couldn't read row: %s" % ",".join(row))
 
@@ -49,16 +49,16 @@ class AllocationAnalyzer(object):
         reader = open_csv_reader(input_file)
         for row in reader:
             judge = self.judges.get(row['subject'])
-            startup = self.startups.get(row['object'])
+            application = self.applications.get(row['object'])
             if row['action'] == "assigned":
-                self.assigned.append(Assignment(judge, startup))
+                self.assigned.append(Assignment(judge, application))
 
             elif row['action'] == "finished":
-                self.completed.append(Assignment(judge, startup))
+                self.completed.append(Assignment(judge, application))
 
     def analyze(self, assignments):
-        read_counts = {startup['name']: defaultdict(int)
-                       for startup in self.startups.values()}
+        read_counts = {application['name']: defaultdict(int)
+                       for application in self.applications.values()}
         for assignment in assignments:
             for metric in self.metrics:
                 metric.evaluate(assignment, read_counts)
@@ -68,7 +68,7 @@ class AllocationAnalyzer(object):
     def summarize(self, read_counts):
         summary = defaultdict(int)
         maxes = defaultdict(int)
-        total_applications = len(self.startups)
+        total_applications = len(self.applications)
         total_judges = len(self.judges)
         for metric, count in list(summary.items()):
             summary['average %s' % metric] = count / total_applications

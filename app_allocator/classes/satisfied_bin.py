@@ -8,8 +8,8 @@ class SatisfiedBin(Bin):
     def __str__(self):
         return "Satisfied Bin"
 
-    def update_startup(self, startup, keep=False):
-        super().update_startup(startup, True)
+    def update_application(self, application, keep=False):
+        super().update_application(application, True)
 
     def weight(self, judge):
         return BIN_LOW_WEIGHT

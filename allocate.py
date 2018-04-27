@@ -1,4 +1,4 @@
-# Script for allocation a set of input judges to a set of input startups.
+# Script for allocation a set of input judges to a set of input applications.
 # Syntax:
 # python3 allocate.py <csv-file>
 # CSV file should be as created by generate.py

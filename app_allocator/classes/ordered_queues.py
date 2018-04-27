@@ -23,36 +23,36 @@ class OrderedQueues(object):
                 UniversalFeature("gender", option_specs=[OptionSpec("female"),
                                                          OptionSpec("male")])]
     expected_reads = 4
-    startup_needs = {}  # Mapping of Startup to lists of FieldNeeds
+    application_needs = {}  # Mapping of Application to lists of FieldNeeds
 
     def __init__(self):
         self.queues = []
         self.field_queues = {}
-        self.startup_queues = {}
+        self.application_queues = {}
 
-    def setup(self, judges, startups):
+    def setup(self, judges, applications):
         feature_options = OrderedDict([
-                (feature.field, feature.initial_options(judges, startups))
+                (feature.field, feature.initial_options(judges, applications))
                 for feature in OrderedQueues.features])
         # self.queues.append(Queue(count=OrderedQueues.expected_reads)) # TODO: Figure out read queue
-        self.add_startups(startups)
+        self.add_applications(applications)
 
-    def add_startups(self, startups):
-        for startup in startups:
-            OrderedQueues.startup_needs[startup] = self._initial_needs(startup)
-            self._queue_for_needs(startup)
+    def add_applications(self, applications):
+        for application in applications:
+            OrderedQueues.application_needs[application] = self._initial_needs(application)
+            self._queue_for_needs(application)
 
-    def _queue_for_needs(self, startup):
-        needs = OrderedQueues.startup_needs[startup]
-        self._dequeue(startup)
+    def _queue_for_needs(self, application):
+        needs = OrderedQueues.application_needs[application]
+        self._dequeue(application)
         queue = self._find_queue(needs)
-        queue.items.append(startup)
-        self.startup_queues[startup] = queue
+        queue.items.append(application)
+        self.application_queues[application] = queue
 
-    def _dequeue(self, startup):
-        queue = self.startup_queues.get(startup)
+    def _dequeue(self, application):
+        queue = self.application_queues.get(application)
         if queue:
-            queue.items.remove(startup)
+            queue.items.remove(application)
 
     def _find_queue(self, needs):
         for queue in self.queues:
@@ -62,11 +62,11 @@ class OrderedQueues(object):
         self.queues.append(queue)
         return queue
 
-    def _initial_needs(self, startup):
+    def _initial_needs(self, application):
         needs = []
         for feature in OrderedQueues.features:
             needs.append(FieldNeed(feature.field,
-                                   feature.option_states(startup)))
+                                   feature.option_states(application)))
         return needs
 
     def work_left(self):
@@ -79,23 +79,23 @@ class OrderedQueues(object):
         for event in events:
             action = event.fields["action"]
             judge = event.fields["subject"]
-            startup = event.fields["object"]
-            self._update_needs(action, judge, startup)
+            application = event.fields["object"]
+            self._update_needs(action, judge, application)
 
-    def _update_needs(self, action, judge, startup):
-        needs = OrderedQueues.startup_needs[startup]
+    def _update_needs(self, action, judge, application):
+        needs = OrderedQueues.application_needs[application]
         new_needs = []
         for field_need in needs:
             field_need.process_action(action, judge)
             if field_need.unsatisfied():
                 new_needs.append(field_need)
-        OrderedQueues.startup_needs[startup] = new_needs
-        self._queue_for_needs(startup)
+        OrderedQueues.application_needs[application] = new_needs
+        self._queue_for_needs(application)
 
-    def find_one_startup(self, judge):
+    def find_one_application(self, judge):
         best_queue = None
         best_value = -1
-        startup = None
+        application = None
         for queue in self.queues:
             value = queue.judge_value(judge)
             if value and value > best_value:
@@ -105,10 +105,11 @@ class OrderedQueues(object):
 
     def _next_item(self, queue, judge):
         if queue:
-            for startup in queue.items:
-                if queue.assign(judge, startup, OrderedQueues.startup_needs[startup]):
-                    self._queue_for_needs(startup)
-                    return startup
+            for application in queue.items:
+                if queue.assign(judge, application,
+                                OrderedQueues.application_needs[application]):
+                    self._queue_for_needs(application)
+                    return application
         return None
 
     def assess(self):

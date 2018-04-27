@@ -15,5 +15,5 @@ class RoleBin(ReadsBin):
             return entity.properties["role"] == self.role
         return True
 
-    def update_startup(self, startup, keep=False):
-        super().update_startup(startup=startup, keep=keep)
+    def update_application(self, application, keep=False):
+        super().update_application(application=application, keep=keep)

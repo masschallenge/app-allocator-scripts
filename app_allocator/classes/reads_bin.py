@@ -13,17 +13,17 @@ class ReadsBin(Bin):
     def __str__(self):
         return "Read Bin"
 
-    def add_startup(self, startup):
-        matches = super().add_startup(startup)
+    def add_application(self, application):
+        matches = super().add_application(application)
         if matches:
-            self.counts[startup.id()] = self.count
+            self.counts[application.id()] = self.count
         return matches
 
-    def update_startup(self, startup, keep=False):
+    def update_application(self, application, keep=False):
         if not keep:
-            count = self.counts[startup.id()]
+            count = self.counts[application.id()]
             if count <= 1:
-                super().update_startup(startup=startup, keep=False)
+                super().update_application(application=application, keep=False)
                 return
-            self.counts[startup.id()] = count - 1
-        super().update_startup(startup, True)
+            self.counts[application.id()] = count - 1
+        super().update_application(application, True)

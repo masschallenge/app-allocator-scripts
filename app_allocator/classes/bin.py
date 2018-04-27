@@ -15,10 +15,10 @@ class Bin(object):
     def __str__(self):
         return "Generic Bin"
 
-    def add_startup(self, startup):
-        result = self.match(startup)
+    def add_application(self, application):
+        result = self.match(application)
         if result:
-            self.queue.append(startup)
+            self.queue.append(application)
         return result
 
     def calc_capacity(self, judges):
@@ -30,16 +30,16 @@ class Bin(object):
     def match(self, entity):
         return True
 
-    def update(self, judge, startup, keep):
+    def update(self, judge, application, keep):
         if self.weight(judge):
-            self.update_startup(startup, keep)
+            self.update_application(application, keep)
             self.capacity = max(1, self.capacity - 1)
 
-    def update_startup(self, startup, keep=False):
-        if startup in self.queue:
-            self.queue.remove(startup)
+    def update_application(self, application, keep=False):
+        if application in self.queue:
+            self.queue.remove(application)
             if keep:
-                self.queue.append(startup)
+                self.queue.append(application)
 
     def work_left(self):
         return len(self.queue) > 0
@@ -54,7 +54,7 @@ class Bin(object):
             return w*len(self.queue)/float(self.capacity)
         return None
 
-    def next_startup(self, judge):
-        for startup in self.queue:
-            if not has_been_assigned(judge, startup):
-                return startup
+    def next_application(self, judge):
+        for application in self.queue:
+            if not has_been_assigned(judge, application):
+                return application

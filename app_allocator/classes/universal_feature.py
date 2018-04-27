@@ -3,7 +3,7 @@ from app_allocator.classes.option_state import OptionState
 
 
 class UniversalFeature(Feature):
-    def initial_options(self, judges, startups):
+    def initial_options(self, judges, applications):
         return []
 
     def option_states(self, _):

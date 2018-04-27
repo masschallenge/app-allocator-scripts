@@ -21,27 +21,27 @@ class Queue(object):
                         value += 1/(option_state.assigned + 1)
         return value
             
-    def assign(self, judge, startup, needs):
-        if not has_been_assigned(judge, startup):
-            self.add_assignment(judge, startup, needs)
-            return startup
+    def assign(self, judge, application, needs):
+        if not has_been_assigned(judge, application):
+            self.add_assignment(judge, application, needs)
+            return application
         return None
 
-    def add_assignment(self, judge, startup, needs):
+    def add_assignment(self, judge, application, needs):
         for need in needs:
             need.process_action("assign", judge)
 
-    def process_action(self, action, judge, startup):
-        judges = self.assigned.get(startup, [])
+    def process_action(self, action, judge, application):
+        judges = self.assigned.get(application, [])
         if judge in judges:
             if action == "finished":
-                self.requeue(judge, startup, 1)
+                self.requeue(judge, application, 1)
             elif action == "pass":
-                self.requeue(judge, startup, 0)
-            self.assigned[startup].remove(judge)
+                self.requeue(judge, application, 0)
+            self.assigned[application].remove(judge)
 
-    def requeue(self, judge, startup, increment):
-        count = self.counts.get(startup, 0) + increment
+    def requeue(self, judge, application, increment):
+        count = self.counts.get(application, 0) + increment
         if count < self.count:
-            self.counts[startup] = count
-            self.items.append(startup)
+            self.counts[application] = count
+            self.items.append(application)

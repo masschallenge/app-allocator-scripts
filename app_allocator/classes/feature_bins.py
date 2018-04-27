@@ -25,15 +25,15 @@ class FeatureBins(object):
     def __init__(self):
         self.bins = []
 
-    def setup(self, judges, startups):
+    def setup(self, judges, applications):
         self.default_bins()
-        self.add_startups(startups)
+        self.add_applications(applications)
         self.calc_capacity(judges)
 
-    def add_startups(self, startups):
-        for startup in startups:
+    def add_applications(self, applications):
+        for application in applications:
             for bin in self.bins:
-                bin.add_startup(startup)
+                bin.add_application(application)
 
     def calc_capacity(self, judges):
         for bin in self.bins:
@@ -68,32 +68,32 @@ class FeatureBins(object):
                            event.fields["object"],
                            event.fields["action"] == "pass")
 
-    def find_one_startup(self, judge):
-        startup, best_bin = find_best_bin(self.bins, judge)
-        if startup:
+    def find_one_application(self, judge):
+        application, best_bin = find_best_bin(self.bins, judge)
+        if application:
             Event(action=best_bin,
-                  subject=startup,
+                  subject=application,
                   object=judge,
                   description="{} left".format(len(best_bin.queue)))
-            self.update_bins(startup, judge, True)
-        return startup
+            self.update_bins(application, judge, True)
+        return application
 
     def assess(self):
         for bin in self.bins:
             bin.status()
 
-    def update_bins(self, startup, judge, keep):
+    def update_bins(self, application, judge, keep):
         for bin in self.bins:
             if bin.weight(judge):
-                bin.update_startup(startup, keep)
+                bin.update_application(application, keep)
 
 
 def find_best_bin(bins, judge):
     next_bin = find_next_bin(bins, judge)
     if next_bin:
-        next_startup = next_bin.next_startup(judge)
-        if next_startup:
-            return next_startup, next_bin
+        next_application = next_bin.next_application(judge)
+        if next_application:
+            return next_application, next_bin
         other_bins = [bin for bin in bins if bin != next_bin]
         return find_best_bin(other_bins, judge)
     return None, None

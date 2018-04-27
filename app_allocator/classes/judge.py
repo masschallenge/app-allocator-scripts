@@ -11,34 +11,34 @@ class Judge(Entity):
 
     def __init__(self, data=None):
         super().__init__()
-        self.startups = []
+        self.applications = []
         self.type = "judge"
         for property in Property.all_properties:
             self.add_property(property, data)
         self.remaining = int(self.properties.get("commitment", 50))
 
-    def complete_startups(self):
+    def complete_applications(self):
         events = []
-        for startup in self.startups:
+        for application in self.applications:
             action = "finished"
-            if self.passes(startup):
+            if self.passes(application):
                 action = "pass"
             events.append(Event(action=action,
                                 subject=self,
-                                object=startup))
-        self.startups = []
+                                object=application))
+        self.applications = []
         return events
 
-    def passes(self, startup):
+    def passes(self, application):
         return random() <= CHANCE_OF_PASS
 
-    def needs_another_startup(self):
+    def needs_another_application(self):
         return (self.remaining > 0 and
-                len(self.startups) < Judge.MAX_PANEL_SIZE)
+                len(self.applications) < Judge.MAX_PANEL_SIZE)
 
-    def add_startup(self, startup):
-        self.startups.append(startup)
-        result = Event(action="assigned", subject=self, object=startup)
+    def add_application(self, application):
+        self.applications.append(application)
+        result = Event(action="assigned", subject=self, object=application)
         self.remaining -= 1
         return result
 
