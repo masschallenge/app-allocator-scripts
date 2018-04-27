@@ -87,15 +87,17 @@ class OrderedQueues(object):
     def _update_needs(self, action, judge, application):
         if action in OrderedQueues.relevant_actions:
             needs = OrderedQueues.application_needs[application]
-            new_needs = []
-            for field_need in needs:
-                field_need.process_action(action, judge)
-                if field_need.unsatisfied():
-                    new_needs.append(field_need)
+            new_needs = _calc_new_needs(needs, action, judge)
             OrderedQueues.application_needs[application] = new_needs
             self._queue_for_needs(application)
 
     def find_one_application(self, judge):
+        queue = self._find_best_queue(judge)
+        if queue:
+            return self._next_item(queue, judge)
+        return None
+
+    def _find_best_queue(self, judge):
         best_queue = None
         best_value = -1
         for queue in self.queues:
@@ -103,15 +105,14 @@ class OrderedQueues(object):
             if value and value > best_value:
                 best_queue = queue
                 best_value = value
-        return self._next_item(best_queue, judge)
+        return best_queue
 
     def _next_item(self, queue, judge):
-        if queue:
-            for application in queue.items:
-                if queue.assign(judge, application,
-                                OrderedQueues.application_needs[application]):
-                    self._queue_for_needs(application)
-                    return application
+        for application in queue.items:
+            if queue.assign(judge, application,
+                            OrderedQueues.application_needs[application]):
+                self._queue_for_needs(application)
+                return application
         return None
 
     def assess(self):
@@ -124,3 +125,12 @@ class OrderedQueues(object):
             else:
                 Event(action="complete",
                       subject=queue)
+
+
+def _calc_new_needs(needs, action, judge):
+    result = []
+    for field_need in needs:
+        field_need.process_action(action, judge)
+        if field_need.unsatisfied():
+            result.append(field_need)
+    return result

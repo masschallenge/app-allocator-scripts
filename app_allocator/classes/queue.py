@@ -16,9 +16,8 @@ class Queue(object):
         if self.needs:
             for need in self.needs:
                 judge_option = judge.properties[need.field]
-                for option_state in need.option_states:
-                    if judge_option == option_state.option:
-                        value += 1/(option_state.assigned + 1)
+                value += option_state_value(need.option_states,
+                                            judge_option)
         return value
 
     def assign(self, judge, application, needs):
@@ -30,3 +29,11 @@ class Queue(object):
     def add_assignment(self, judge, application, needs):
         for need in needs:
             need.process_action("assign", judge)
+
+
+def option_state_value(option_states, option):
+    value = 0
+    for option_state in option_states:
+        if option == option_state.option:
+            value += 1/(option_state.assigned + 1)
+    return value
