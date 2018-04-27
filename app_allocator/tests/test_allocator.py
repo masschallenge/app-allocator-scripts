@@ -10,9 +10,9 @@ from app_allocator.tests.utils import (
 
 
 def _allocator(filepath="some/file/path", heuristic="linear"):
-        allocator = Allocator("some/file/path", heuristic)
-        allocator.read_entities()
-        return allocator
+    allocator = Allocator("some/file/path", heuristic)
+    allocator.read_entities()
+    return allocator
 
 
 def set_up_allocator(filepath="some/file/path", heuristic="linear"):
@@ -46,21 +46,21 @@ class TestAllocator(object):
         assert allocator.heuristic.startups == allocator.startups
         assert allocator.heuristic.judges == allocator.judges
 
-    @mock.patch('app_allocator.classes.allocator.Allocator._file',
-                multiple_startup_scenario_csv)
-    def test_allocator_assign_startups_startups_available(self):
+    def allocator_assign_startups_helper(self, expected):
         allocator = set_up_allocator()
         judge = allocator.judges[0]
         allocator.assign_startups(judge)
-        assert len(judge.startups) == 10
+        assert len(judge.startups) == expected
+
+    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+                multiple_startup_scenario_csv)
+    def test_allocator_assign_startups_startups_available(self):
+        allocator_assign_startups_helper(10)
 
     @mock.patch('app_allocator.classes.allocator.Allocator._file',
                 no_startup_scenario_csv)
     def test_allocator_assign_startups_no_startups_available(self):
-        allocator = set_up_allocator()
-        judge = allocator.judges[0]
-        allocator.assign_startups(judge)
-        assert len(judge.startups) == 0
+        allocator_assign_startups_helper(0)
 
     @mock.patch('app_allocator.classes.allocator.Allocator._file',
                 multiple_startup_scenario_csv)
