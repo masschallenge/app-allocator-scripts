@@ -23,10 +23,10 @@ class Allocator(object):
         self.heuristic = find_heuristic(heuristic)
 
     def _file(self):
-        if self.filepath is None:
-            return sys.stdin
+        if self.filepath is None:  # pragma: nocover
+            return sys.stdin  # pragma: nocover
         else:
-            return open(self.filepath)
+            return open(self.filepath)  # pragma: nocover
 
     def read_entities(self):
         with self._file() as file:
