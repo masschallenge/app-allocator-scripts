@@ -3,11 +3,7 @@ from app_allocator.classes.field_need import FieldNeed
 from app_allocator.classes.judge_feature import JudgeFeature
 from app_allocator.classes.matching_feature import MatchingFeature
 from app_allocator.classes.option_spec import OptionSpec
-from app_allocator.classes.queue import Queue
-
-
-MATCHING_QUEUE = "matching"
-JUDGE_QUEUE = "judge"
+from app_allocator.classes.needs_queue import NeedsQueue
 
 
 class OrderedQueues(object):
@@ -34,7 +30,7 @@ class OrderedQueues(object):
         for feature in OrderedQueues.features:
             feature.calc_initial_options(judges, applications)
         # TODO: Figure out read queue
-        # self.queues.append(Queue(count=OrderedQueues.expected_reads))
+        # self.queues.append(NeedsQueue(count=OrderedQueues.expected_reads))
         self.add_applications(applications)
 
     def add_applications(self, applications):
@@ -59,7 +55,7 @@ class OrderedQueues(object):
         for queue in self.queues:
             if queue.needs == needs:
                 return queue
-        queue = Queue(needs=needs)
+        queue = NeedsQueue(needs=needs)
         self.queues.append(queue)
         return queue
 

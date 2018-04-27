@@ -1,7 +1,7 @@
 from app_allocator.classes.assignments import has_been_assigned
 
 
-class Queue(object):
+class NeedsQueue(object):
     def __init__(self, needs={}, count=1):
         self.needs = needs.copy()
         self.count = count
@@ -9,7 +9,7 @@ class Queue(object):
         self.items = []
 
     def __str__(self):
-        return "Queue(%s)" % [str(need) for need in self.needs]
+        return "NeedsQueue(%s)" % [str(need) for need in self.needs]
 
     def judge_value(self, judge):
         value = 0
