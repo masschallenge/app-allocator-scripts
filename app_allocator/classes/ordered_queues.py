@@ -1,27 +1,27 @@
 from collections import OrderedDict
 from app_allocator.classes.event import Event
 from app_allocator.classes.field_need import FieldNeed
+from app_allocator.classes.judge_feature import JudgeFeature
+from app_allocator.classes.matching_feature import MatchingFeature
 from app_allocator.classes.option_spec import OptionSpec
 from app_allocator.classes.queue import Queue
-from app_allocator.classes.specific_feature import SpecificFeature
-from app_allocator.classes.universal_feature import UniversalFeature
 
 
-SPECIFIC_QUEUE = "specific"
-UNIVERSAL_QUEUE = "universal"
+MATCHING_QUEUE = "matching"
+JUDGE_QUEUE = "judge"
 
 
 class OrderedQueues(object):
     name = "ordered_queues"
 
-    features = [SpecificFeature("industry"),
-                SpecificFeature("program"),
-                UniversalFeature("role",
-                                 option_specs=[OptionSpec("Executive", 2),
-                                               OptionSpec("Investor"),
-                                               OptionSpec("Lawyer")]),
-                UniversalFeature("gender", option_specs=[OptionSpec("female"),
-                                                         OptionSpec("male")])]
+    features = [MatchingFeature("industry"),
+                MatchingFeature("program"),
+                JudgeFeature("role",
+                             option_specs=[OptionSpec("Executive", 2),
+                                           OptionSpec("Investor"),
+                                           OptionSpec("Lawyer")]),
+                JudgeFeature("gender", option_specs=[OptionSpec("female"),
+                                                     OptionSpec("male")])]
     expected_reads = 4
     application_needs = {}  # Mapping of Application to lists of FieldNeeds
 

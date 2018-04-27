@@ -2,7 +2,7 @@ from app_allocator.classes.feature import Feature
 from app_allocator.classes.option_state import OptionState
 
 
-class UniversalFeature(Feature):
+class JudgeFeature(Feature):
     def initial_options(self, judges, applications):
         return []
 
