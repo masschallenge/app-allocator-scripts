@@ -5,7 +5,9 @@ class OptionState(object):
         self.assigned = 0
 
     def __str__(self):
-        return "OptionState(%s, %s, %s)" % (self.option, self.count, self.assigned)
+        return "OptionState(%s, %s, %s)" % (self.option,
+                                            self.count,
+                                            self.assigned)
 
     def __eq__(self, other):
         if isinstance(other, OptionState):

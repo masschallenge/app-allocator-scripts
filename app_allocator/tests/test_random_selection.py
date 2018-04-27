@@ -17,7 +17,7 @@ class TestRandomSelection(object):
 
     def test_process_judge_events(self):
         heuristic = _random_selection()
-        heuristic.process_judge_events(Event())
+        heuristic.process_judge_events([Event()])
         assert heuristic.work_left()
 
     def test_find_one_application(self):

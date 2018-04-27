@@ -22,4 +22,3 @@ class FieldNeed(object):
     def unsatisfied(self):
         return any([option_state.count > 0
                     for option_state in self.option_states])
-

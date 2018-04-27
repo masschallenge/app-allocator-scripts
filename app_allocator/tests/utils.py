@@ -43,9 +43,12 @@ def simple_test_scenario_csv(*args):
     return pseudofile(data_rows=[EXAMPLE_JUDGE_DATA, EXAMPLE_APPLICATION_DATA])
 
 
-TEN_APPLICATIONS = [EntityData('application', 'Application %d' % i, 'General', 'Boston',
-                           '', '', '', '')
-                for i in range(10)]
+TEN_APPLICATIONS = [EntityData('application',
+                               'Application %d' % i,
+                               'General',
+                               'Boston',
+                               '', '', '', '')
+                    for i in range(10)]
 
 
 ALLOCATION_HEADERS = ['time', 'action', 'subject', 'object']

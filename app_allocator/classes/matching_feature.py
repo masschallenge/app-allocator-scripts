@@ -3,7 +3,7 @@ from app_allocator.classes.option_spec import OptionSpec
 from app_allocator.classes.option_state import OptionState
 
 
-class SpecificFeature(Feature):
+class MatchingFeature(Feature):
     def __init__(self, field, count=1, option_specs=None):
         super().__init__(field, option_specs)
         self.count = count
@@ -23,10 +23,9 @@ class SpecificFeature(Feature):
                 return [OptionState(option, spec.count)]
         return []
 
-    def initial_options(self, judges, applications):
+    def calc_initial_options(self, judges, applications):
         if self.option_specs is None:
             self.option_specs = self._infer_option_specs(judges, applications)
-        return [spec.option for spec in self.option_specs]
 
     def _infer_option_specs(self, judges, applications):
         judge_options = self._options_with_counts(judges)
