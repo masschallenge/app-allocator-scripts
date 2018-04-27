@@ -35,5 +35,5 @@ $(VENV): Makefile requirements.txt
 test: $(VENV)
 	@$(ACTIVATE) ; pytest
 
-coverage:
-	@pytest --cov --cov-report=term --cov-report=html --cov-config .coveragerc
+coverage: $(VENV)
+	@$(ACTIVATE) ; pytest --cov --cov-report=term --cov-report=html --cov-config .coveragerc
