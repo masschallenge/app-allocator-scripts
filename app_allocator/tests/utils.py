@@ -23,14 +23,14 @@ EXAMPLE_JUDGE_DATA = EntityData('judge',
                                 'female',
                                 '10',
                                 '10')
-EXAMPLE_STARTUP_DATA = EntityData('startup',
-                                  'Organization 4676',
-                                  'General',
-                                  'Boston',
-                                  '',
-                                  '',
-                                  '',
-                                  '')
+EXAMPLE_APPLICATION_DATA = EntityData('application',
+                                      'Organization 4676',
+                                      'General',
+                                      'Boston',
+                                      '',
+                                      '',
+                                      '',
+                                      '')
 
 
 def pseudofile(header_row=HEADER_ROW, data_rows=[]):
@@ -40,10 +40,10 @@ def pseudofile(header_row=HEADER_ROW, data_rows=[]):
 
 
 def simple_test_scenario_csv(*args):
-    return pseudofile(data_rows=[EXAMPLE_JUDGE_DATA, EXAMPLE_STARTUP_DATA])
+    return pseudofile(data_rows=[EXAMPLE_JUDGE_DATA, EXAMPLE_APPLICATION_DATA])
 
 
-TEN_STARTUPS = [EntityData('startup', 'Startup %d' % i, 'General', 'Boston',
+TEN_APPLICATIONS = [EntityData('application', 'Application %d' % i, 'General', 'Boston',
                            '', '', '', '')
                 for i in range(10)]
 
@@ -63,11 +63,11 @@ def simple_allocation_csv(*args):
                       data_rows=[SIMPLE_ALLOCATION_DATA])
 
 
-def multiple_startup_scenario_csv(*args):
-    return pseudofile(data_rows=[EXAMPLE_JUDGE_DATA] + TEN_STARTUPS)
+def multiple_application_scenario_csv(*args):
+    return pseudofile(data_rows=[EXAMPLE_JUDGE_DATA] + TEN_APPLICATIONS)
 
 
-def no_startup_scenario_csv(*args):
+def no_application_scenario_csv(*args):
     return pseudofile(data_rows=[EXAMPLE_JUDGE_DATA])
 
 

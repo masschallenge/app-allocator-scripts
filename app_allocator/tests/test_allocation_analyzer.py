@@ -30,9 +30,9 @@ class TestAllocationAnalyzer(object):
 
     @patch('app_allocator.classes.allocation_analyzer.open_csv_reader',
            fake_open_csv_reader)
-    def test_process_scenario_from_csv_creates_startups(self):
+    def test_process_scenario_from_csv_creates_applications(self):
         analyzer = get_analyzer(scenario=simple_test_scenario_csv())
-        assert len(analyzer.startups) == 1
+        assert len(analyzer.applications) == 1
 
     @patch('app_allocator.classes.allocation_analyzer.open_csv_reader',
            fake_open_csv_reader)
@@ -40,16 +40,16 @@ class TestAllocationAnalyzer(object):
         analyzer = get_analyzer(scenario=simple_test_scenario_csv(),
                                 allocations=simple_allocation_csv())
         assert len(analyzer.assigned) == 1
-        assert analyzer.assigned[0].startup in analyzer.startups.values()
+        assert analyzer.assigned[0].application in analyzer.applications.values()
 
     @patch('app_allocator.classes.allocation_analyzer.open_csv_reader',
            fake_open_csv_reader)
     def test_analyze_simple_allocation(self):
         analyzer = get_analyzer(scenario=simple_test_scenario_csv(),
                                 allocations=simple_allocation_csv())
-        startup = analyzer.assigned[0].startup
+        application = analyzer.assigned[0].application
         read_counts = analyzer.analyze(analyzer.assigned)
-        assert startup['name'] in read_counts.keys()
+        assert application['name'] in read_counts.keys()
 
     @patch('app_allocator.classes.allocation_analyzer.open_csv_reader',
            fake_open_csv_reader)
@@ -57,9 +57,9 @@ class TestAllocationAnalyzer(object):
         analyzer = AllocationAnalyzer()
         analyzer.process_scenario_from_csv(simple_test_scenario_csv())
         analyzer.process_allocations_from_csv(simple_allocation_csv())
-        startup = analyzer.assigned[0].startup
+        application = analyzer.assigned[0].application
         read_counts = analyzer.analyze(analyzer.assigned)
         summary = analyzer.summarize(read_counts)
-        startup_counts = read_counts[startup['name']]
+        application_counts = read_counts[application['name']]
         assert all([val == summary["total %s" % key]
-                    for key, val in startup_counts.items()])
+                    for key, val in application_counts.items()])
