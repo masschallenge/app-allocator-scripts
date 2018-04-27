@@ -25,16 +25,14 @@ class TestAllocationAnalyzer(object):
     @patch('app_allocator.classes.allocation_analyzer.open_csv_reader',
            fake_open_csv_reader)
     def test_process_scenario_from_csv_creates_judges(self):
-        self.process_scenario_from_csv_helper()
-
-    def process_scenario_from_csv_helper(self):
         analyzer = get_analyzer(scenario=simple_test_scenario_csv())
         assert len(analyzer.judges) == 1
 
     @patch('app_allocator.classes.allocation_analyzer.open_csv_reader',
            fake_open_csv_reader)
     def test_process_scenario_from_csv_creates_startups(self):
-        self.process_scenario_from_csv_helper()
+        analyzer = get_analyzer(scenario=simple_test_scenario_csv())
+        assert len(analyzer.startups) == 1
 
     @patch('app_allocator.classes.allocation_analyzer.open_csv_reader',
            fake_open_csv_reader)
