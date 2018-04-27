@@ -14,7 +14,7 @@ class OptionState(object):
             return ((self.option == other.option) and
                     (self.count == other.count) and
                     (self.assigned == other.assigned))
-        return NotImplemented
+        return NotImplemented  # pragma: nocover
 
     def process_action(self, action):
         if action == "assign":

@@ -23,6 +23,7 @@ class OrderedQueues(object):
                                                      OptionSpec("male")])]
     expected_reads = 4
     application_needs = {}  # Mapping of Application to lists of FieldNeeds
+    relevant_actions = ["finished", "pass"]
 
     def __init__(self):
         self.queues = []
@@ -77,20 +78,22 @@ class OrderedQueues(object):
 
     def process_judge_events(self, events):
         for event in events:
-            action = event.fields["action"]
-            judge = event.fields["subject"]
-            application = event.fields["object"]
-            self._update_needs(action, judge, application)
+            action = event.fields.get("action")
+            judge = event.fields.get("subject")
+            application = event.fields.get("object")
+            if action and judge and application:
+                self._update_needs(action, judge, application)
 
     def _update_needs(self, action, judge, application):
-        needs = OrderedQueues.application_needs[application]
-        new_needs = []
-        for field_need in needs:
-            field_need.process_action(action, judge)
-            if field_need.unsatisfied():
-                new_needs.append(field_need)
-        OrderedQueues.application_needs[application] = new_needs
-        self._queue_for_needs(application)
+        if action in OrderedQueues.relevant_actions:
+            needs = OrderedQueues.application_needs[application]
+            new_needs = []
+            for field_need in needs:
+                field_need.process_action(action, judge)
+                if field_need.unsatisfied():
+                    new_needs.append(field_need)
+            OrderedQueues.application_needs[application] = new_needs
+            self._queue_for_needs(application)
 
     def find_one_application(self, judge):
         best_queue = None

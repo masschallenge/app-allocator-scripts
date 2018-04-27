@@ -30,18 +30,3 @@ class Queue(object):
     def add_assignment(self, judge, application, needs):
         for need in needs:
             need.process_action("assign", judge)
-
-    def process_action(self, action, judge, application):
-        judges = self.assigned.get(application, [])
-        if judge in judges:
-            if action == "finished":
-                self.requeue(judge, application, 1)
-            elif action == "pass":
-                self.requeue(judge, application, 0)
-            self.assigned[application].remove(judge)
-
-    def requeue(self, judge, application, increment):
-        count = self.counts.get(application, 0) + increment
-        if count < self.count:
-            self.counts[application] = count
-            self.items.append(application)

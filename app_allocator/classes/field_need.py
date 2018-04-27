@@ -11,7 +11,7 @@ class FieldNeed(object):
         if isinstance(other, FieldNeed):
             return ((self.field == other.field) and
                     (self.option_states == other.option_states))
-        return NotImplemented
+        return NotImplemented  # pragma: nocover
 
     def process_action(self, action, judge):
         option = judge.properties[self.field]
