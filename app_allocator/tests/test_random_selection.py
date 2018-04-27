@@ -10,7 +10,7 @@ def _random_selection():
     return result
 
 
-class TestRnadomSelection(object):
+class TestRandomSelection(object):
     def test_work_left(self):
         heuristic = _random_selection()
         assert heuristic.work_left()
