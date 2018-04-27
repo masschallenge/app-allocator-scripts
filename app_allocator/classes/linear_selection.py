@@ -1,3 +1,6 @@
+from app_allocator.classes.event import Event
+
+
 class LinearSelection(object):
     'Simple and predictable heuristic for testing'
 
@@ -19,4 +22,4 @@ class LinearSelection(object):
             return startup
 
     def assess(self):
-        pass
+        Event(action="complete", description=LinearSelection.name)

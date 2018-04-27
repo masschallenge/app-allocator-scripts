@@ -1,5 +1,6 @@
 import mock
 from app_allocator.classes.allocator import Allocator
+from app_allocator.classes.event import Event
 from app_allocator.tests.utils import (
     simple_test_scenario_csv,
     no_startup_scenario_csv,
@@ -10,13 +11,13 @@ from app_allocator.tests.utils import (
 
 
 def _allocator(filepath="some/file/path", heuristic="linear"):
-    allocator = Allocator("some/file/path", heuristic)
+    allocator = Allocator(filepath, heuristic)
     allocator.read_entities()
     return allocator
 
 
 def set_up_allocator(filepath="some/file/path", heuristic="linear"):
-    allocator = _allocator()
+    allocator = _allocator(filepath, heuristic)
     allocator.setup()
     return allocator
 
@@ -26,7 +27,7 @@ class TestAllocator(object):
     @mock.patch('app_allocator.classes.allocator.Allocator._file',
                 simple_test_scenario_csv)
     def test_read_entities_creates_startups(self):
-        allocator = _allocator("random")
+        allocator = _allocator()
         assert len(allocator.startups) == 1
         startup = allocator.startups[0]
         assert startup['name'] == startup_data.name
@@ -68,3 +69,11 @@ class TestAllocator(object):
         allocator = set_up_allocator()
         allocator.allocate()
         assert len(allocator.judges) == 0
+
+    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+                simple_test_scenario_csv)
+    def test_linear_assess(self):
+        allocator = _allocator(heuristic="linear")
+        event_count = len(Event.all_events)
+        allocator.assess()
+        assert event_count + 1 == len(Event.all_events)
