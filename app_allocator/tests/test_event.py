@@ -11,15 +11,16 @@ class TestEvent(object):
         csv_fields = event.to_csv().split(",")
         assert all([field in csv_fields for field in EVENT_FIELDS.values()])
 
-    def test_update_event_existing_field(self):
+    def update_event_helper(self, field):
         event = Event(**EVENT_FIELDS)
-        event.update(**{'b': VALUE})
-        assert event.fields['b'] == VALUE
+        event.update(**{field: VALUE})
+        assert event.fields[field] == VALUE
+
+    def test_update_event_existing_field(self):
+        update_event_helper('b')
 
     def test_update_event_new_field(self):
-        event = Event(**EVENT_FIELDS)
-        event.update(**{'c': VALUE})
-        assert event.fields['c'] == VALUE
+        update_event_helper('c')
 
     def test_header_row(self):
         event = Event(**EVENT_FIELDS)
