@@ -40,7 +40,8 @@ class TestAllocationAnalyzer(object):
         analyzer = get_analyzer(scenario=simple_test_scenario_csv(),
                                 allocations=simple_allocation_csv())
         assert len(analyzer.assigned) == 1
-        assert analyzer.assigned[0].application in analyzer.applications.values()
+        application = analyzer.assigned[0].application
+        assert application in analyzer.applications.values()
 
     @patch('app_allocator.classes.allocation_analyzer.open_csv_reader',
            fake_open_csv_reader)

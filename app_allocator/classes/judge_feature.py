@@ -3,8 +3,8 @@ from app_allocator.classes.option_state import OptionState
 
 
 class JudgeFeature(Feature):
-    def initial_options(self, judges, applications):
-        return []
+    def calc_initial_options(self, judges, applications):
+        pass
 
     def option_states(self, _):
         return [OptionState(spec.option, spec.count)

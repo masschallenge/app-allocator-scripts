@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from app_allocator.classes.event import Event
 from app_allocator.classes.field_need import FieldNeed
 from app_allocator.classes.judge_feature import JudgeFeature
@@ -31,15 +30,16 @@ class OrderedQueues(object):
         self.application_queues = {}
 
     def setup(self, judges, applications):
-        feature_options = OrderedDict([
-                (feature.field, feature.initial_options(judges, applications))
-                for feature in OrderedQueues.features])
-        # self.queues.append(Queue(count=OrderedQueues.expected_reads)) # TODO: Figure out read queue
+        for feature in OrderedQueues.features:
+            feature.calc_initial_options(judges, applications)
+        # TODO: Figure out read queue
+        # self.queues.append(Queue(count=OrderedQueues.expected_reads))
         self.add_applications(applications)
 
     def add_applications(self, applications):
         for application in applications:
-            OrderedQueues.application_needs[application] = self._initial_needs(application)
+            needs = self._initial_needs(application)
+            OrderedQueues.application_needs[application] = needs
             self._queue_for_needs(application)
 
     def _queue_for_needs(self, application):
@@ -95,7 +95,6 @@ class OrderedQueues(object):
     def find_one_application(self, judge):
         best_queue = None
         best_value = -1
-        application = None
         for queue in self.queues:
             value = queue.judge_value(judge)
             if value and value > best_value:

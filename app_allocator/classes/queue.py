@@ -20,7 +20,7 @@ class Queue(object):
                     if judge_option == option_state.option:
                         value += 1/(option_state.assigned + 1)
         return value
-            
+
     def assign(self, judge, application, needs):
         if not has_been_assigned(judge, application):
             self.add_assignment(judge, application, needs)

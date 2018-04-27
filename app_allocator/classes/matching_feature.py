@@ -23,10 +23,9 @@ class MatchingFeature(Feature):
                 return [OptionState(option, spec.count)]
         return []
 
-    def initial_options(self, judges, applications):
+    def calc_initial_options(self, judges, applications):
         if self.option_specs is None:
             self.option_specs = self._infer_option_specs(judges, applications)
-        return [spec.option for spec in self.option_specs]
 
     def _infer_option_specs(self, judges, applications):
         judge_options = self._options_with_counts(judges)
