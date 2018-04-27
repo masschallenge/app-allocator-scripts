@@ -1,8 +1,8 @@
-from app_allocator.classes.feature_bins import FeatureBins
 from app_allocator.classes.ordered_queues import OrderedQueues
 from app_allocator.classes.random_selection import RandomSelection
+from app_allocator.classes.linear_selection import LinearSelection
 
-HEURISTICS = [RandomSelection, FeatureBins, OrderedQueues]
+HEURISTICS = [RandomSelection, LinearSelection, OrderedQueues]
 
 
 def find_heuristic(name):

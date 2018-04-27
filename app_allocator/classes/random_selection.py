@@ -1,4 +1,5 @@
 from random import choice
+from app_allocator.classes.event import Event
 
 
 class RandomSelection(object):
@@ -17,4 +18,4 @@ class RandomSelection(object):
         return choice(self.applications)
 
     def assess(self):
-        pass
+        Event(action="complete", description=RandomSelection.name)

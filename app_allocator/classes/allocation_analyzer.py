@@ -5,8 +5,12 @@ from collections import (
 )
 from app_allocator.classes.judge import Judge
 from app_allocator.classes.application import Application
-from app_allocator.classes.gender_distribution_metric import GenderDistributionMetric
-from app_allocator.classes.judge_role_distribution_metric import JudgeRoleDistributionMetric
+from app_allocator.classes.gender_distribution_metric import (
+    GenderDistributionMetric,
+)
+from app_allocator.classes.judge_role_distribution_metric import (
+    JudgeRoleDistributionMetric,
+)
 from app_allocator.classes.program_match_metric import ProgramMatchMetric
 from app_allocator.classes.industry_match_metric import IndustryMatchMetric
 from app_allocator.classes.total_reads_metric import TotalReadsMetric
