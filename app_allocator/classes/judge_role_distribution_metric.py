@@ -1,10 +1,6 @@
 from app_allocator.classes.metric import Metric
 
 
-def judge_role(judge, application):
-    return "Judge Role %s" % judge['role']
-
-
 class JudgeRoleDistributionMetric(Metric):
     def __init__(self, role, target):
         super().__init__(target)
