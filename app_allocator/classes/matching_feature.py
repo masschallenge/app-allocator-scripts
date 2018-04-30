@@ -41,6 +41,11 @@ class MatchingFeature(Feature):
                 options[option] = value
         return options
 
+    def initial_need(self, startup, value):
+        if startup.properties.get(self.field) == value:
+            return self.count
+        else:
+            return 0
 
 # options1 and options2 are expected to be dictionaries of
 # options with counts.  E.g., {"Israel": 100, "Boston": 200}

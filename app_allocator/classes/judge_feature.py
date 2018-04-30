@@ -6,6 +6,10 @@ class JudgeFeature(Feature):
     def calc_initial_options(self, judges, applications):
         pass
 
-    def option_states(self, _):
+    def option_states(self, *args):
         return [OptionState(spec.option, spec.count)
                 for spec in self.option_specs]
+
+    def initial_need(self, startup, value):
+        d =  dict([(spec.option, spec.count) for spec in self.option_specs])
+        return d.get(value, 0)
