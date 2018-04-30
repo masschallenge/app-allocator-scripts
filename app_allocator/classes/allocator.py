@@ -16,7 +16,7 @@ from app_allocator.classes.application import Application
 
 
 class Allocator(object):
-    def __init__(self, filepath, heuristic):
+    def __init__(self, filepath=None, heuristic="random"):
         self.filepath = filepath
         self.judges = []
         self.applications = []

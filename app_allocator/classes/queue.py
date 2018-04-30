@@ -16,9 +16,8 @@ class Queue(object):
         if self.needs:
             for need in self.needs:
                 judge_option = judge.properties[need.field]
-                for option_state in need.option_states:
-                    if judge_option == option_state.option:
-                        value += 1/(option_state.assigned + 1)
+                value += option_state_value(need.option_states,
+                                            judge_option)
         return value
 
     def assign(self, judge, application, needs):
@@ -31,17 +30,10 @@ class Queue(object):
         for need in needs:
             need.process_action("assign", judge)
 
-    def process_action(self, action, judge, application):
-        judges = self.assigned.get(application, [])
-        if judge in judges:
-            if action == "finished":
-                self.requeue(judge, application, 1)
-            elif action == "pass":
-                self.requeue(judge, application, 0)
-            self.assigned[application].remove(judge)
 
-    def requeue(self, judge, application, increment):
-        count = self.counts.get(application, 0) + increment
-        if count < self.count:
-            self.counts[application] = count
-            self.items.append(application)
+def option_state_value(option_states, option):
+    value = 0
+    for option_state in option_states:
+        if option == option_state.option:
+            value += 1/(option_state.assigned + 1)
+    return value
