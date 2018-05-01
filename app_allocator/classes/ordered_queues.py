@@ -52,6 +52,8 @@ class OrderedQueues(object):
             self.application_queues[application] = new_queue
 
     def _find_queue(self, needs):
+        if not needs:
+            return None
         for queue in self.queues:
             if queue.needs == needs:
                 return queue
