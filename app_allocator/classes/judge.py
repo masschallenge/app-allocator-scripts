@@ -25,7 +25,8 @@ class Judge(Entity):
                 action = "pass"
             events.append(Event(action=action,
                                 subject=self,
-                                object=application))
+                                object=application,
+                                description=self.properties))
         self.applications = []
         return events
 
@@ -38,7 +39,10 @@ class Judge(Entity):
 
     def add_application(self, application):
         self.applications.append(application)
-        result = Event(action="assigned", subject=self, object=application)
+        result = Event(action="assigned",
+                       subject=self,
+                       object=application,
+                       description=self.properties)
         self.remaining -= 1
         return result
 

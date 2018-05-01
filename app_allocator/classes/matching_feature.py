@@ -1,4 +1,5 @@
 from app_allocator.classes.feature import Feature
+from app_allocator.classes.field_need import FieldNeed
 from app_allocator.classes.option_spec import OptionSpec
 from app_allocator.classes.option_state import OptionState
 
@@ -7,6 +8,9 @@ class MatchingFeature(Feature):
     def __init__(self, field, count=1, option_specs=None):
         super().__init__(field, option_specs)
         self.count = count
+
+    def as_need(self, application):
+        return FieldNeed(self.field, self.option_states(application))
 
     def option_states(self, application):
         option = application.properties.get(self.field)
@@ -23,7 +27,7 @@ class MatchingFeature(Feature):
                 return [OptionState(option, spec.count)]
         return []
 
-    def calc_initial_options(self, judges, applications):
+    def setup(self, judges, applications):
         if self.option_specs is None:
             self.option_specs = self._infer_option_specs(judges, applications)
 

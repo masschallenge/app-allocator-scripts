@@ -4,6 +4,7 @@ class Metric(object):
         self.unsatisfied_apps = set()
         self.total = 0
         self.max_count = 0
+        self.max_app = None
 
     def condition(self, judge, application):
         return True
@@ -22,6 +23,8 @@ class Metric(object):
 
     def update_max(self, application_name, counts_dict):
         app_count = counts_dict[application_name][self.output_key()]
+        if app_count > self.max_count:
+            self.max_app = application_name
         self.max_count = max(self.max_count, app_count)
 
     def satisfied(self, application, counts_dict):

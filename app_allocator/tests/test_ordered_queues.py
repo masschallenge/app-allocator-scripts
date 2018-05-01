@@ -42,7 +42,7 @@ class TestOrderedQueues(object):
     def test_queue_str(self):
         allocator = _allocator()
         queue = allocator.heuristic.queues[0]
-        assert(all([need.field in str(queue) for need in queue.needs]))
+        assert(all([str(need) in str(queue) for need in queue.needs]))
 
     def test_needs_eq(self):
         allocator = _allocator()
@@ -79,7 +79,8 @@ class TestOrderedQueues(object):
     def test_no_application(self):
         allocator = _allocator(applications=[])
         judge = allocator.judges[0]
-        assert allocator.heuristic.find_one_application(judge) is None
+        tmp = allocator.heuristic.find_one_application(judge)
+        assert tmp is None
 
     def test_assess_failure(self):
         self.assess_helper(_allocator(), "fail")
