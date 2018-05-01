@@ -4,7 +4,7 @@ from app_allocator.classes.judge_feature import JudgeFeature
 from app_allocator.classes.matching_feature import MatchingFeature
 from app_allocator.classes.needs_queue import NeedsQueue
 from app_allocator.classes.option_spec import OptionSpec
-from app_allocator.classes.read_counter import ReadCounter
+from app_allocator.classes.reads_feature import ReadsFeature
 
 
 class OrderedQueues(object):
@@ -17,11 +17,11 @@ class OrderedQueues(object):
                                            OptionSpec("Investor"),
                                            OptionSpec("Lawyer")]),
                 JudgeFeature("gender", option_specs=[OptionSpec("female"),
-                                                     OptionSpec("male")])]
+                                                     OptionSpec("male")]),
+                ReadsFeature(count=4)]
     relevant_actions = ["finished", "pass"]
 
     def __init__(self):
-        self.reads = ReadCounter(expected_reads=4)
         self.queues = []
         self.field_queues = {}
         self.application_queues = {}
@@ -83,8 +83,6 @@ class OrderedQueues(object):
             # should get to the root of, but for now just consider
             # applications we know have needs.
             needs = self.application_needs[application]
-            if action == "finished":
-                self.reads.complete_read(application)
             if needs:
                 new_needs = _calc_new_needs(needs, action, judge)
                 self.application_needs[application] = new_needs
@@ -104,14 +102,13 @@ class OrderedQueues(object):
                   description="{queue}: {value}".format(queue=str(queue),
                                                         value=value))
             return application
-        Event(action="from reads")
-        return self.reads.something_that_needs_a_read()
+        return None
 
     def _find_best_queue(self, judge):
         best_queues = []
         best_value = -1
         for queue in self.queues:
-            value = queue.judge_value(judge, self.reads)
+            value = queue.judge_value(judge)
             if value:
                 if value > best_value:
                     best_queues = [queue]

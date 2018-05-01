@@ -1,12 +1,11 @@
+from copy import deepcopy
 from math import log
 from app_allocator.classes.assignments import has_been_assigned
-from app_allocator.classes.field_need import FieldNeed
-from app_allocator.classes.option_state import OptionState
 
 
 class NeedsQueue(object):
     def __init__(self, needs={}, count=1):
-        self.needs = _copy_needs(needs)
+        self.needs = deepcopy(needs)
         self.count = count
         self.counts = {}
         self.items = []
@@ -44,17 +43,14 @@ class NeedsQueue(object):
     def work_left(self):
         return len(self.items)
 
-    def judge_value(self, judge, reads):
+    def judge_value(self, judge):
         value = 0
         application = self._next_application(judge)
         assignments = self.assignments.get(application, [])
         if application and self.needs:
-            value = reads.read_value(application)
+            value = 0
             for need in self.needs:
-                judge_option = judge.properties[need.field]
-                value += value_for_need(need,
-                                        judge_option,
-                                        assignments)
+                value += need.value_for_judge(judge, assignments)
             value *= (log(len(self.items)) + 1)
         return value
 
@@ -63,12 +59,6 @@ class NeedsQueue(object):
             if not has_been_assigned(judge, application):
                 return application
         return None
-
-    def _assignment_count(self, application):
-        top_assignments = self.assignments.get(application, [])
-        if top_assignments:
-            return len(top_assignments) + 1
-        return 1
 
     def assign_next_application(self, judge):
         for application in self.items:
@@ -86,44 +76,3 @@ class NeedsQueue(object):
         assignments = self.assignments.get(application, [])
         assignments.append(judge)
         self.assignments[application] = assignments
-
-
-def value_for_need(need, option, assignments):
-    for option_state in need.option_states:
-        if option_state.count > 0 and option == option_state.option:
-            return adjust_for_assignments(assignments, need.field, option)
-    return 0
-
-
-def adjust_for_assignments(assignments, field, option):
-    count = 0
-    for judge in assignments:
-        if judge.properties[field] == option:
-            count += 1
-    if count > 2:
-        return 0
-    return 1/(count + 1)
-
-
-def _copy_needs(needs):
-    result = []
-    for need in needs:
-        result.append(_copy_need(need))
-    return result
-
-
-def _copy_need(need):
-    return FieldNeed(field=need.field,
-                     option_states=_copy_option_states(need.option_states))
-
-
-def _copy_option_states(options_states):
-    result = []
-    for state in options_states:
-        result.append(_copy_option_state(state))
-    return result
-
-
-def _copy_option_state(option_state):
-    return OptionState(option=option_state.option,
-                       count=option_state.count)

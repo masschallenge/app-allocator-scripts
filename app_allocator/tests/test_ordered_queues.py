@@ -42,7 +42,7 @@ class TestOrderedQueues(object):
     def test_queue_str(self):
         allocator = _allocator()
         queue = allocator.heuristic.queues[0]
-        assert(all([need.field in str(queue) for need in queue.needs]))
+        assert(all([str(need) in str(queue) for need in queue.needs]))
 
     def test_needs_eq(self):
         allocator = _allocator()
