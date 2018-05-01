@@ -13,8 +13,8 @@ else:
 
 
 aa = quick_setup(scenario, allocation)
-for summary, word in [(aa.summarize(aa.analyze(aa.assigned)), "Assigned"),
-                      (aa.summarize(aa.analyze(aa.completed)), "Completed")]:
+for summary, word in [(aa.summarize(aa.analyze(aa.assigned), prefix="Assigned"), "Assigned"),
+                      (aa.summarize(aa.analyze(aa.completed), prefix="Completed"), "Completed")]:
     print("\n%s Application Stats\n------------------\n" % word)
     print("\n".join(["%s: %s" % (key, val)
                      for key, val in summary.items()]))

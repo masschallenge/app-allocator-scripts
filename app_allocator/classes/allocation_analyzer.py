@@ -69,20 +69,20 @@ class AllocationAnalyzer(object):
 
         return read_counts
 
-    def summarize(self, read_counts):
+    def summarize(self, read_counts, prefix=""):
         summary = defaultdict(int)
         maxes = defaultdict(int)
         total_applications = len(self.applications)
         total_judges = len(self.judges)
         for metric, count in list(summary.items()):
-            summary['average %s' % metric] = count / total_applications
+            summary['%s: average %s' % (prefix, metric)] = count / total_applications
         for metric, val in list(maxes.items()):
-            summary['max %s' % metric] = val
+            summary['%s: max %s' % (prefix, metric)] = val
         for metric in self.metrics:
-            summary['total %s' % metric.output_key()] = metric.total
-            summary['max %s' % metric.output_key()] = metric.max_count
+            summary['%s: total %s' % (prefix, metric.output_key())] = metric.total
+            summary['%s: max %s' % (prefix, metric.output_key())] = metric.max_count
             missed_count = len(metric.unsatisfied_apps)
-            summary['missed %s' % metric.output_key()] = missed_count
+            summary['%s: missed %s' % (prefix, metric.output_key())] = missed_count
 
         summary['total_applications'] = total_applications
         summary['total_judges'] = total_judges
