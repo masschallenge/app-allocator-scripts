@@ -4,8 +4,9 @@ class FieldNeed(object):
         self.option_states = option_states
 
     def __str__(self):
-        return "Field(%s, %s)" % (self.field,
-                                  [str(state) for state in self.option_states])
+        return "F(%s, [%s])" % (self.field,
+                                ",".join([str(state)
+                                          for state in self.option_states]))
 
     def __eq__(self, other):
         if isinstance(other, FieldNeed):

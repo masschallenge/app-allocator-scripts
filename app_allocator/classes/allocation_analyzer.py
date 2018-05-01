@@ -16,7 +16,7 @@ from app_allocator.classes.industry_match_metric import IndustryMatchMetric
 from app_allocator.classes.total_reads_metric import TotalReadsMetric
 
 Assignment = namedtuple("Assignment", ["judge", "application"])
-TOTAL_READS_TARGET = 5
+TOTAL_READS_TARGET = 4
 
 
 class AllocationAnalyzer(object):
@@ -81,6 +81,7 @@ class AllocationAnalyzer(object):
         for metric in self.metrics:
             summary['total %s' % metric.output_key()] = metric.total
             summary['max %s' % metric.output_key()] = metric.max_count
+            summary['max app %s' % metric.output_key()] = metric.max_app
             missed_count = len(metric.unsatisfied_apps)
             summary['missed %s' % metric.output_key()] = missed_count
 

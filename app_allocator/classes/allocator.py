@@ -9,10 +9,10 @@ import csv
 import sys
 from random import choice
 
+from app_allocator.classes.application import Application
 from app_allocator.classes.assignments import assign
 from app_allocator.classes.heuristic import find_heuristic
 from app_allocator.classes.judge import Judge
-from app_allocator.classes.application import Application
 
 
 class Allocator(object):

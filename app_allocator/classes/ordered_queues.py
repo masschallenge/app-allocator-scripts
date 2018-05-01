@@ -1,9 +1,10 @@
+from random import choice
 from app_allocator.classes.event import Event
-from app_allocator.classes.field_need import FieldNeed
 from app_allocator.classes.judge_feature import JudgeFeature
 from app_allocator.classes.matching_feature import MatchingFeature
-from app_allocator.classes.option_spec import OptionSpec
 from app_allocator.classes.needs_queue import NeedsQueue
+from app_allocator.classes.option_spec import OptionSpec
+from app_allocator.classes.read_counter import ReadCounter
 
 
 class OrderedQueues(object):
@@ -17,39 +18,38 @@ class OrderedQueues(object):
                                            OptionSpec("Lawyer")]),
                 JudgeFeature("gender", option_specs=[OptionSpec("female"),
                                                      OptionSpec("male")])]
-    expected_reads = 4
-    application_needs = {}  # Mapping of Application to lists of FieldNeeds
     relevant_actions = ["finished", "pass"]
 
     def __init__(self):
+        self.reads = ReadCounter(expected_reads=4)
         self.queues = []
         self.field_queues = {}
         self.application_queues = {}
+        self.application_needs = {}
 
     def setup(self, judges, applications):
         for feature in OrderedQueues.features:
-            feature.calc_initial_options(judges, applications)
-        # TODO: Figure out read queue
-        # self.queues.append(NeedsQueue(count=OrderedQueues.expected_reads))
+            feature.setup(judges, applications)
         self.add_applications(applications)
 
     def add_applications(self, applications):
         for application in applications:
             needs = self._initial_needs(application)
-            OrderedQueues.application_needs[application] = needs
+            self.application_needs[application] = needs
             self._queue_for_needs(application)
 
-    def _queue_for_needs(self, application):
-        needs = OrderedQueues.application_needs[application]
-        self._dequeue(application)
-        queue = self._find_queue(needs)
-        queue.items.append(application)
-        self.application_queues[application] = queue
-
-    def _dequeue(self, application):
-        queue = self.application_queues.get(application)
-        if queue:
-            queue.items.remove(application)
+    def _queue_for_needs(self, application, at_front=False):
+        needs = self.application_needs[application]
+        current_queue = self.application_queues.get(application)
+        new_queue = self._find_queue(needs)
+        if current_queue and new_queue == current_queue:
+            current_queue.move_to_end(application)
+        else:
+            if current_queue:
+                current_queue.remove_application(application)
+            if new_queue:
+                new_queue.add_application(application, at_front)
+            self.application_queues[application] = new_queue
 
     def _find_queue(self, needs):
         for queue in self.queues:
@@ -60,15 +60,12 @@ class OrderedQueues(object):
         return queue
 
     def _initial_needs(self, application):
-        needs = []
-        for feature in OrderedQueues.features:
-            needs.append(FieldNeed(feature.field,
-                                   feature.option_states(application)))
-        return needs
+        return [feature.as_need(application)
+                for feature in OrderedQueues.features]
 
     def work_left(self):
         for queue in self.queues:
-            if len(queue.items) > 0:
+            if queue.work_left() > 0:
                 return True
         return False
 
@@ -82,42 +79,63 @@ class OrderedQueues(object):
 
     def _update_needs(self, action, judge, application):
         if action in OrderedQueues.relevant_actions:
-            needs = OrderedQueues.application_needs[application]
-            new_needs = _calc_new_needs(needs, action, judge)
-            OrderedQueues.application_needs[application] = new_needs
-            self._queue_for_needs(application)
+            # Tests are finding mysterious applications that we
+            # should get to the root of, but for now just consider
+            # applications we know have needs.
+            needs = self.application_needs[application]
+            if action == "finished":
+                self.reads.complete_read(application)
+            if needs:
+                new_needs = _calc_new_needs(needs, action, judge)
+                self.application_needs[application] = new_needs
+                self._remove_assignment(application, judge)
+                self._queue_for_needs(application, at_front=(action == "pass"))
+
+    def _remove_assignment(self, application, judge):
+        queue = self.application_queues[application]
+        queue.remove_assignment(application, judge)
 
     def find_one_application(self, judge):
-        queue = self._find_best_queue(judge)
+        queue, value = self._find_best_queue(judge)
         if queue:
-            return self._next_item(queue, judge)
-        return None
+            application = self._next_item(queue, judge)
+            queue.move_to_end(application)
+            Event(action="select", subject=judge, object=application,
+                  description="{queue}: {value}".format(queue=str(queue),
+                                                        value=value))
+            return application
+        Event(action="from reads")
+        return self.reads.something_that_needs_a_read()
 
     def _find_best_queue(self, judge):
-        best_queue = None
+        best_queues = []
         best_value = -1
         for queue in self.queues:
-            value = queue.judge_value(judge)
-            if value and value > best_value:
-                best_queue = queue
-                best_value = value
-        return best_queue
+            value = queue.judge_value(judge, self.reads)
+            if value:
+                if value > best_value:
+                    best_queues = [queue]
+                    best_value = value
+                elif value == best_value:
+                    best_queues.append(queue)
+        if best_queues:
+            return choice(best_queues), best_value
+        return None, 0
 
     def _next_item(self, queue, judge):
-        for application in queue.items:
-            if queue.assign(judge, application,
-                            OrderedQueues.application_needs[application]):
-                self._queue_for_needs(application)
-                return application
-        return None
+        application = queue.assign_next_application(judge)
+        return application
 
     def assess(self):
         for queue in self.queues:
-            remaining = len(queue.items)
+            remaining = queue.remaining()
             if remaining > 0:
+                description = "{remaining} item(s) left: {example}".format(
+                    remaining=remaining,
+                    example=queue.items[0].properties)
                 Event(action="fail",
                       subject=queue,
-                      description="{} item(s) left".format(remaining))
+                      description=description)
             else:
                 Event(action="complete",
                       subject=queue)

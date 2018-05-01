@@ -79,7 +79,8 @@ class TestOrderedQueues(object):
     def test_no_application(self):
         allocator = _allocator(applications=[])
         judge = allocator.judges[0]
-        assert allocator.heuristic.find_one_application(judge) is None
+        tmp = allocator.heuristic.find_one_application(judge)
+        assert tmp is None
 
     def test_assess_failure(self):
         self.assess_helper(_allocator(), "fail")
