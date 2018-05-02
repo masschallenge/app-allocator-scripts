@@ -3,7 +3,9 @@ from app_allocator.classes.entity import Entity
 from app_allocator.classes.property import Property
 from app_allocator.classes.event import Event
 
-CHANCE_OF_PASS = 0.04
+# This is based on a comparison of commitment to completed for 2017
+# We should eventually compute this from the actual data
+CHANCE_OF_PASS = 0.152773932
 
 
 class Judge(Entity):
