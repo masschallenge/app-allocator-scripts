@@ -25,17 +25,18 @@ class AllocationAnalyzer(object):
         self.applications = {}
         self.assigned = []
         self.completed = []
-        self.metrics = [ProgramMatchMetric(1),
+        self.metrics = [TotalReadsMetric(TOTAL_READS_TARGET),
                         IndustryMatchMetric(1),
-                        TotalReadsMetric(TOTAL_READS_TARGET)]
+                        ProgramMatchMetric(1),
+                        ]
         self.metrics.extend([
             JudgeRoleDistributionMetric('Lawyer', 1),
             JudgeRoleDistributionMetric('Executive', 2),
             JudgeRoleDistributionMetric('Investor', 1),
             JudgeRoleDistributionMetric('Other', 0)])
         self.metrics.extend([
-            GenderDistributionMetric('male', 0),
-            GenderDistributionMetric('female', 1)])
+            GenderDistributionMetric('female', 1),
+            GenderDistributionMetric('male', 0)])
 
     def process_scenario_from_csv(self, input_file):
         reader = open_csv_reader(input_file)
