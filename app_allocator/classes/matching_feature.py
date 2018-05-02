@@ -5,8 +5,8 @@ from app_allocator.classes.option_state import OptionState
 
 
 class MatchingFeature(Feature):
-    def __init__(self, field, count=1, option_specs=None):
-        super().__init__(field, option_specs)
+    def __init__(self, field, weight=.5, count=1, option_specs=None):
+        super().__init__(field, weight, option_specs)
         self.count = count
 
     def as_need(self, application):

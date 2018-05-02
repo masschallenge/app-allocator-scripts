@@ -24,6 +24,9 @@ class Entity(object):
         return self.properties.get(
             "name", "{type} {id}".format(type=self.type, id=self.id()))
 
+    def __repr__(self):
+        return str(self)
+    
     def id(self):
         return self.properties["id"]
 
