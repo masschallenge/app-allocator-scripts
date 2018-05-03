@@ -37,6 +37,17 @@ completed = Property("completed", [(30, 0.1),
                                    (60, 0.9),
                                    (70, 1.0)])
 
+# Discretized normal distribution
+zscore = Property("zscore", [(-2.0, 0.0228),
+                             (-1.0, 0.1587),
+                             (-0.5, 0.3085),
+                             (-0.25, 0.4013),
+                             (0.0, 1 - 0.4013),
+                             (0.25, 1 - 0.3085),
+                             (0.5, 1 - 0.1587),
+                             (1.0, 1 - 0.228),
+                             (2.0, 1)])
+
 
 def property_value(property, data):
     if data:

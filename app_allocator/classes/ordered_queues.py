@@ -81,9 +81,8 @@ class OrderedQueues(object):
 
     def _update_needs(self, action, judge, application):
         if action in OrderedQueues.relevant_actions:
-            # Tests are finding mysterious applications that we
-            # should get to the root of, but for now just consider
-            # applications we know have needs.
+            if action == "finished":
+                application.add_read_with_zscore(judge.zscore())
             needs = self.application_needs[application]
             if needs:
                 new_needs = _calc_new_needs(needs, action, judge)
@@ -138,6 +137,13 @@ class OrderedQueues(object):
             else:
                 Event(action="complete",
                       subject=queue)
+#         self.assess_zscore()
+
+#     def assess_zscore(self):
+#         for application in self.application_needs.keys():
+#             Event(action="final_zscore", subject=application,
+#                   object=application.zscore(),
+#                   description=application.read_count())
 
 
 def _calc_new_needs(needs, action, judge):
