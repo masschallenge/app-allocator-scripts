@@ -14,7 +14,7 @@ class JudgeFeature(Feature):
 
     def initial_need(self, startup, value):
         d =  dict([(spec.option, spec.count) for spec in self.option_specs])
-        return d.get(value, 0)
+        return float(d.get(value, 0))
 
     def option_states(self, _):
         return [OptionState(spec.option, spec.count)

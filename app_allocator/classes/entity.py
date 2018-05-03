@@ -50,6 +50,9 @@ class Entity(object):
         return self.properties.get(key, "")
 
 
+    def __deepcopy__(self, memo):
+        return self
+    
 def csv_output(entities):
     print(CSV_HEADER)
     for entity in entities:

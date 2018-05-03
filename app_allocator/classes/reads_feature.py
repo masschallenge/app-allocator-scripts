@@ -2,7 +2,7 @@ from app_allocator.classes.read_need import ReadNeed
 
 
 class ReadsFeature(object):
-    def __init__(self, count, weight=.1):
+    def __init__(self, count, weight=.5):
         self.count = count
         self.field = "reads"
         self.weight = weight
@@ -14,5 +14,5 @@ class ReadsFeature(object):
         return ReadNeed(count=self.count)
 
     def initial_need(self, startup, value):
-        return self.count
+        return float(self.count)
     

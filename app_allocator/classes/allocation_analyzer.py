@@ -52,12 +52,12 @@ class AllocationAnalyzer(object):
     def process_allocations_from_csv(self, input_file):
         reader = open_csv_reader(input_file)
         for row in reader:
-            judge = self.judges.get(row['subject'])
-            application = self.applications.get(row['object'])
-            if row['action'] == "assigned":
+            judge = self.judges.get(row.get('subject'))
+            application = self.applications.get(row.get('object'))
+            if row.get('action') == "assigned":
                 self.assigned.append(Assignment(judge, application))
 
-            elif row['action'] == "finished":
+            elif row.get('action') == "finished":
                 self.completed.append(Assignment(judge, application))
 
     def analyze(self, assignments):
