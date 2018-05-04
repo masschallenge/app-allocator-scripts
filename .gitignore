@@ -105,3 +105,4 @@ ENV/
 test_data/
 
 .pytest_cache
+.DS_Store
