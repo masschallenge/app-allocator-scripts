@@ -96,7 +96,6 @@ FULL_APPLICATION_SET = [
 ]
 
 
-
 EXAMPLE_APPLICATION_DATA = EntityData('application',
                                       'Organization 4676',
                                       'General',
