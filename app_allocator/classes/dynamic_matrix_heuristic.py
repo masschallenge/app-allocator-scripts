@@ -144,24 +144,30 @@ class DynamicMatrixHeuristic(object):
                 if (key, val) in self.application_needs[application]:
                     self.application_needs[application][(key, val)] = (
                         max(0, self.application_needs[application][(key, val)] - self.feature_weights[(key, val)]))
+                    if self.application_needs[application][(key, val)] == 0:
+                        self.update_needs_and_features(key, val)
         if action == "pass":
             pass
 
+
+    def update_needs_and_features(self, key, val):
+        if not any([row[(key, val)] for row in self.application_needs.values()]):
+            for app in self.application_needs.keys():
+                del(self.application_needs[app][(key, val)])
+            self.feature_values = tuple([(k, v) for k, v in self.feature_values
+                                         if not(k.field == key and v == val)])
+            self.feature_weights = self._feature_weights()
+            self._judge_features = {}
+            
     def judge_features(self, judge):
         if judge not in self._judge_features:
             row = OrderedDict({feature_value: 0
                                for feature_value in self.feature_values})
             for feature in self.features:
-                row[(feature, judge[feature.field])] = 1
+                if (feature, judge[feature.field]) in self.feature_values:
+                    row[(feature, judge[feature.field])] = 1
             self._judge_features[judge] = matrix(list(row.values()))
         return self._judge_features[judge]
-
-    def _calc_judge_application_weights(self, judge):
-        judge_id = self.judges.index(judge)
-        judge_feature_vector = self.judge_matrix[judge_id]
-        application_needs_matrix = self.application_needs()
-        return judge_feature_vector * application_needs_matrix.transpose()
-
 
     def pick_n_judges(self,
                       judge_capacities,
