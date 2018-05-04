@@ -1,8 +1,8 @@
 type,name,industry,program,role,gender,commitment,completed
-judge,judge 1,General,Boston,Lawyer,male,50,60
+judge,judge 1,General,Boston,Lawyer,male,100,60
 judge,judge 4,High Tech,Israel,Other,female,30,30
 judge,judge 5,Social Impact,Boston,Executive,male,60,50
-judge,judge 6,General,Switzerland,Lawyer,male,50,50
+judge,judge 6,General,Switzerland,Lawyer,male,60,50
 judge,judge 8,Healthcare / Life Sciences,Switzerland,Other,male,40,60
 judge,judge 9,General,Boston,Investor,female,30,40
 judge,judge 10,High Tech,Boston,Investor,female,50,50

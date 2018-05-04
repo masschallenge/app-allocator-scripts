@@ -77,32 +77,33 @@ class DynamicMatrixHeuristic(object):
         if app:
             self.judge_assignments[judge].append(app)
             self.app_assignments[app].append(judge)
-            self.judge_capacities[judge] -= 0
+            self.judge_capacities[judge] -= 1
             return app
         else:
             return self.find_any_application(judge)
 
-
     def find_any_application(self, judge):
-        apps = (set(range(len(self.applications))) -
+        apps = (set(self.applications) -
                 set(self.judge_assignments[judge]))
         if apps:
-            return self.applications[choice(list(apps))]
+            return choice(list(apps))
         return None
 
     def choose_one_application(self, judge, application_preferences):
-        max_preference = application_preferences.max()
-        choices = [i for i, val in enumerate(application_preferences.tolist()[0])
-                   if val == max_preference]
-        app_index = choice(choices)
-        return self.applications[app_index]
+        applications = [(self.applications[i], val) for i, val in enumerate(application_preferences.tolist()[0])]
+        applications = [(application, val) for (application, val) in applications
+                        if application  not in self.judge_assignments[judge]]
+        max_preference = max([val for _, val in applications])
+        options = [application for application, val in applications if val==max_preference]
+        if options:
+            return choice(options)
+        return None
     
     def _feature_values(self, entity_sets):
         return tuple(set([(feature, entity[feature.field])
                           for entities in entity_sets                          
                           for entity in entities
-                          for feature in self.features
-                          ]))
+                          for feature in self.features]))
 
     def _feature_weights(self):
         return array([feature.weight for feature, _ in self.feature_values])
@@ -127,13 +128,10 @@ class DynamicMatrixHeuristic(object):
         return array(rows)
 
     def _update_needs(self, action, judge, application):
-        if application in self.pending_assignments:
-            self.pending_assignments[judge].remove(application)
         if action == "finished":
-            self.completed_assignments[judge].append(application)
             for key, val in judge.properties.items():
                 if (key, val) in self.application_needs[application]:
-                    self.application_needs[application][(key, val)] -= 1
+                    self.application_needs[application][(key, val)] = max(0, self.application_needs[application][(key, val)] - 1)
 
         if action == "pass":
             pass
