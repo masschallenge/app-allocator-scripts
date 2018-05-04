@@ -47,7 +47,7 @@ class MatchingFeature(Feature):
 
     def initial_need(self, startup, value):
         if startup.properties.get(self.field) == value:
-            return float(self.count)
+            return float(self.count) * self.weight
         else:
             return 0.0
 

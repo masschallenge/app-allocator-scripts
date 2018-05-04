@@ -14,5 +14,5 @@ class ReadsFeature(object):
         return ReadNeed(count=self.count)
 
     def initial_need(self, startup, value):
-        return float(self.count)
+        return float(self.count) * self.weight
     

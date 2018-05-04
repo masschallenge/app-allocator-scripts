@@ -13,19 +13,19 @@ class DynamicMatrixHeuristic(object):
     ticks = 0
     name = "dynamic_matrix"
     features = [MatchingFeature("industry",
-                                weight=1.0),
+                                weight=1),
                 MatchingFeature("program",
-                                weight=1.5),
+                                weight=1),
                 JudgeFeature("role",
-                             weight=1.0,
+                             weight=1,
                              option_specs=[OptionSpec("Executive", 2),
                                            OptionSpec("Investor"),
                                            OptionSpec("Lawyer")]),
                 JudgeFeature("gender",
-                             weight=1.5,
+                             weight=.2,
                              option_specs=[OptionSpec("female"),
                                            OptionSpec("male")]),
-                ReadsFeature(count=4, weight=.25)]
+                ReadsFeature(count=4, weight=.2)]
 
     expected_reads = 4
 
@@ -36,6 +36,7 @@ class DynamicMatrixHeuristic(object):
         self.applications = tuple(applications)
         self.feature_values = self._feature_values([judges, applications])
         self._judge_features = {}
+        self.feature_weights = self._feature_weights()
         self.judge_assignments = defaultdict(list)
         self.app_assignments = defaultdict(list)
         self.judge_capacities = self._calc_judge_capacities()
@@ -79,8 +80,8 @@ class DynamicMatrixHeuristic(object):
         if app:
             # if self.ticks > 6000 and self.ticks % 1000== 0:
             #     import pdb; pdb.set_trace()
-            if "dummy" in judge['name']:
-                import pdb; pdb.set_trace()
+            # if "dummy" in judge['name']:
+            #     import pdb; pdb.set_trace()
             self.judge_assignments[judge].append(app)
             self.app_assignments[app].append(judge)
             self.judge_capacities[judge] -= 1
@@ -113,14 +114,16 @@ class DynamicMatrixHeuristic(object):
                           for feature in self.features]))
 
     def _feature_weights(self):
-#        return array([feature.weight for feature, _ in self.feature_values])
-        return array([1 for feature, _ in self.feature_values])
+        return {(feature.field, value):feature.weight for feature, value in self.feature_values}
+#        return array([1 for feature, _ in self.feature_values])
 
     def initial_application_needs(self):
         needs = OrderedDict()
+        
         for application in self.applications:
-            row = OrderedDict({(feature.field, value): feature.initial_need(application, value)
+            row = OrderedDict({(feature.field, value): feature.initial_need(application, value) 
                                for feature, value in self.feature_values})
+            
             needs[application] = row
         return needs
 
@@ -139,8 +142,8 @@ class DynamicMatrixHeuristic(object):
         if action == "finished":
             for key, val in judge.properties.items():
                 if (key, val) in self.application_needs[application]:
-                    self.application_needs[application][(key, val)] = max(0, self.application_needs[application][(key, val)] - 1)
-            # self.application_needs[application][("reads", "")] = max(0, self.application_needs[application][("reads","")] - 1)
+                    self.application_needs[application][(key, val)] = (
+                        max(0, self.application_needs[application][(key, val)] - self.feature_weights[(key, val)]))
         if action == "pass":
             pass
 
