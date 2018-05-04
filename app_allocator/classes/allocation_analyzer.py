@@ -1,5 +1,6 @@
 from csv import DictReader
 from collections import (
+    Counter, 
     defaultdict,
     namedtuple,
 )
@@ -61,15 +62,24 @@ class AllocationAnalyzer(object):
                 self.completed.append(Assignment(judge, application))
 
     def analyze(self, assignments):
+        for metric in self.metrics:
+            metric.total = 0
         read_counts = {application['name']: defaultdict(int)
                        for application in self.applications.values()}
         for assignment in assignments:
             for metric in self.metrics:
                 metric.evaluate(assignment, read_counts)
-
         return read_counts
 
     def summarize(self, read_counts, prefix=""):
+        dupes = self.detect_duplicate_assignments()
+        if dupes:
+            print ("Duplicate assignments detected!")
+            for dupe, count in dupes:
+                print ("%s assigned to %s %d times" % (
+                    dupe.application,
+                    dupe.judge,
+                    count))
         summary = defaultdict(int)
         maxes = defaultdict(int)
         total_applications = len(self.applications)
@@ -88,6 +98,8 @@ class AllocationAnalyzer(object):
         summary['total_judges'] = total_judges
         return summary
 
+    def detect_duplicate_assignments(self):
+        return [(k, v) for k, v in Counter(self.assigned).items() if v > 1]
 
 def quick_setup(scenario='example.csv', allocation='tmp.out'):
     aa = AllocationAnalyzer()
