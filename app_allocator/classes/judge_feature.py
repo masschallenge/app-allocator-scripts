@@ -7,7 +7,7 @@ class JudgeFeature(Feature):
     def setup(self, judges, applications):
         pass
 
-    def as_need(self, _):
+    def as_need(self, application):
         return FieldNeed(self.field,
                          [OptionState(spec.option, spec.count)
                           for spec in self.option_specs])

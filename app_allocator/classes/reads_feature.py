@@ -8,5 +8,5 @@ class ReadsFeature(object):
     def setup(self, judges, applications):
         pass
 
-    def as_need(self, _):
+    def as_need(self, application):
         return ReadNeed(count=self.count)

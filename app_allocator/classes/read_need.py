@@ -10,7 +10,7 @@ class ReadNeed(object):
             return self.count == other.count
         return NotImplemented  # pragma: nocover
 
-    def process_action(self, action, _):
+    def process_action(self, action, judge):
         if action == "finished":
             self.count = max(0, self.count - 1)
 
