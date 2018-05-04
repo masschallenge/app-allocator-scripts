@@ -45,7 +45,7 @@ class Allocator(object):
             judge = choice(self.judges)
             self.heuristic.process_judge_events(judge.complete_applications())
             self.assign_applications(judge)
-            if judge.remaining <= 0 and not judge.applications:
+            if judge.remaining <= 0 and not judge.current_applications:
                 self.judges.remove(judge)
 
     def assign_applications(self, judge):
@@ -55,7 +55,7 @@ class Allocator(object):
                 assign(judge, application)
             else:
                 break
-        if not judge.applications:
+        if not judge.current_applications:
             judge.mark_as_done()
 
     def assess(self):

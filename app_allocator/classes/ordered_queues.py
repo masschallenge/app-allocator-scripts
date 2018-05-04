@@ -81,8 +81,7 @@ class OrderedQueues(object):
 
     def _update_needs(self, action, judge, application):
         if action in OrderedQueues.relevant_actions:
-            if action == "finished":
-                application.add_read_with_zscore(judge.zscore())
+            application.process_judge_action(action, judge)
             needs = self.application_needs[application]
             if needs:
                 new_needs = _calc_new_needs(needs, action, judge)

@@ -1,37 +1,17 @@
-from app_allocator.classes.utils import expected_average
-
-
-assignments = {}
-application_zscores = {}
-
-DO_ZSCORE_CHECK = True
-
-
 def assign(judge, application):
     if application:
         judge.add_application(application)
-        judge_assignments = assignments.get(judge.id(), set())
-        judge_assignments.add(application.id())
-        assignments[judge.id()] = judge_assignments
+        application.assign_judge(judge)
 
 
 def can_be_assigned(judge, application):
-    if has_been_assigned(judge, application):
+    if application in judge.all_applications:
         return False
-    count = application.read_count()
+    count = application.zscore_count
     if count == 0:
         return True
-    if DO_ZSCORE_CHECK:
-        current = application.zscore()
-        expected = expected_average(judge.zscore(), current, count)
-        return zscore_check(current, expected, count)
-    return True
-
-
-def has_been_assigned(judge, application):
-    id = judge.id()
-    return ((id in assignments) and
-            (application.id() in assignments.get(id, set())))
+    expected = application.expected_zscore(judge.zscore())
+    return zscore_check(application.estimated_zscore(), expected, count)
 
 
 def second_read(current, expected):

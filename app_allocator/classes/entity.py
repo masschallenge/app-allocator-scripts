@@ -28,9 +28,6 @@ class Entity(object):
     def id(self):
         return self.properties["id"]
 
-    def zscore(self):
-        return float(self.properties.get("zscore", 0.0))
-
     def csv(self):
         return CSV_FORMAT.format(
             type=self.type,
