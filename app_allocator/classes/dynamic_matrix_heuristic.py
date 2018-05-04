@@ -31,21 +31,23 @@ class DynamicMatrixHeuristic(object):
 
     def setup(self, judges, applications):
         self.judges = tuple(judges)
+        for judge in self.judges:
+            judge.properties["reads"] = ""
         self.applications = tuple(applications)
         self.feature_values = self._feature_values([judges, applications])
         self._judge_features = {}
         self.judge_assignments = defaultdict(list)
         self.app_assignments = defaultdict(list)
-        self.judge_capacities = self._calc_judge_capacities()        
+        self.judge_capacities = self._calc_judge_capacities()
         self.application_needs = self.initial_application_needs()
-        
+
     def process_judge_events(self, events):
         for event in events:
             action = event.fields.get("action")
             judge = event.fields.get("subject")
             application = event.fields.get("object")
-            if action and judge and application:
-                self._update_needs(action, judge, application)
+            # if action and judge and application:
+            #     self._update_needs(action, judge, application)
 
     def assess(self):
         pass
@@ -69,15 +71,20 @@ class DynamicMatrixHeuristic(object):
         # choose one application
         # do the necessary bookkeeping
         # return application
-
+        self.ticks += 1
         judge_features = self.judge_features(judge)
         needs_matrix = matrix([list(row.values()) for _, row in self.application_needs.items()])
         application_preferences = judge_features * needs_matrix.transpose()
         app = self.choose_one_application(judge, application_preferences)
         if app:
+            # if self.ticks > 6000 and self.ticks % 1000== 0:
+            #     import pdb; pdb.set_trace()
+            if "dummy" in judge['name']:
+                import pdb; pdb.set_trace()
             self.judge_assignments[judge].append(app)
             self.app_assignments[app].append(judge)
             self.judge_capacities[judge] -= 1
+            self._update_needs("finished", judge, app)
             return app
         else:
             return self.find_any_application(judge)
@@ -92,22 +99,23 @@ class DynamicMatrixHeuristic(object):
     def choose_one_application(self, judge, application_preferences):
         applications = [(self.applications[i], val) for i, val in enumerate(application_preferences.tolist()[0])]
         applications = [(application, val) for (application, val) in applications
-                        if application  not in self.judge_assignments[judge]]
+                        if application not in self.judge_assignments[judge]]
         max_preference = max([val for _, val in applications])
         options = [application for application, val in applications if val==max_preference]
         if options:
             return choice(options)
         return None
-    
+
     def _feature_values(self, entity_sets):
         return tuple(set([(feature, entity[feature.field])
-                          for entities in entity_sets                          
+                          for entities in entity_sets
                           for entity in entities
                           for feature in self.features]))
 
     def _feature_weights(self):
-        return array([feature.weight for feature, _ in self.feature_values])
-    
+#        return array([feature.weight for feature, _ in self.feature_values])
+        return array([1 for feature, _ in self.feature_values])
+
     def initial_application_needs(self):
         needs = OrderedDict()
         for application in self.applications:
@@ -132,7 +140,7 @@ class DynamicMatrixHeuristic(object):
             for key, val in judge.properties.items():
                 if (key, val) in self.application_needs[application]:
                     self.application_needs[application][(key, val)] = max(0, self.application_needs[application][(key, val)] - 1)
-
+            # self.application_needs[application][("reads", "")] = max(0, self.application_needs[application][("reads","")] - 1)
         if action == "pass":
             pass
 
@@ -143,14 +151,14 @@ class DynamicMatrixHeuristic(object):
             for feature in self.features:
                 row[(feature, judge[feature.field])] = 1
             self._judge_features[judge] = matrix(list(row.values()))
-        return self._judge_features[judge]        
-        
+        return self._judge_features[judge]
+
     def _calc_judge_application_weights(self, judge):
         judge_id = self.judges.index(judge)
         judge_feature_vector = self.judge_matrix[judge_id]
         application_needs_matrix = self.application_needs()
         return judge_feature_vector * application_needs_matrix.transpose()
-        
+
 
     def pick_n_judges(self,
                       judge_capacities,
@@ -176,4 +184,3 @@ def set_up_allocator(input_csv="example.csv"):
     alloc.read_entities()
     alloc.setup()
     return alloc, alloc.heuristic
-
