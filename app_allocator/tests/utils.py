@@ -23,6 +23,80 @@ EXAMPLE_JUDGE_DATA = EntityData('judge',
                                 'female',
                                 '10',
                                 '10')
+FULL_JUDGE_SET = [
+    EntityData('judge',
+               'high-tech-boston-executive-female',
+               'High Tech',
+               'Boston',
+               'Executive',
+               'female',
+               '10',
+               '10'),
+    EntityData('judge',
+               'clean-tech-switzerland-executive-male',
+               'Energy / Clean Tech',
+               'Switzerland',
+               'Executive',
+               'male',
+               '10',
+               '10'),
+    EntityData('judge',
+               'general-israel-lawyer-male',
+               'General',
+               'Israel',
+               'Lawyer',
+               'male',
+               '10',
+               '10'),
+    EntityData('judge',
+               'healthcare-boston-investor-female',
+               'Healthcare / Life Sciences',
+               'Boston',
+               'Investor',
+               'female',
+               '10',
+               '10'),
+    EntityData('judge',
+               'social-impact-switzerland-other-male',
+               'Social Impact',
+               'Switzerland',
+               'Other',
+               'male',
+               '10',
+               '10'),
+]
+
+
+FULL_APPLICATION_SET = [
+    EntityData('application',
+               'Boston Clean Tech App',
+               'Energy / Clean Tech',
+               'Boston',
+               '', '', '', ''),
+    EntityData('application',
+               'Switzerland General App',
+               'General',
+               'Switzerland',
+               '', '', '', ''),
+    EntityData('application',
+               'Israel Healthcare App',
+               'Healthcare / Life Sciences',
+               'Israel',
+               '', '', '', ''),
+    EntityData('application',
+               'Boston High Tech App',
+               'High Tech',
+               'Boston',
+               '', '', '', ''),
+    EntityData('application',
+               'Switzerland Social Impact App',
+               'Social Impact',
+               'Switzerland',
+               '', '', '', ''),
+]
+
+
+
 EXAMPLE_APPLICATION_DATA = EntityData('application',
                                       'Organization 4676',
                                       'General',
@@ -72,6 +146,10 @@ def multiple_application_scenario_csv(*args):
 
 def no_application_scenario_csv(*args):
     return pseudofile(data_rows=[EXAMPLE_JUDGE_DATA])
+
+
+def satisfiable_scenario_csv(*args):
+    return pseudofile(data_rows=FULL_JUDGE_SET + FULL_APPLICATION_SET)
 
 
 def assert_only_these_fields_in_csv_row(fields, csv_row):
