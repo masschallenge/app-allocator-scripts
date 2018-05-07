@@ -1,34 +1,22 @@
 from random import choice
 from app_allocator.classes.event import Event
-from app_allocator.classes.judge_feature import JudgeFeature
-from app_allocator.classes.matching_feature import MatchingFeature
+from app_allocator.classes.feature_reader import FeatureReader
 from app_allocator.classes.needs_queue import NeedsQueue
-from app_allocator.classes.option_spec import OptionSpec
-from app_allocator.classes.reads_feature import ReadsFeature
 
 
 class OrderedQueues(object):
     name = "ordered_queues"
-
-    features = [MatchingFeature("industry"),
-                MatchingFeature("program"),
-                JudgeFeature("role",
-                             option_specs=[OptionSpec("Executive", 2),
-                                           OptionSpec("Investor"),
-                                           OptionSpec("Lawyer")]),
-                JudgeFeature("gender", option_specs=[OptionSpec("female"),
-                                                     OptionSpec("male")]),
-                ReadsFeature(count=4)]
     relevant_actions = ["finished", "pass"]
 
-    def __init__(self):
+    def __init__(self, feature_file=None):
+        self.features = FeatureReader(feature_file).all()
         self.queues = []
         self.field_queues = {}
         self.application_queues = {}
         self.application_needs = {}
 
     def setup(self, judges, applications):
-        for feature in OrderedQueues.features:
+        for feature in self.features:
             feature.setup(judges, applications)
         self.add_applications(applications)
 
@@ -63,7 +51,7 @@ class OrderedQueues(object):
 
     def _initial_needs(self, application):
         return [feature.as_need(application)
-                for feature in OrderedQueues.features]
+                for feature in self.features]
 
     def work_left(self):
         for queue in self.queues:
