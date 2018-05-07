@@ -108,13 +108,10 @@ class OrderedQueues(object):
         best_queues = []
         best_value = -1
         for queue in self.queues:
-            value = queue.judge_value(judge)
-            if value:
-                if value > best_value:
-                    best_queues = [queue]
-                    best_value = value
-                elif value == best_value:
-                    best_queues.append(queue)
+            best_value, best_queues = _evaluate_queue_for_judge(queue,
+                                                                judge,
+                                                                best_value,
+                                                                best_queues)
         if best_queues:
             return choice(best_queues), best_value
         return None, 0
@@ -152,3 +149,13 @@ def _calc_new_needs(needs, action, judge):
         if field_need.unsatisfied():
             result.append(field_need)
     return result
+
+
+def _evaluate_queue_for_judge(queue, judge, old_value, queues):
+    new_value = queue.judge_value(judge)
+    if new_value:
+        if new_value > old_value:
+            return new_value, [queue]
+        if new_value == old_value:
+            queues.append(queue)
+    return old_value, queues
