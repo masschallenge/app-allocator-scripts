@@ -6,6 +6,8 @@ from app_allocator.classes.needs_queue import NeedsQueue
 from app_allocator.classes.option_spec import OptionSpec
 from app_allocator.classes.reads_feature import ReadsFeature
 
+ZSCORE_REPORT = False
+
 
 class OrderedQueues(object):
     name = "ordered_queues"
@@ -133,13 +135,14 @@ class OrderedQueues(object):
             else:
                 Event(action="complete",
                       subject=queue)
-#         self.assess_zscore()
+        if ZSCORE_REPORT:
+            self.assess_zscore()
 
-#     def assess_zscore(self):
-#         for application in self.application_needs.keys():
-#             Event(action="final_zscore", subject=application,
-#                   object=application.zscore(),
-#                   description=application.read_count())
+    def assess_zscore(self):
+        for application in self.application_needs.keys():
+            Event(action="final_zscore", subject=application,
+                  object=application.zscore(),
+                  description=application.read_count())
 
 
 def _calc_new_needs(needs, action, judge):
