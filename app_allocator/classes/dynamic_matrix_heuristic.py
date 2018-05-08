@@ -67,14 +67,13 @@ class DynamicMatrixHeuristic(object):
                 capacities[judge] = capacity
         return capacities
 
+    def _calc_needs_matrix(self):
+        return matrix([list(row.values()) for _, row in self.application_needs.items()])
+    
     def find_one_application(self, judge):
-        # calculate preferred application vector
-        # choose one application
-        # do the necessary bookkeeping
-        # return application
         self.ticks += 1
         judge_features = self.judge_features(judge)
-        needs_matrix = matrix([list(row.values()) for _, row in self.application_needs.items()])
+        needs_matrix = self._calc_needs_matrix()
         application_preferences = judge_features * needs_matrix.transpose()
         app = self.choose_one_application(judge, application_preferences)
         if app:
@@ -98,15 +97,23 @@ class DynamicMatrixHeuristic(object):
         return None
 
     def choose_one_application(self, judge, application_preferences):
-        applications = [(self.applications[i], val) for i, val in enumerate(application_preferences.tolist()[0])]
-        applications = [(application, val) for (application, val) in applications
-                        if application not in self.judge_assignments[judge]]
-        max_preference = max([val for _, val in applications])
-        options = [application for application, val in applications if val==max_preference]
-        if options:
-            return choice(options)
-        return None
+        applications = (array(self.applications)[application_preferences.argsort()]).flat
+        
+        can_assign_to_judge = self._can_assign_func(judge)
+        applications = filter(can_assign_to_judge, applications)
+        return next (applications)
 
+
+    def _can_assign_func(self, judge):
+        '''returns a function which takes an application and returns True
+        if the application can be assigned to the judge.
+        Presumably this is where we'll put the z-score logic as well.
+        '''
+        def can_assign_to_judge(application):
+            return application not in self.judge_assignments[judge]
+        
+        return can_assign_to_judge
+    
     def _feature_values(self, entity_sets):
         return tuple(set([(feature, entity[feature.field])
                           for entities in entity_sets
@@ -143,7 +150,9 @@ class DynamicMatrixHeuristic(object):
             for key, val in judge.properties.items():
                 if (key, val) in self.application_needs[application]:
                     self.application_needs[application][(key, val)] = (
-                        max(0, self.application_needs[application][(key, val)] - self.feature_weights[(key, val)]))
+                        max(0,
+                            self.application_needs[application][(key, val)]
+                            - self.feature_weights[(key, val)]))
                     if self.application_needs[application][(key, val)] == 0:
                         self.update_needs_and_features(key, val)
         if action == "pass":
