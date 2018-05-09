@@ -6,8 +6,11 @@ from app_allocator.classes.needs_queue import NeedsQueue
 from app_allocator.classes.option_spec import OptionSpec
 from app_allocator.classes.reads_feature import ReadsFeature
 
+ZSCORE_REPORT = False
+
 
 class OrderedQueues(object):
+    BATCH_HEURISTIC = False
     name = "ordered_queues"
 
     features = [MatchingFeature("industry"),
@@ -81,9 +84,7 @@ class OrderedQueues(object):
 
     def _update_needs(self, action, judge, application):
         if action in OrderedQueues.relevant_actions:
-            # Tests are finding mysterious applications that we
-            # should get to the root of, but for now just consider
-            # applications we know have needs.
+            application.process_judge_action(action, judge)
             needs = self.application_needs[application]
             if needs:
                 new_needs = _calc_new_needs(needs, action, judge)
@@ -110,13 +111,10 @@ class OrderedQueues(object):
         best_queues = []
         best_value = -1
         for queue in self.queues:
-            value = queue.judge_value(judge)
-            if value:
-                if value > best_value:
-                    best_queues = [queue]
-                    best_value = value
-                elif value == best_value:
-                    best_queues.append(queue)
+            best_value, best_queues = _evaluate_queue_for_judge(queue,
+                                                                judge,
+                                                                best_value,
+                                                                best_queues)
         if best_queues:
             return choice(best_queues), best_value
         return None, 0
@@ -138,6 +136,14 @@ class OrderedQueues(object):
             else:
                 Event(action="complete",
                       subject=queue)
+        if ZSCORE_REPORT:
+            self.assess_zscore()
+
+    def assess_zscore(self):
+        for application in self.application_needs.keys():
+            Event(action="final_zscore", subject=application,
+                  object=application.zscore(),
+                  description=application.read_count())
 
 
 def _calc_new_needs(needs, action, judge):
@@ -147,3 +153,13 @@ def _calc_new_needs(needs, action, judge):
         if field_need.unsatisfied():
             result.append(field_need)
     return result
+
+
+def _evaluate_queue_for_judge(queue, judge, old_value, queues):
+    new_value = queue.judge_value(judge)
+    if new_value:
+        if new_value > old_value:
+            return new_value, [queue]
+        if new_value == old_value:
+            queues.append(queue)
+    return old_value, queues

@@ -1,7 +1,7 @@
-from random import choice
+from random import choices
 from collections import defaultdict, OrderedDict
 from numpy import matrix, array
-from app_allocator.classes.judge import CHANCE_OF_PASS
+from app_allocator.classes.judge import DEFAULT_CHANCE_OF_PASS
 from app_allocator.classes.judge_feature import JudgeFeature
 from app_allocator.classes.reads_feature import ReadsFeature
 from app_allocator.classes.matching_feature import MatchingFeature
@@ -10,11 +10,12 @@ from app_allocator.classes.option_spec import OptionSpec
 REFRESH_TIME = 1000
 N = 1
 
-CHANCE_OF_PASS = .15
+CHANCE_OF_PASS = DEFAULT_CHANCE_OF_PASS
 ASSIGNED_VALUE = 1 - CHANCE_OF_PASS
 FINISHED_VALUE = CHANCE_OF_PASS
 
 class DynamicMatrixHeuristic(object):
+    BATCH_HEURISTIC = True
     ticks = 0
     name = "dynamic_matrix"
     features = [MatchingFeature("industry",
@@ -75,6 +76,9 @@ class DynamicMatrixHeuristic(object):
         return capacities
     
     def find_one_application(self, judge):
+        return self.request_batch(judge, 1)[0]
+
+    def request_batch(self, judge, batch_size):
         # calculate preferred application vector
         # choose one application
         # do the necessary bookkeeping
@@ -84,8 +88,8 @@ class DynamicMatrixHeuristic(object):
         needs_matrix = matrix([list(row.values()) for _, row in self.application_needs.items()])
         application_preferences = judge_features * needs_matrix.transpose()
 #        import pdb; pdb.set_trace()                                    
-        app = self.choose_one_application(judge, application_preferences)
-        if app:
+        apps = self.choose_n_applications(judge, application_preferences, batch_size)
+        for app in apps:
             # if self.ticks > 6000 and self.ticks % 1000== 0:
             #     import pdb; pdb.set_trace()
             # if "dummy" in judge['name']:
@@ -94,35 +98,13 @@ class DynamicMatrixHeuristic(object):
             self.app_assignments[app].append(judge)
             self.judge_capacities[judge] -= 1
             self._update_needs("assigned", judge, app)
-            return app
-        else:
-            return self.find_any_application(judge)
-        
-    def find_any_application(self, judge):
-        apps = (set(self.applications) -
-                set(self.judge_assignments[judge]))
-        if apps:
-            return choice(list(apps))
-        return None
-
-    def choose_one_application(self, judge, application_preferences):
-
-        old_applications = [(self.applications[i], val) for i, val in enumerate(application_preferences.tolist()[0])]
-        old_applications = [(application, val) for (application, val) in old_applications
-                                             if application not in self.judge_assignments[judge]]
-        max_preference = max([val for _, val in old_applications])
-        options = [application for application, val in old_applications if val==max_preference]
-        # if options:
-        #     return choice(options)
-        # return None
-
-        # applications = (array(self.applications)[application_preferences.argsort()]).flat
+        return apps
+            
+    def choose_n_applications(self, judge, application_preferences, n):
         applications = (array(self.applications)[(-application_preferences).argsort()]).flat
         can_assign_to_judge = self._can_assign_func(judge)
         applications = filter(can_assign_to_judge, applications)
-#        import pdb; pdb.set_trace()
-        return next (applications)
-
+        return [next(applications) for i in range(n)]
 
     def _can_assign_func(self, judge):
         '''returns a function which takes an application and returns True

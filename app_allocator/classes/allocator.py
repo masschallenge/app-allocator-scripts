@@ -45,17 +45,27 @@ class Allocator(object):
             judge = choice(self.judges)
             self.heuristic.process_judge_events(judge.complete_applications())
             self.assign_applications(judge)
-            if judge.remaining <= 0 and not judge.applications:
+            if judge.remaining <= 0 and not judge.current_applications:
                 self.judges.remove(judge)
 
     def assign_applications(self, judge):
+        if self.heuristic.BATCH_HEURISTIC:
+            apps = judge.request_batch(self.heuristic)
+            for app in apps:
+                assign(judge, app)
+            if not judge.current_applications:
+                judge.mark_as_done()
+        else:
+            self.request_apps_until_done(judge)
+            
+    def request_apps_until_done(self, judge):
         while judge.needs_another_application():
             application = self.heuristic.find_one_application(judge)
             if application:
                 assign(judge, application)
             else:
                 break
-        if not judge.applications:
+        if not judge.current_applications:
             judge.mark_as_done()
 
     def assess(self):
