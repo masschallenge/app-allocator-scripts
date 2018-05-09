@@ -51,7 +51,7 @@ class TestAllocator(object):
         allocator = set_up_allocator()
         judge = allocator.judges[0]
         allocator.assign_applications(judge)
-        assert len(judge.applications) == expected
+        assert len(judge.current_applications) == expected
 
     @mock.patch('app_allocator.classes.allocator.Allocator._file',
                 multiple_application_scenario_csv)

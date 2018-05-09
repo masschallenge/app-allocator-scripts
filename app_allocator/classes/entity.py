@@ -7,7 +7,8 @@ CSV_COLUMNS = ["type",
                "role",
                "gender",
                "commitment",
-               "completed"]
+               "completed",
+               "zscore"]
 CSV_HEADER = ",".join(CSV_COLUMNS)
 CSV_FORMAT = "{%s}" % ("},{".join(CSV_COLUMNS))
 
@@ -39,7 +40,8 @@ class Entity(object):
             role=self.properties.get("role", ""),
             gender=self.properties.get("gender", ""),
             commitment=self.properties.get("commitment", ""),
-            completed=self.properties.get("completed", ""))
+            completed=self.properties.get("completed", ""),
+            zscore=self.properties.get("zscore", ""))
 
     def add_property(self, property, data=None):
         value = property_value(property, data)

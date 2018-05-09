@@ -10,7 +10,7 @@ class ReadsFeature(object):
     def setup(self, judges, applications):
         pass
 
-    def as_need(self, *args):
+    def as_need(self, application):
         return ReadNeed(count=self.count)
 
     def initial_need(self, startup, value):

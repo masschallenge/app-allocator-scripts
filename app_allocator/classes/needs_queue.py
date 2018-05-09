@@ -1,6 +1,6 @@
 from copy import deepcopy
 from math import log
-from app_allocator.classes.assignments import has_been_assigned
+from app_allocator.classes.assignments import can_be_assigned
 
 
 class NeedsQueue(object):
@@ -56,7 +56,7 @@ class NeedsQueue(object):
 
     def _next_application(self, judge):
         for application in self.items:
-            if not has_been_assigned(judge, application):
+            if can_be_assigned(judge, application):
                 return application
         return None
 
@@ -67,7 +67,7 @@ class NeedsQueue(object):
         return None
 
     def _assign(self, judge, application):
-        if not has_been_assigned(judge, application):
+        if can_be_assigned(judge, application):
             self._add_assignment(judge, application)
             return application
         return None

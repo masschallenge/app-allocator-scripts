@@ -4,7 +4,10 @@ from app_allocator.classes.application import Application
 from app_allocator.classes.event import Event
 from app_allocator.classes.judge import Judge
 from app_allocator.classes.ordered_queues import OrderedQueues
-from app_allocator.tests.utils import simple_test_scenario_csv
+from app_allocator.tests.utils import (
+    satisfiable_scenario_csv,
+    simple_test_scenario_csv,
+)
 
 
 def _allocator(filepath=None, applications=None, judges=None):
@@ -69,6 +72,24 @@ class TestOrderedQueues(object):
         allocator = _allocator(filepath="some/file/path")
         allocator.allocate()
         assert allocator.heuristic.work_left()
+
+    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+                satisfiable_scenario_csv)
+    def test_run_allocator_to_with_no_passes(self):
+        allocator = _allocator(filepath="some/file/path")
+        for judge in allocator.judges:
+            judge.chance_of_pass = 0
+        allocator.allocate()
+        assert not allocator.heuristic.work_left()
+
+    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+                satisfiable_scenario_csv)
+    def test_run_allocator_to_with_only_passes(self):
+        allocator = _allocator(filepath="some/file/path")
+        for judge in allocator.judges:
+            judge.chance_of_pass = 1
+        allocator.allocate()
+        assert not allocator.judges
 
     def test_find_one_application(self):
         allocator = _allocator()
