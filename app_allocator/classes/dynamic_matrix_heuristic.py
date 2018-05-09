@@ -7,8 +7,6 @@ from app_allocator.classes.reads_feature import ReadsFeature
 from app_allocator.classes.matching_feature import MatchingFeature
 from app_allocator.classes.option_spec import OptionSpec
 
-REFRESH_TIME = 1000
-N = 1
 
 CHANCE_OF_PASS = DEFAULT_CHANCE_OF_PASS
 ASSIGNED_VALUE = 1 - CHANCE_OF_PASS
