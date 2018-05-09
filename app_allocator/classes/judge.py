@@ -3,45 +3,57 @@ from app_allocator.classes.entity import Entity
 from app_allocator.classes.property import Property
 from app_allocator.classes.event import Event
 
-CHANCE_OF_PASS = 0.04
+# This is based on a comparison of commitment to completed for 2017
+# We should eventually compute this from the actual data
+DEFAULT_CHANCE_OF_PASS = 0.152773932
 
 
 class Judge(Entity):
     MAX_PANEL_SIZE = 10
 
-    def __init__(self, data=None):
+    def __init__(self, data=None, chance_of_pass=DEFAULT_CHANCE_OF_PASS):
         super().__init__()
-        self.startups = []
+        self.all_applications = []
+        self.current_applications = []
+        self.chance_of_pass = chance_of_pass
         self.type = "judge"
         for property in Property.all_properties:
             self.add_property(property, data)
         self.remaining = int(self.properties.get("commitment", 50))
 
-    def complete_startups(self):
+    def complete_applications(self):
         events = []
-        for startup in self.startups:
+        for application in self.current_applications:
             action = "finished"
-            if self.passes(startup):
+            if self.passes(application):
                 action = "pass"
             events.append(Event(action=action,
                                 subject=self,
-                                object=startup))
-        self.startups = []
+                                object=application,
+                                description=self.properties))
+        self.current_applications = []
         return events
 
-    def passes(self, startup):
-        return random() <= CHANCE_OF_PASS
+    def passes(self, application):
+        return random() <= self.chance_of_pass
 
-    def needs_another_startup(self):
+    def needs_another_application(self):
         return (self.remaining > 0 and
-                len(self.startups) < Judge.MAX_PANEL_SIZE)
+                len(self.current_applications) < Judge.MAX_PANEL_SIZE)
 
-    def add_startup(self, startup):
-        self.startups.append(startup)
-        result = Event(action="assigned", subject=self, object=startup)
+    def add_application(self, application):
+        self.current_applications.append(application)
+        self.all_applications.append(application)
+        result = Event(action="assigned",
+                       subject=self,
+                       object=application,
+                       description=self.properties)
         self.remaining -= 1
         return result
 
     def mark_as_done(self):
         Event(action="done", subject=self)
         self.remaining = 0
+
+    def zscore(self):
+        return float(self.properties.get("zscore", 0.0))

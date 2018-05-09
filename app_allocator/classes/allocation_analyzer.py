@@ -4,7 +4,7 @@ from collections import (
     namedtuple,
 )
 from app_allocator.classes.judge import Judge
-from app_allocator.classes.startup import Startup
+from app_allocator.classes.application import Application
 from app_allocator.classes.gender_distribution_metric import (
     GenderDistributionMetric,
 )
@@ -15,27 +15,28 @@ from app_allocator.classes.program_match_metric import ProgramMatchMetric
 from app_allocator.classes.industry_match_metric import IndustryMatchMetric
 from app_allocator.classes.total_reads_metric import TotalReadsMetric
 
-Assignment = namedtuple("Assignment", ["judge", "startup"])
-TOTAL_READS_TARGET = 5
+Assignment = namedtuple("Assignment", ["judge", "application"])
+TOTAL_READS_TARGET = 4
 
 
 class AllocationAnalyzer(object):
     def __init__(self):
         self.judges = {}
-        self.startups = {}
+        self.applications = {}
         self.assigned = []
         self.completed = []
-        self.metrics = [ProgramMatchMetric(1),
+        self.metrics = [TotalReadsMetric(TOTAL_READS_TARGET),
                         IndustryMatchMetric(1),
-                        TotalReadsMetric(TOTAL_READS_TARGET)]
+                        ProgramMatchMetric(1),
+                        ]
         self.metrics.extend([
             JudgeRoleDistributionMetric('Lawyer', 1),
             JudgeRoleDistributionMetric('Executive', 2),
             JudgeRoleDistributionMetric('Investor', 1),
             JudgeRoleDistributionMetric('Other', 0)])
         self.metrics.extend([
-            GenderDistributionMetric('male', 0),
-            GenderDistributionMetric('female', 1)])
+            GenderDistributionMetric('female', 1),
+            GenderDistributionMetric('male', 0)])
 
     def process_scenario_from_csv(self, input_file):
         reader = open_csv_reader(input_file)
@@ -43,9 +44,9 @@ class AllocationAnalyzer(object):
             if row['type'] == "judge":
                 judge = Judge(data=row)
                 self.judges[judge['name']] = judge
-            elif row['type'] == "startup":
-                startup = Startup(data=row)
-                self.startups[startup['name']] = startup
+            elif row['type'] == "application":
+                application = Application(data=row)
+                self.applications[application['name']] = application
             else:
                 print("Couldn't read row: %s" % ",".join(row))
 
@@ -53,16 +54,16 @@ class AllocationAnalyzer(object):
         reader = open_csv_reader(input_file)
         for row in reader:
             judge = self.judges.get(row['subject'])
-            startup = self.startups.get(row['object'])
+            application = self.applications.get(row['object'])
             if row['action'] == "assigned":
-                self.assigned.append(Assignment(judge, startup))
+                self.assigned.append(Assignment(judge, application))
 
             elif row['action'] == "finished":
-                self.completed.append(Assignment(judge, startup))
+                self.completed.append(Assignment(judge, application))
 
     def analyze(self, assignments):
-        read_counts = {startup['name']: defaultdict(int)
-                       for startup in self.startups.values()}
+        read_counts = {application['name']: defaultdict(int)
+                       for application in self.applications.values()}
         for assignment in assignments:
             for metric in self.metrics:
                 metric.evaluate(assignment, read_counts)
@@ -72,7 +73,7 @@ class AllocationAnalyzer(object):
     def summarize(self, read_counts):
         summary = defaultdict(int)
         maxes = defaultdict(int)
-        total_applications = len(self.startups)
+        total_applications = len(self.applications)
         total_judges = len(self.judges)
         for metric, count in list(summary.items()):
             summary['average %s' % metric] = count / total_applications
@@ -81,6 +82,7 @@ class AllocationAnalyzer(object):
         for metric in self.metrics:
             summary['total %s' % metric.output_key()] = metric.total
             summary['max %s' % metric.output_key()] = metric.max_count
+            summary['max app %s' % metric.output_key()] = metric.max_app
             missed_count = len(metric.unsatisfied_apps)
             summary['missed %s' % metric.output_key()] = missed_count
 

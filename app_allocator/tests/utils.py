@@ -23,14 +23,87 @@ EXAMPLE_JUDGE_DATA = EntityData('judge',
                                 'female',
                                 '10',
                                 '10')
-EXAMPLE_STARTUP_DATA = EntityData('startup',
-                                  'Organization 4676',
-                                  'General',
-                                  'Boston',
-                                  '',
-                                  '',
-                                  '',
-                                  '')
+FULL_JUDGE_SET = [
+    EntityData('judge',
+               'high-tech-boston-executive-female',
+               'High Tech',
+               'Boston',
+               'Executive',
+               'female',
+               '10',
+               '10'),
+    EntityData('judge',
+               'clean-tech-switzerland-executive-male',
+               'Energy / Clean Tech',
+               'Switzerland',
+               'Executive',
+               'male',
+               '10',
+               '10'),
+    EntityData('judge',
+               'general-israel-lawyer-male',
+               'General',
+               'Israel',
+               'Lawyer',
+               'male',
+               '10',
+               '10'),
+    EntityData('judge',
+               'healthcare-boston-investor-female',
+               'Healthcare / Life Sciences',
+               'Boston',
+               'Investor',
+               'female',
+               '10',
+               '10'),
+    EntityData('judge',
+               'social-impact-switzerland-other-male',
+               'Social Impact',
+               'Switzerland',
+               'Other',
+               'male',
+               '10',
+               '10'),
+]
+
+
+FULL_APPLICATION_SET = [
+    EntityData('application',
+               'Boston Clean Tech App',
+               'Energy / Clean Tech',
+               'Boston',
+               '', '', '', ''),
+    EntityData('application',
+               'Switzerland General App',
+               'General',
+               'Switzerland',
+               '', '', '', ''),
+    EntityData('application',
+               'Israel Healthcare App',
+               'Healthcare / Life Sciences',
+               'Israel',
+               '', '', '', ''),
+    EntityData('application',
+               'Boston High Tech App',
+               'High Tech',
+               'Boston',
+               '', '', '', ''),
+    EntityData('application',
+               'Switzerland Social Impact App',
+               'Social Impact',
+               'Switzerland',
+               '', '', '', ''),
+]
+
+
+EXAMPLE_APPLICATION_DATA = EntityData('application',
+                                      'Organization 4676',
+                                      'General',
+                                      'Boston',
+                                      '',
+                                      '',
+                                      '',
+                                      '')
 
 
 def pseudofile(header_row=HEADER_ROW, data_rows=[]):
@@ -40,12 +113,15 @@ def pseudofile(header_row=HEADER_ROW, data_rows=[]):
 
 
 def simple_test_scenario_csv(*args):
-    return pseudofile(data_rows=[EXAMPLE_JUDGE_DATA, EXAMPLE_STARTUP_DATA])
+    return pseudofile(data_rows=[EXAMPLE_JUDGE_DATA, EXAMPLE_APPLICATION_DATA])
 
 
-TEN_STARTUPS = [EntityData('startup', 'Startup %d' % i, 'General', 'Boston',
-                           '', '', '', '')
-                for i in range(10)]
+TEN_APPLICATIONS = [EntityData('application',
+                               'Application %d' % i,
+                               'General',
+                               'Boston',
+                               '', '', '', '')
+                    for i in range(10)]
 
 
 ALLOCATION_HEADERS = ['time', 'action', 'subject', 'object']
@@ -63,12 +139,16 @@ def simple_allocation_csv(*args):
                       data_rows=[SIMPLE_ALLOCATION_DATA])
 
 
-def multiple_startup_scenario_csv(*args):
-    return pseudofile(data_rows=[EXAMPLE_JUDGE_DATA] + TEN_STARTUPS)
+def multiple_application_scenario_csv(*args):
+    return pseudofile(data_rows=[EXAMPLE_JUDGE_DATA] + TEN_APPLICATIONS)
 
 
-def no_startup_scenario_csv(*args):
+def no_application_scenario_csv(*args):
     return pseudofile(data_rows=[EXAMPLE_JUDGE_DATA])
+
+
+def satisfiable_scenario_csv(*args):
+    return pseudofile(data_rows=FULL_JUDGE_SET + FULL_APPLICATION_SET)
 
 
 def assert_only_these_fields_in_csv_row(fields, csv_row):
