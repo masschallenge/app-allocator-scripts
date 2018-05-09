@@ -582,6 +582,10 @@ judge,43698-user@example.com,High Tech,Boston,Executive,male,10,10
 judge,43704-user@example.com,General,Boston,Other,male,10,10
 judge,43708-user@example.com,General,Boston,Other,female,10,0
 judge,43712-user@example.com,General,Boston,Executive,female,10,10
+judge,dummy-1@example.com,High Tech,Boston,Executive,female,30,10
+judge,dummy-2@example.com,High Tech,Boston,Executive,female,30,10
+judge,dummy-3@example.com,High Tech,Boston,Executive,female,30,10
+judge,dummy-4@example.com,High Tech,Boston,Executive,female,30,10
 application,Organization 11800,High Tech,Boston,,,,
 application,Organization 523,Healthcare / Life Sciences,Boston,,,,
 application,Organization 4231,High Tech,Boston,,,,

@@ -90,7 +90,7 @@ class AllocationAnalyzer(object):
             summary['%s: max %s' % (prefix, metric)] = val
         for metric in self.metrics:
             summary['%s: total %s' % (prefix, metric.output_key())] = metric.total
-            summary['%s: max %s' % (prefix, metric.output_key())] = metric.max_count
+            summary['%s: max %s (%s)' % (prefix, metric.output_key(), metric.max_app)] = metric.max_count
             missed_count = len(metric.unsatisfied_apps)
             summary['%s: missed %s' % (prefix, metric.output_key())] = missed_count
 
