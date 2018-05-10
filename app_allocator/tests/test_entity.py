@@ -2,10 +2,15 @@ from app_allocator.classes.entity import (
     csv_output,
     Entity,
 )
-from app_allocator.classes.property import Property
+from app_allocator.classes.property import (
+    MATCHING_TYPE,
+    Property,
+)
 from app_allocator.tests.utils import assert_only_these_fields_in_csv_row
 
-test_property = Property('color', [('blue', 1.0)])
+
+test_property = Property(MATCHING_TYPE, 'color')
+test_property.add_option("blue", 1.0)
 
 
 class TestEntity(object):

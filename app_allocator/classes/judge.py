@@ -9,7 +9,7 @@ DEFAULT_CHANCE_OF_PASS = 0.152773932
 
 
 class Judge(Entity):
-    MAX_PANEL_SIZE = 10
+    MAX_PANEL_SIZE = 1
 
     def __init__(self, data=None, chance_of_pass=DEFAULT_CHANCE_OF_PASS):
         super().__init__()
@@ -17,7 +17,7 @@ class Judge(Entity):
         self.current_applications = []
         self.chance_of_pass = chance_of_pass
         self.type = "judge"
-        for property in Property.all_properties:
+        for property in Property.all_properties.values():
             self.add_property(property, data)
         self.remaining = int(self.properties.get("commitment", 50))
 

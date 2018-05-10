@@ -1,61 +1,60 @@
+from csv import DictReader
 from random import random
 
 
-class Property(object):
-    all_properties = []
+JUDGE_TYPE = "judge"
+MATCHING_TYPE = "matching"
+NAME_TYPE = "name"
+READS_TYPE = "reads"
 
-    def __init__(self, name, values=None):
+
+class Property(object):
+    all_properties = {}
+    matching_properties = []
+
+    def __init__(self, type, name, values=None):
+        self.type = type
         self.name = name
         self.values = values
-        Property.all_properties.append(self)
+        self.weights = {}
+        self.total = 0
+        Property.all_properties[name] = self
+        if type == MATCHING_TYPE:
+            Property.matching_properties.append(self)
+
+    @classmethod
+    def load_properties(self, file):
+        reader = DictReader(file)
+        for row in reader:
+            name = row["name"]
+            property = Property.all_properties.get(name)
+            if not property:
+                property = Property(row["type"], name)
+            property.add_option(row["option"], row["weight"])
+
+    def add_option(self, option, weight):
+        if option in self.weights:
+            self.total -= self.weights[option]
+        weight_value = float(weight)
+        self.weights[option] = weight_value
+        self.total += weight_value
+
+    def select_random_value(self):
+        target_weight = random() * self.total
+        for option, weight in self.weights.items():
+            if target_weight <= weight:
+                return option
+            target_weight -= weight
+        return None
 
 
-name = Property("name")
-gender = Property("gender", [("female", 0.25),
-                             ("male", 1.0)])
-
-industry = Property("industry", [("Energy / Clean Tech", 0.05),
-                                 ("General", 0.40),
-                                 ("Healthcare / Life Sciences", 0.56),
-                                 ("High Tech", 0.95),
-                                 ("Social Impact", 1.0)])
-program = Property("program", [("Boston", 0.6),
-                               ("Switzerland", 0.8),
-                               ("Israel", 1.0)])
-role = Property("role", [("Lawyer", 0.2),
-                         ("Investor", 0.4),
-                         ("Executive", 0.6),
-                         ("Other", 1.0)])
-commitment = Property("commitment", [(30, 0.1),
-                                     (40, 0.3),
-                                     (50, 0.7),
-                                     (60, 0.9),
-                                     (70, 1.0)])
-completed = Property("completed", [(30, 0.1),
-                                   (40, 0.3),
-                                   (50, 0.7),
-                                   (60, 0.9),
-                                   (70, 1.0)])
-
-# Discretized normal distribution
-zscore = Property("zscore", [(-2.0, 0.0228),
-                             (-1.0, 0.1587),
-                             (-0.5, 0.3085),
-                             (-0.25, 0.4013),
-                             (0.0, 1 - 0.4013),
-                             (0.25, 1 - 0.3085),
-                             (0.5, 1 - 0.1587),
-                             (1.0, 1 - 0.228),
-                             (2.0, 1)])
+name = Property(NAME_TYPE, "name")
+file = open("distributions.csv")
+Property.load_properties(file)
+file.close()
 
 
 def property_value(property, data):
     if data:
         return data.get(property.name)
-    return next_value_below_cutoff(property.values, random())
-
-
-def next_value_below_cutoff(values, cutoff):
-    if values:
-        return next((value for value, limit in values if cutoff < limit), None)
-    return None
+    return property.select_random_value()

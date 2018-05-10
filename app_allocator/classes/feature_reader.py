@@ -1,6 +1,7 @@
 from csv import DictReader
 from app_allocator.classes.judge_feature import JudgeFeature
 from app_allocator.classes.matching_feature import MatchingFeature
+from app_allocator.classes.property import Property
 from app_allocator.classes.reads_feature import ReadsFeature
 
 
@@ -47,6 +48,8 @@ class FeatureReader(object):
 
 
 def create_feature(type, name):
+    if name not in Property.all_properties:
+        Property(type, name)
     if type == "judge":
         return JudgeFeature(name)
     if type == "matching":

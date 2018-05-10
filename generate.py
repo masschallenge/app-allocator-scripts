@@ -4,7 +4,12 @@
 import sys
 from app_allocator.classes.entity import csv_output
 from app_allocator.classes.generator import Generator
+from app_allocator.classes.property import Property
 
+
+file = open("distributions.csv")
+Property.load_properties(file)
+file.close()
 
 generator = Generator(judge_count=int(sys.argv[1]),
                       application_count=int(sys.argv[2]))

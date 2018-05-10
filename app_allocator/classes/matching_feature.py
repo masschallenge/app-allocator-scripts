@@ -5,8 +5,11 @@ from app_allocator.classes.option_state import OptionState
 
 
 class MatchingFeature(FieldFeature):
+    all_matching_features = {}
+
     def __init__(self, name):
         super().__init__(name)
+        MatchingFeature.all_matching_features[name] = self
 
     def as_need(self, application):
         return FieldNeed(self.name, self.option_states(application))

@@ -5,7 +5,10 @@ from app_allocator.classes.matching_feature import MatchingFeature
 
 class TestMatchingFeature(object):
     def test_missing_option_state(self):
-        feature = MatchingFeature(name="color")
+        # Need to use a unique name due to the registry in
+        # Property.  Not happy about the persistent state
+        # that currently creates, but not ready to redesign.
+        feature = MatchingFeature(name="animal")
         assert feature.option_states(Application()) == []
 
     def test_feature_with_option_specs(self):
