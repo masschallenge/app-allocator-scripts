@@ -62,5 +62,5 @@ class TestAllocationAnalyzer(object):
         read_counts = analyzer.analyze(analyzer.assigned)
         summary = analyzer.summarize(read_counts)
         application_counts = read_counts[application['name']]
-        assert all([val == summary["total %s" % key]
+        assert all([val == summary[": total %s" % key]
                     for key, val in application_counts.items()])

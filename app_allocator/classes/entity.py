@@ -27,7 +27,7 @@ class Entity(object):
 
     def __repr__(self):
         return str(self)
-    
+
     def id(self):
         return self.properties["id"]
 
@@ -52,9 +52,6 @@ class Entity(object):
         return self.properties.get(key, "")
 
 
-    def __deepcopy__(self, memo):
-        return self
-    
 def csv_output(entities):
     print(CSV_HEADER)
     for entity in entities:

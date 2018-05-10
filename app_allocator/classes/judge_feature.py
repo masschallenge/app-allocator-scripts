@@ -12,14 +12,10 @@ class JudgeFeature(Feature):
                 for spec in self.option_specs]
 
     def initial_need(self, startup, value):
-        d =  dict([(spec.option, spec.count) for spec in self.option_specs])
-        return float(d.get(value, 0)) * self.weight
+        d = {spec.option: spec.count for spec in self.option_specs}
+        return float(d.get(value, 0))
 
-    def option_states(self, _):
-        return [OptionState(spec.option, spec.count)
-                for spec in self.option_specs]
     def as_need(self, application):
         return FieldNeed(self.field,
                          [OptionState(spec.option, spec.count)
                           for spec in self.option_specs])
-

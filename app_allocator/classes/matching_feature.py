@@ -47,15 +47,17 @@ class MatchingFeature(Feature):
 
     def initial_need(self, startup, value):
         if startup.properties.get(self.field) == value:
-            return float(self.count) * self.weight
+            return float(self.count)
         else:
             return 0.0
 
-# options1 and options2 are expected to be dictionaries of
-# options with counts.  E.g., {"Israel": 100, "Boston": 200}
-# The result is the set of shared options ordered by the ratio
-# of the count in options1 divided by the count in options2.
+
 def _shared_options_by_scarcity(options1, options2):
+    '''options1 and options2 are expected to be dictionaries of
+    options with counts.  E.g., {"Israel": 100, "Boston": 200}
+    The result is the set of shared options ordered by the ratio
+    of the count in options1 divided by the count in options2.
+    '''
     shared_options = set(options1.keys()).intersection(options2.keys())
     weighted_options = [(options1[option]/float(options2[option]),
                          option) for option in shared_options]

@@ -3,7 +3,7 @@ from app_allocator.classes.event import Event
 
 class LinearSelection(object):
     'Simple and predictable heuristic for testing'
-
+    BATCH_HEURISTIC = False
     name = "linear"
 
     def setup(self, judges, applications):

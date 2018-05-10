@@ -4,6 +4,7 @@ from app_allocator.classes.event import Event
 
 class RandomSelection(object):
     name = "random"
+    BATCH_HEURISTIC = False
 
     def setup(self, judges, applications):
         self.applications = applications
