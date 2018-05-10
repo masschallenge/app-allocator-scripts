@@ -9,7 +9,7 @@ DEFAULT_CHANCE_OF_PASS = 0.152773932
 
 
 class Judge(Entity):
-    MAX_PANEL_SIZE = 1
+    MAX_PANEL_SIZE = 10
 
     def __init__(self, data=None, chance_of_pass=DEFAULT_CHANCE_OF_PASS):
         super().__init__()
