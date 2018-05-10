@@ -64,6 +64,9 @@ class DynamicMatrixHeuristic(object):
     def _calc_judge_capacities(self):
         return {judge: int(judge['commitment']) for judge in self.judges}
 
+    def _calc_needs_matrix(self):
+        return matrix([list(row.values()) for _, row in self.application_needs.items()])
+    
     def find_one_application(self, judge):
         result =  self.request_batch(judge, 1)
         if len(result) > 0:
@@ -74,6 +77,7 @@ class DynamicMatrixHeuristic(object):
     def request_batch(self, judge, batch_size):
         available_batch_size = min(batch_size, self.judge_capacities[judge])
         judge_features = self.judge_features(judge)
+
         needs_array = array([list(row.values()) for _, row in self.application_needs.items()])
         feature_weights_array = array([v for v in self.feature_weights.values()])
         needs_matrix = matrix(needs_array * feature_weights_array)
