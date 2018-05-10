@@ -16,11 +16,11 @@ class DynamicMatrixHeuristic(object):
     BATCH_HEURISTIC = True
     name = "dynamic_matrix"
     features = [MatchingFeature("industry",
-                                weight=1),
+                                weight=.6),
                 MatchingFeature("program",
                                 weight=1),
                 JudgeFeature("role",
-                             weight=1,
+                             weight=.7,
                              option_specs=[OptionSpec("Executive", 2),
                                            OptionSpec("Investor"),
                                            OptionSpec("Lawyer")]),
@@ -74,7 +74,9 @@ class DynamicMatrixHeuristic(object):
     def request_batch(self, judge, batch_size):
         available_batch_size = min(batch_size, self.judge_capacities[judge])
         judge_features = self.judge_features(judge)
-        needs_matrix = matrix([list(row.values()) for _, row in self.application_needs.items()])
+        needs_array = array([list(row.values()) for _, row in self.application_needs.items()])
+        feature_weights_array = array([v for v in self.feature_weights.values()])
+        needs_matrix = matrix(needs_array * feature_weights_array)
         application_preferences = judge_features * needs_matrix.transpose()
         apps = self.choose_n_applications(judge, application_preferences, available_batch_size)
         for app in apps:
