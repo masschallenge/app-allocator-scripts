@@ -158,10 +158,14 @@ class DynamicMatrixHeuristic(object):
 
     def judge_features(self, judge):
         if judge not in self._judge_features:
-            row = OrderedDict({feature_value: 0
-                               for feature_value in self.feature_values})
-            for feature in self.features:
-                if (feature, judge[feature.field]) in self.feature_values:
-                    row[(feature, judge[feature.field])] = 1
-            self._judge_features[judge] = matrix(list(row.values()))
+            self.calc_judge_features(judge)
         return self._judge_features[judge]
+
+    def _calc_judge_features(self, judge):
+        row = OrderedDict({feature_value: 0
+                           for feature_value in self.feature_values})
+        for feature in self.features:
+            if (feature, judge[feature.field]) in self.feature_values:
+                row[(feature, judge[feature.field])] = 1
+        self._judge_features[judge] = matrix(list(row.values()))
+        
