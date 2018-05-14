@@ -1,6 +1,5 @@
 from csv import DictReader
 from collections import (
-    Counter, 
     defaultdict,
     namedtuple,
 )
@@ -72,24 +71,25 @@ class AllocationAnalyzer(object):
                 metric.evaluate(assignment, read_counts)
         return read_counts
 
-    def summarize(self, read_counts, prefix=""):
-        summary = defaultdict(int)
-        maxes = defaultdict(int)
-        total_applications = len(self.applications)
-        total_judges = len(self.judges)
-        for metric, count in list(summary.items()):
-            summary['%s: average %s' % (prefix, metric)] = count / total_applications
-        for metric, val in list(maxes.items()):
-            summary['%s: max %s' % (prefix, metric)] = val
-        for metric in self.metrics:
-            summary['%s: total %s' % (prefix, metric.output_key())] = metric.total
-            summary['%s: max %s (%s)' % (prefix, metric.output_key(), metric.max_app)] = metric.max_count
-            missed_count = len(metric.unsatisfied_apps)
-            summary['%s: missed %s' % (prefix, metric.output_key())] = missed_count
-
-        summary['total_applications'] = total_applications
-        summary['total_judges'] = total_judges
+    def summarize(self, assignments, prefix=""):
+        self.analyze(assignments)
+        summary = metrics_summary(self.metrics, prefix)
+        summary['total_applications'] = len(self.applications)
+        summary['total_judges'] = len(self.judges)
         return summary
+
+
+def metrics_summary(metrics, prefix):
+    summary = defaultdict(int)
+    for metric in metrics:
+        summary['%s: total %s' % (prefix,
+                                  metric.output_key())] = metric.total
+        summary['%s: max %s (%s)' % (prefix,
+                                     metric.output_key(),
+                                     metric.max_app)] = metric.max_count
+        missed_count = len(metric.unsatisfied_apps)
+        summary['%s: missed %s' % (prefix, metric.output_key())] = missed_count
+    return summary
 
 
 def quick_setup(scenario='example.csv', allocation='tmp.out'):

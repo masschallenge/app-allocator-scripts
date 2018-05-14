@@ -60,7 +60,7 @@ class TestAllocationAnalyzer(object):
         analyzer.process_allocations_from_csv(simple_allocation_csv())
         application = analyzer.assigned[0].application
         read_counts = analyzer.analyze(analyzer.assigned)
-        summary = analyzer.summarize(read_counts)
         application_counts = read_counts[application['name']]
+        summary = analyzer.summarize(analyzer.assigned)
         assert all([val == summary[": total %s" % key]
                     for key, val in application_counts.items()])
