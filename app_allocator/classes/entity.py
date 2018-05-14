@@ -34,7 +34,9 @@ class Entity(object):
 
     def apply_data(self, data):
         if data:
-            self.properties.update(data)
+            for key, value in data.items():
+                if value is not '':
+                    self.properties[key] = value
 
     def id(self):
         return self.properties["id"]
