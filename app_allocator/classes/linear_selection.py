@@ -1,7 +1,7 @@
 from app_allocator.classes.event import Event
+from app_allocator.classes.heuristic import Heuristic
 
-
-class LinearSelection(object):
+class LinearSelection(Heuristic):
     'Simple and predictable heuristic for testing'
     BATCH_HEURISTIC = False
     name = "linear"
@@ -23,3 +23,5 @@ class LinearSelection(object):
 
     def assess(self):
         Event(action="complete", description=LinearSelection.name)
+
+Heuristic.register_heuristic(LinearSelection)

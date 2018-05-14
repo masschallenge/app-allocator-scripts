@@ -182,7 +182,7 @@ def assert_only_these_fields_in_csv_row(fields, csv_row):
 def allocator_getter(heuristic):
     def _allocator(filepath=None, applications=None, judges=None):
 
-        allocator = Allocator(filepath=filepath, heuristic=heuristic.name)
+        allocator = Allocator(filepath=filepath, heuristic=heuristic)
         if filepath:
             allocator.read_entities()
         allocator.applications = _calc_default(allocator.applications,

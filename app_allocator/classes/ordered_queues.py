@@ -5,11 +5,12 @@ from app_allocator.classes.matching_feature import MatchingFeature
 from app_allocator.classes.needs_queue import NeedsQueue
 from app_allocator.classes.option_spec import OptionSpec
 from app_allocator.classes.reads_feature import ReadsFeature
+from app_allocator.classes.heuristic import Heuristic
 
 ZSCORE_REPORT = False
 
 
-class OrderedQueues(object):
+class OrderedQueues(Heuristic):
     BATCH_HEURISTIC = False
     name = "ordered_queues"
 
@@ -30,7 +31,8 @@ class OrderedQueues(object):
         self.application_queues = {}
         self.application_needs = {}
 
-    def setup(self, judges, applications):
+    def setup(self, judges=None, applications=None):
+        
         for feature in OrderedQueues.features:
             feature.setup(judges, applications)
         self.add_applications(applications)
@@ -73,14 +75,6 @@ class OrderedQueues(object):
             if queue.work_left() > 0:
                 return True
         return False
-
-    def process_judge_events(self, events):
-        for event in events:
-            action = event.fields.get("action")
-            judge = event.fields.get("subject")
-            application = event.fields.get("object")
-            if action and judge and application:
-                self._update_needs(action, judge, application)
 
     def _update_needs(self, action, judge, application):
         if action in OrderedQueues.relevant_actions:
@@ -163,3 +157,5 @@ def _evaluate_queue_for_judge(queue, judge, old_value, queues):
         if new_value == old_value:
             queues.append(queue)
     return old_value, queues
+
+Heuristic.register_heuristic(OrderedQueues)

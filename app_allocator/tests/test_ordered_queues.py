@@ -11,7 +11,7 @@ from app_allocator.tests.utils import (
     simple_test_scenario_csv,
 )
 
-_allocator = allocator_getter(OrderedQueues)
+_allocator = allocator_getter("ordered_queues")
 
 
 def _finished_allocator():

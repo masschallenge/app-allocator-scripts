@@ -2,6 +2,7 @@ from random import choices
 from collections import defaultdict, OrderedDict
 from numpy import matrix, array
 from app_allocator.classes.judge import DEFAULT_CHANCE_OF_PASS
+from app_allocator.classes.heuristic import Heuristic
 from app_allocator.classes.judge_feature import JudgeFeature
 from app_allocator.classes.reads_feature import ReadsFeature
 from app_allocator.classes.matching_feature import MatchingFeature
@@ -12,7 +13,7 @@ CHANCE_OF_PASS = DEFAULT_CHANCE_OF_PASS
 ASSIGNED_VALUE = 1 - CHANCE_OF_PASS
 FINISHED_VALUE = CHANCE_OF_PASS
 
-class DynamicMatrixHeuristic(object):
+class DynamicMatrixHeuristic(Heuristic):
     BATCH_HEURISTIC = True
     name = "dynamic_matrix"
     features = [MatchingFeature("industry",
@@ -47,14 +48,6 @@ class DynamicMatrixHeuristic(object):
         self.judge_capacities = self._calc_judge_capacities()
         self.application_needs = self.initial_application_needs()
 
-    def process_judge_events(self, events):
-        for event in events:
-            action = event.fields.get("action")
-            judge = event.fields.get("subject")
-            application = event.fields.get("object")
-            if action and judge and application:
-                self._update_needs(action, judge, application)
-
     def assess(self):
         pass  # pragma: nocover
 
@@ -75,14 +68,21 @@ class DynamicMatrixHeuristic(object):
             return None
 
     def request_batch(self, judge, batch_size):
-        available_batch_size = min(batch_size, self.judge_capacities[judge])
-        judge_features = self.judge_features(judge)
+        if len(self.applications) <= batch_size:
+            can_assign = self._can_assign_func(judge)
+            apps = [app for app in self.applications if can_assign(app)]
+        else:
+            available_batch_size = min(batch_size, self.judge_capacities[judge])
+            judge_features = self.judge_features(judge)
 
-        needs_array = array([list(row.values()) for _, row in self.application_needs.items()])
-        feature_weights_array = array([v for v in self.feature_weights.values()])
-        needs_matrix = matrix(needs_array * feature_weights_array)
-        application_preferences = judge_features * needs_matrix.transpose()
-        apps = self.choose_n_applications(judge, application_preferences, available_batch_size)
+            needs_array = array([list(row.values()) for _, row
+                                 in self.application_needs.items()])
+            feature_weights_array = array([v for v in self.feature_weights.values()])
+            needs_matrix = matrix(needs_array * feature_weights_array)
+            application_preferences = judge_features * needs_matrix.transpose()
+            apps = self.choose_n_applications(judge,
+                                              application_preferences,
+                                              available_batch_size)
         for app in apps:
             self.judge_assignments[judge].append(app)
             self.judge_capacities[judge] -= 1
@@ -91,8 +91,8 @@ class DynamicMatrixHeuristic(object):
 
     def choose_n_applications(self, judge, application_preferences, n):
         applications = (array(self.applications)[(-application_preferences).argsort()]).flat
-        can_assign_to_judge = self._can_assign_func(judge)
-        filtered = [app for app in applications if can_assign_to_judge(app)]
+        can_assign = self._can_assign_func(judge)
+        filtered = [app for app in applications if can_assign(app)]
         return filtered[:n]
 
     def _can_assign_func(self, judge):
@@ -158,7 +158,7 @@ class DynamicMatrixHeuristic(object):
 
     def judge_features(self, judge):
         if judge not in self._judge_features:
-            self.calc_judge_features(judge)
+            self._calc_judge_features(judge)
         return self._judge_features[judge]
 
     def _calc_judge_features(self, judge):
@@ -169,3 +169,4 @@ class DynamicMatrixHeuristic(object):
                 row[(feature, judge[feature.field])] = 1
         self._judge_features[judge] = matrix(list(row.values()))
         
+Heuristic.register_heuristic(DynamicMatrixHeuristic)

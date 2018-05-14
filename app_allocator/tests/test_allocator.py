@@ -44,8 +44,8 @@ class TestAllocator(object):
                 simple_test_scenario_csv)
     def test_allocator_setup_calls_heuristic_setup(self):
         allocator = set_up_allocator()
-        assert allocator.heuristic.applications == allocator.applications
-        assert allocator.heuristic.judges == allocator.judges
+        assert allocator.heuristic.applications == tuple(allocator.applications)
+        assert allocator.heuristic.judges == tuple(allocator.judges)
 
     def allocator_assign_applications_helper(self, expected):
         allocator = set_up_allocator()
@@ -76,4 +76,4 @@ class TestAllocator(object):
         allocator = _allocator(heuristic="linear")
         event_count = len(Event.all_events)
         allocator.assess()
-        assert event_count + 1 == len(Event.all_events)
+        assert event_count == len(Event.all_events)

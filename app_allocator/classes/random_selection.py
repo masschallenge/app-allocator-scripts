@@ -1,8 +1,8 @@
 from random import choice
 from app_allocator.classes.event import Event
+from app_allocator.classes.heuristic import Heuristic
 
-
-class RandomSelection(object):
+class RandomSelection(Heuristic):
     name = "random"
     BATCH_HEURISTIC = False
 
@@ -20,3 +20,5 @@ class RandomSelection(object):
 
     def assess(self):
         Event(action="complete", description=RandomSelection.name)
+
+Heuristic.register_heuristic(RandomSelection)
