@@ -1,6 +1,6 @@
 from app_allocator.classes.entity import Entity
-from app_allocator.classes.property import (
-    Property,
+from app_allocator.classes.feature_distribution import (
+    FeatureDistribution,
     name,
 )
 
@@ -13,8 +13,8 @@ class Application(Entity):
         self.judges = []
         self.type = "application"
         self.add_property(name, data)
-        for property in Property.matching_properties:
-            self.add_property(property, data)
+        for feature_distribution in FeatureDistribution.matching_distributions:
+            self.add_property(feature_distribution, data)
 
     def assign_judge(self, judge):
         self.zscore_sum += (1 - judge.chance_of_pass) * judge.zscore()

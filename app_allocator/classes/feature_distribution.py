@@ -8,9 +8,9 @@ NAME_TYPE = "name"
 READS_TYPE = "reads"
 
 
-class Property(object):
-    all_properties = {}
-    matching_properties = []
+class FeatureDistribution(object):
+    all_distributions = {}
+    matching_distributions = []
 
     def __init__(self, type, name, values=None):
         self.type = type
@@ -18,19 +18,19 @@ class Property(object):
         self.values = values
         self.weights = {}
         self.total = 0
-        Property.all_properties[name] = self
+        FeatureDistribution.all_distributions[name] = self
         if type == MATCHING_TYPE:
-            Property.matching_properties.append(self)
+            FeatureDistribution.matching_distributions.append(self)
 
     @classmethod
-    def load_properties(self, file):
+    def load_distributions(self, file):
         reader = DictReader(file)
         for row in reader:
             name = row["name"]
-            property = Property.all_properties.get(name)
-            if not property:
-                property = Property(row["type"], name)
-            property.add_option(row["option"], row["weight"])
+            distribution = FeatureDistribution.all_distributions.get(name)
+            if not distribution:
+                distribution = FeatureDistribution(row["type"], name)
+            distribution.add_option(row["option"], row["weight"])
 
     def add_option(self, option, weight):
         if option in self.weights:
@@ -48,13 +48,13 @@ class Property(object):
         return None
 
 
-name = Property(NAME_TYPE, "name")
+name = FeatureDistribution(NAME_TYPE, "name")
 file = open("distributions.csv")
-Property.load_properties(file)
+FeatureDistribution.load_distributions(file)
 file.close()
 
 
-def property_value(property, data):
+def feature_value(feature, data):
     if data:
-        return data.get(property.name)
-    return property.select_random_value()
+        return data.get(feature.name)
+    return feature.select_random_value()

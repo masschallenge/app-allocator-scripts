@@ -2,15 +2,15 @@ from app_allocator.classes.entity import (
     csv_output,
     Entity,
 )
-from app_allocator.classes.property import (
+from app_allocator.classes.feature_distribution import (
     MATCHING_TYPE,
-    Property,
+    FeatureDistribution,
 )
 from app_allocator.tests.utils import assert_only_these_fields_in_csv_row
 
 
-test_property = Property(MATCHING_TYPE, 'color')
-test_property.add_option("blue", 1.0)
+test_feature_distribution = FeatureDistribution(MATCHING_TYPE, 'color')
+test_feature_distribution.add_option("blue", 1.0)
 
 
 class TestEntity(object):
@@ -32,12 +32,12 @@ class TestEntity(object):
 
     def test_getitem(self):
         entity = Entity()
-        entity.add_property(test_property)
+        entity.add_property(test_feature_distribution)
         assert entity['color'] == 'blue'
 
     def test_csv_output(self, capsys):
         entity = Entity()
-        entity.add_property(test_property)
+        entity.add_property(test_feature_distribution)
         csv_output([entity])
         captured, _ = capsys.readouterr()
         line = captured.split("\n")[1]

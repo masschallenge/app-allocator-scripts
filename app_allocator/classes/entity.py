@@ -1,4 +1,4 @@
-from app_allocator.classes.property import property_value
+from app_allocator.classes.feature_distribution import feature_value
 
 CSV_COLUMNS = ["type",
                "name",
@@ -40,10 +40,10 @@ class Entity(object):
             completed=self.properties.get("completed", ""),
             zscore=self.properties.get("zscore", ""))
 
-    def add_property(self, property, data=None):
-        value = property_value(property, data)
+    def add_property(self, feature_distribution, data=None):
+        value = feature_value(feature_distribution, data)
         if value is not None:
-            self.properties[property.name] = value
+            self.properties[feature_distribution.name] = value
 
     def __getitem__(self, key):
         return self.properties.get(key, "")

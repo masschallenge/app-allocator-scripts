@@ -1,6 +1,6 @@
 from random import random
 from app_allocator.classes.entity import Entity
-from app_allocator.classes.property import Property
+from app_allocator.classes.feature_distribution import FeatureDistribution
 from app_allocator.classes.event import Event
 
 # This is based on a comparison of commitment to completed for 2017
@@ -17,8 +17,8 @@ class Judge(Entity):
         self.current_applications = []
         self.chance_of_pass = chance_of_pass
         self.type = "judge"
-        for property in Property.all_properties.values():
-            self.add_property(property, data)
+        for distribution in FeatureDistribution.all_distributions.values():
+            self.add_property(distribution, data)
         self.remaining = int(self.properties.get("commitment", 50))
 
     def complete_applications(self):
