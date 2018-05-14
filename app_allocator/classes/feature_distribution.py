@@ -23,7 +23,13 @@ class FeatureDistribution(object):
             FeatureDistribution.matching_distributions.append(self)
 
     @classmethod
-    def load_distributions(self, file):
+    def load_distributions(cls, filename="distributions.csv"):
+        file = open(filename)
+        cls.read_from_file(file)
+        file.close()
+
+    @classmethod
+    def read_from_file(cls, file):
         reader = DictReader(file)
         for row in reader:
             name = row["name"]
@@ -49,9 +55,6 @@ class FeatureDistribution(object):
 
 
 name = FeatureDistribution(NAME_TYPE, "name")
-file = open("distributions.csv")
-FeatureDistribution.load_distributions(file)
-file.close()
 
 
 def feature_value(feature, data):

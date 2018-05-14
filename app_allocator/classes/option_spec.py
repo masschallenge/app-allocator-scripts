@@ -1,4 +1,4 @@
-from app_allocator.classes.feature import (
+from app_allocator.classes.criterion import (
     DEFAULT_COUNT,
     DEFAULT_WEIGHT,
 )
