@@ -71,14 +71,4 @@ class TestDynamicMatrixHeuristic(object):
                    subject=judge,
                    object=application)])
         assert application in heuristic.judge_assignments[judge]
-
-    def test_process_finished_judge_event_adds_app_to_completed(self):
-        allocator = _allocator()
-        heuristic = allocator.heuristic
-        judge = heuristic.judges[0]
-        application = heuristic.applications[0]
-        heuristic.process_judge_events(
-            [Event(action="finished",
-                   subject=judge,
-                   object=application)])
         assert application in heuristic.completed_judge_assignments[judge]
