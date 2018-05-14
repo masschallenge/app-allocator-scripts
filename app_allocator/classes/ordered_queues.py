@@ -32,7 +32,6 @@ class OrderedQueues(Heuristic):
         self.application_needs = {}
 
     def setup(self, judges=None, applications=None):
-        
         for feature in OrderedQueues.features:
             feature.setup(judges, applications)
         self.add_applications(applications)
@@ -157,5 +156,6 @@ def _evaluate_queue_for_judge(queue, judge, old_value, queues):
         if new_value == old_value:
             queues.append(queue)
     return old_value, queues
+
 
 Heuristic.register_heuristic(OrderedQueues)

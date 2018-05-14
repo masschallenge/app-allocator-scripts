@@ -1,4 +1,3 @@
-from random import choices
 from collections import defaultdict, OrderedDict
 from numpy import matrix, array
 from app_allocator.classes.judge import DEFAULT_CHANCE_OF_PASS
@@ -12,6 +11,7 @@ from app_allocator.classes.option_spec import OptionSpec
 CHANCE_OF_PASS = DEFAULT_CHANCE_OF_PASS
 ASSIGNED_VALUE = 1 - CHANCE_OF_PASS
 FINISHED_VALUE = CHANCE_OF_PASS
+
 
 class DynamicMatrixHeuristic(Heuristic):
     BATCH_HEURISTIC = True
@@ -58,10 +58,11 @@ class DynamicMatrixHeuristic(Heuristic):
         return {judge: int(judge['commitment']) for judge in self.judges}
 
     def _calc_needs_matrix(self):
-        return matrix([list(row.values()) for _, row in self.application_needs.items()])
-    
+        return matrix([list(row.values())
+                       for _, row in self.application_needs.items()])
+
     def find_one_application(self, judge):
-        result =  self.request_batch(judge, 1)
+        result = self.request_batch(judge, 1)
         if len(result) > 0:
             return result[0]
         else:
@@ -72,12 +73,14 @@ class DynamicMatrixHeuristic(Heuristic):
             can_assign = self._can_assign_func(judge)
             apps = [app for app in self.applications if can_assign(app)]
         else:
-            available_batch_size = min(batch_size, self.judge_capacities[judge])
+            available_batch_size = min(batch_size,
+                                       self.judge_capacities[judge])
             judge_features = self.judge_features(judge)
 
             needs_array = array([list(row.values()) for _, row
                                  in self.application_needs.items()])
-            feature_weights_array = array([v for v in self.feature_weights.values()])
+            feature_weights_array = array([v for v in
+                                           self.feature_weights.values()])
             needs_matrix = matrix(needs_array * feature_weights_array)
             application_preferences = judge_features * needs_matrix.transpose()
             apps = self.choose_n_applications(judge,
@@ -90,7 +93,8 @@ class DynamicMatrixHeuristic(Heuristic):
         return apps
 
     def choose_n_applications(self, judge, application_preferences, n):
-        applications = (array(self.applications)[(-application_preferences).argsort()]).flat
+        applications = (array(self.applications)[
+                (-application_preferences).argsort()]).flat
         can_assign = self._can_assign_func(judge)
         filtered = [app for app in applications if can_assign(app)]
         return filtered[:n]
@@ -112,13 +116,15 @@ class DynamicMatrixHeuristic(Heuristic):
                           for feature in self.features]))
 
     def _feature_weights(self):
-        return {(feature.field, value):feature.weight for feature, value in self.feature_values}
+        return {(feature.field, value):
+                feature.weight for feature, value in self.feature_values}
 
     def initial_application_needs(self):
         needs = OrderedDict()
 
         for application in self.applications:
-            row = OrderedDict({(feature.field, value): feature.initial_need(application, value)
+            row = OrderedDict({(feature.field, value):
+                               feature.initial_need(application, value)
                                for feature, value in self.feature_values})
 
             needs[application] = row
@@ -133,7 +139,7 @@ class DynamicMatrixHeuristic(Heuristic):
             adjustment = ASSIGNED_VALUE
         elif action == "finished":
             assignments_list = self.completed_judge_assignments[judge]
-            adjustment = FINISHED_VALUE            
+            adjustment = FINISHED_VALUE
         assignments_list.append(application)
         for key, val in judge.properties.items():
             self._update_specific_need(needs_dict, key, val, adjustment)
@@ -145,7 +151,7 @@ class DynamicMatrixHeuristic(Heuristic):
                     needs_dict[(key, val)] - adjustment_amount))
             if needs_dict[(key, val)] == 0:
                 self.update_needs_and_features(key, val)
-        
+
     def update_needs_and_features(self, key, val):
         needs = [row[(key, val)] for row in self.application_needs.values()]
         if not any(needs):
@@ -168,5 +174,6 @@ class DynamicMatrixHeuristic(Heuristic):
             if (feature, judge[feature.field]) in self.feature_values:
                 row[(feature, judge[feature.field])] = 1
         self._judge_features[judge] = matrix(list(row.values()))
-        
+
+
 Heuristic.register_heuristic(DynamicMatrixHeuristic)

@@ -62,7 +62,7 @@ class Allocator(object):
             assign(judge, app)
         if not judge.current_applications:
             judge.mark_as_done()
-        
+
     def request_apps_until_done(self, judge):
         while judge.needs_another_application():
             application = self.heuristic.find_one_application(judge)

@@ -1,9 +1,8 @@
 import mock
 
 from app_allocator.classes.event import Event
-
-
 from app_allocator.classes.ordered_queues import OrderedQueues
+
 from app_allocator.tests.utils import (
     DUMMY_FILEPATH,
     allocator_getter,
@@ -11,7 +10,7 @@ from app_allocator.tests.utils import (
     simple_test_scenario_csv,
 )
 
-_allocator = allocator_getter("ordered_queues")
+_allocator = allocator_getter(OrderedQueues.name)
 
 
 def _finished_allocator():
