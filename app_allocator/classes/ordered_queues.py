@@ -1,6 +1,6 @@
 from random import choice
 from app_allocator.classes.event import Event
-from app_allocator.classes.feature_reader import FeatureReader
+from app_allocator.classes.criteria_reader import CriteriaReader
 from app_allocator.classes.needs_queue import NeedsQueue
 
 
@@ -8,16 +8,16 @@ class OrderedQueues(object):
     name = "ordered_queues"
     relevant_actions = ["finished", "pass"]
 
-    def __init__(self, feature_file=None):
-        self.features = FeatureReader(feature_file).all()
+    def __init__(self, criteria_file=None):
+        self.criteria = CriteriaReader(criteria_file).all()
         self.queues = []
         self.field_queues = {}
         self.application_queues = {}
         self.application_needs = {}
 
     def setup(self, judges, applications):
-        for feature in self.features:
-            feature.setup(judges, applications)
+        for criterion in self.criteria:
+            criterion.setup(judges, applications)
         self.add_applications(applications)
 
     def add_applications(self, applications):
@@ -50,8 +50,8 @@ class OrderedQueues(object):
         return queue
 
     def _initial_needs(self, application):
-        return [feature.as_need(application)
-                for feature in self.features]
+        return [criterion.as_need(application)
+                for criterion in self.criteria]
 
     def work_left(self):
         for queue in self.queues:

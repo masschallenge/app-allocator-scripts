@@ -16,14 +16,25 @@ CSV_FORMAT = "{%s}" % ("},{".join(CSV_COLUMNS))
 class Entity(object):
     count = 0
 
-    def __init__(self):
+    def __init__(self, type="entity", data=None, dists=None):
         Entity.count += 1
+        self.type = type
         self.properties = {"id": Entity.count}
-        self.type = "entity"
+        self.apply_dists(dists)
+        self.apply_data(data)
 
     def __str__(self):
         return self.properties.get(
             "name", "{type} {id}".format(type=self.type, id=self.id()))
+
+    def apply_dists(self, dists):
+        if dists:
+            for dist in dists:
+                self.properties[dist.name] = dist.select_random_value()
+
+    def apply_data(self, data):
+        if data:
+            self.properties.update(data)
 
     def id(self):
         return self.properties["id"]

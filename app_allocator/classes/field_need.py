@@ -15,7 +15,7 @@ class FieldNeed(object):
         return NotImplemented  # pragma: nocover
 
     def process_action(self, action, judge):
-        option = judge.properties[self.field]
+        option = judge.properties.get(self.field)
         for state in self.option_states:
             if option == state.option:
                 state.process_action(action)
