@@ -37,6 +37,8 @@ class Application(Entity):
             self.zscore_count -= 1
 
     def estimated_zscore(self):
+        if self.zscore_count == 0:
+            return 0
         return self.zscore_sum / self.zscore_count
 
     def expected_zscore(self, new_value):

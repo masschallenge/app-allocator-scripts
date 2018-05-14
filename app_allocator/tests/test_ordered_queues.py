@@ -3,7 +3,9 @@ from app_allocator.classes.allocator import Allocator
 from app_allocator.classes.application import Application
 from app_allocator.classes.event import Event
 from app_allocator.classes.judge import Judge
-from app_allocator.classes.ordered_queues import OrderedQueues
+from app_allocator.classes.ordered_queues import (
+    OrderedQueues,
+)
 from app_allocator.tests.utils import (
     satisfiable_scenario_csv,
     simple_test_scenario_csv,
@@ -109,9 +111,14 @@ class TestOrderedQueues(object):
     def test_assess_success(self):
         self.assess_helper(_finished_allocator(), "complete")
 
-    def assess_helper(self, allocator, expected):
+    def test_assess_zscore(self):
+        self.assess_helper(_finished_allocator(),
+                           "final_zscore",
+                           zscore_report=True)
+
+    def assess_helper(self, allocator, expected, zscore_report=False):
         event_count = len(Event.all_events)
-        allocator.heuristic.assess()
-        assert event_count + 1 == len(Event.all_events)
+        allocator.heuristic.assess(zscore_report=zscore_report)
+        assert event_count < len(Event.all_events)
         assert any([event.fields["action"] == expected
                     for event in Event.all_events])
