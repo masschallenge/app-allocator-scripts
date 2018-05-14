@@ -50,14 +50,16 @@ class Allocator(object):
 
     def assign_applications(self, judge):
         if self.heuristic.BATCH_HEURISTIC:
-            apps = judge.request_batch(self.heuristic)
-            for app in apps:
-                assign(judge, app)
-            if not judge.current_applications:
-                judge.mark_as_done()
         else:
             self.request_apps_until_done(judge)
-            
+
+    def batch_assignment(self, judge):
+        apps = judge.request_batch(self.heuristic)
+        for app in apps:
+            assign(judge, app)
+        if not judge.current_applications:
+            judge.mark_as_done()
+        
     def request_apps_until_done(self, judge):
         while judge.needs_another_application():
             application = self.heuristic.find_one_application(judge)
