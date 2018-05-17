@@ -24,6 +24,3 @@ class LinearSelection(Heuristic):
 
     def assess(self):
         Event(action="complete", description=LinearSelection.name)
-
-
-Heuristic.register_heuristic(LinearSelection)

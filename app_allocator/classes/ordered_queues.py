@@ -156,6 +156,3 @@ def _evaluate_queue_for_judge(queue, judge, old_value, queues):
         if new_value == old_value:
             queues.append(queue)
     return old_value, queues
-
-
-Heuristic.register_heuristic(OrderedQueues)

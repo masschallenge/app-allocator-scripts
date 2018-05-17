@@ -174,6 +174,3 @@ class DynamicMatrixHeuristic(Heuristic):
             if (feature, judge[feature.field]) in self.feature_values:
                 row[(feature, judge[feature.field])] = 1
         self._judge_features[judge] = matrix(list(row.values()))
-
-
-Heuristic.register_heuristic(DynamicMatrixHeuristic)

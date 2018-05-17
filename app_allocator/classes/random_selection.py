@@ -21,6 +21,3 @@ class RandomSelection(Heuristic):
 
     def assess(self):
         Event(action="complete", description=RandomSelection.name)
-
-
-Heuristic.register_heuristic(RandomSelection)

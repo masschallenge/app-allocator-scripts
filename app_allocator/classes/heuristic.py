@@ -12,10 +12,3 @@ class Heuristic(object):
     @classmethod
     def register_heuristic(klass, heuristic):
         klass.registered_heuristics.append(heuristic)
-
-
-def find_heuristic(name):
-    for heuristic in Heuristic.registered_heuristics:
-        if heuristic.name == name:
-            return heuristic()
-    return Heuristic.registered_heuristics[0]()
