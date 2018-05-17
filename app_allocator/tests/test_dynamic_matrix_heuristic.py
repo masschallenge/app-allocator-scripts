@@ -71,4 +71,3 @@ class TestDynamicMatrixHeuristic(object):
                    subject=judge,
                    object=application)])
         assert application in heuristic.judge_assignments[judge]
-        assert application in heuristic.completed_judge_assignments[judge]
