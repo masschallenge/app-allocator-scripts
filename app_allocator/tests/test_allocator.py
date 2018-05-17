@@ -18,23 +18,24 @@ def _allocator(entity_path="some/file/path", heuristic="linear", run_setup=True)
     return allocator
 
 
+def _check_for_entities(entity_list, example):
+    assert len(entity_list) == 1
+    assert entity_list[0]['name'] == example.name
+
+
 class TestAllocator(object):
 
     @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 simple_test_scenario_csv)
     def test_read_entities_creates_applications(self):
-        allocator = _allocator(run_setup=False)
-        assert len(allocator.applications) == 1
-        application = allocator.applications[0]
-        assert application['name'] == EXAMPLE_APPLICATION_DATA.name
+        _check_for_entities(_allocator(run_setup=False).applications,
+                            EXAMPLE_APPLICATION_DATA)
 
     @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 simple_test_scenario_csv)
     def test_read_entities_creates_judges(self):
-        allocator = _allocator(run_setup=False)
-        assert len(allocator.judges) == 1
-        judge = allocator.judges[0]
-        assert judge['name'] == EXAMPLE_JUDGE_DATA.name
+        _check_for_entities(_allocator(run_setup=False).judges,
+                            EXAMPLE_JUDGE_DATA)
 
     @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 simple_test_scenario_csv)
