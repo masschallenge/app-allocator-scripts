@@ -6,6 +6,9 @@ class LinearSelection(object):
 
     name = "linear"
 
+    def __init__(self, criteria=None):
+        super().__init__()
+
     def setup(self, judges, applications):
         self.applications = applications
         self.judges = judges

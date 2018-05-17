@@ -5,6 +5,7 @@ from app_allocator.classes.option_state import OptionState
 
 
 class MatchingCriterion(FieldCriterion):
+    type = "matching"
     all_matching_criteria = {}
 
     def __init__(self, name):
@@ -12,10 +13,10 @@ class MatchingCriterion(FieldCriterion):
         MatchingCriterion.all_matching_criteria[name] = self
 
     def as_need(self, application):
-        return FieldNeed(self.name, self.option_states(application))
+        return FieldNeed(self.name(), self.option_states(application))
 
     def option_states(self, application):
-        option = application.properties.get(self.name)
+        option = application.properties.get(self.name())
         if option is not None:
             if self.option_specs:
                 return self._states_from_specs(option)
@@ -41,7 +42,7 @@ class MatchingCriterion(FieldCriterion):
     def _options_with_counts(self, entities):
         options = {}
         for entity in entities:
-            option = entity.properties.get(self.name)
+            option = entity.properties.get(self.name())
             if option:
                 value = options.get(option, 0) + 1
                 options[option] = value

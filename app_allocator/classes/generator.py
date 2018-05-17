@@ -4,8 +4,11 @@ from app_allocator.classes.judge import Judge
 
 
 class Generator(object):
-    def __init__(self, judge_count=0, application_count=0):
-        FeatureDistribution.load_distributions()
+    def __init__(self,
+                 filename="distributions.csv",
+                 judge_count=0,
+                 application_count=0):
+        FeatureDistribution.load_distributions(filename)
         self.judges = [
             Judge(dists=FeatureDistribution.all_distributions.values())
             for i in range(judge_count)]

@@ -31,8 +31,7 @@ class TestEntity(object):
         assert_only_these_fields_in_csv_row(fields, entity.csv())
 
     def test_getitem(self):
-        entity = Entity()
-        entity.add_property(test_feature_distribution)
+        entity = Entity(dists=[test_feature_distribution])
         assert entity['color'] == 'blue'
 
     def test_csv_output(self, capsys):

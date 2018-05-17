@@ -1,5 +1,3 @@
-from app_allocator.classes.feature_distribution import feature_value
-
 CSV_COLUMNS = ["type",
                "name",
                "industry",
@@ -30,7 +28,7 @@ class Entity(object):
     def apply_dists(self, dists):
         if dists:
             for dist in dists:
-                self.properties[dist.name] = dist.select_random_value()
+                self.properties[dist.name()] = dist.select_random_value()
 
     def apply_data(self, data):
         if data:
@@ -53,10 +51,11 @@ class Entity(object):
             completed=self.properties.get("completed", ""),
             zscore=self.properties.get("zscore", ""))
 
-    def add_property(self, feature_distribution, data=None):
-        value = feature_value(feature_distribution, data)
-        if value is not None:
-            self.properties[feature_distribution.name] = value
+    def add_property(self, feature, data=None):
+        if data:
+            value = data.get(feature.name)
+            if value is not None:
+                self.properties[feature.name] = value
 
     def __getitem__(self, key):
         return self.properties.get(key, "")

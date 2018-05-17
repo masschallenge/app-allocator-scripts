@@ -5,6 +5,9 @@ from app_allocator.classes.event import Event
 class RandomSelection(object):
     name = "random"
 
+    def __init__(self, criteria=None):
+        super().__init__()
+
     def setup(self, judges, applications):
         self.applications = applications
 

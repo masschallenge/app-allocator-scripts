@@ -12,9 +12,10 @@ from app_allocator.tests.utils import (
 )
 
 
-def _allocator(filepath=None, applications=None, judges=None):
-    allocator = Allocator(filepath=filepath, heuristic=OrderedQueues.name)
-    if filepath:
+def _allocator(entity_path=None, applications=None, judges=None):
+    allocator = Allocator(entity_path=entity_path,
+                          heuristic=OrderedQueues.name)
+    if entity_path:
         allocator.read_entities()
     allocator.applications = _calc_default(allocator.applications,
                                            applications,
@@ -68,26 +69,26 @@ class TestOrderedQueues(object):
                    object=allocator.applications[0])])
         assert heuristic.work_left()
 
-    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+    @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 simple_test_scenario_csv)
     def test_run_allocator(self):
-        allocator = _allocator(filepath="some/file/path")
+        allocator = _allocator(entity_path="some/file/path")
         allocator.allocate()
         assert allocator.heuristic.work_left()
 
-    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+    @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 satisfiable_scenario_csv)
     def test_run_allocator_to_with_no_passes(self):
-        allocator = _allocator(filepath="some/file/path")
+        allocator = _allocator(entity_path="some/file/path")
         for judge in allocator.judges:
             judge.chance_of_pass = 0
         allocator.allocate()
         assert not allocator.heuristic.work_left()
 
-    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+    @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 satisfiable_scenario_csv)
     def test_run_allocator_to_with_only_passes(self):
-        allocator = _allocator(filepath="some/file/path")
+        allocator = _allocator(entity_path="some/file/path")
         for judge in allocator.judges:
             judge.chance_of_pass = 1
         allocator.allocate()

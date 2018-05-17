@@ -6,7 +6,7 @@ from app_allocator.classes.matching_criterion import MatchingCriterion
 class TestMatchingCriterion(object):
     def test_missing_option_state(self):
         # Need to use a unique name due to the registry in
-        # Property.  Not happy about the persistent state
+        # Criterion.  Not happy about the persistent state
         # that currently creates, but not ready to redesign.
         criterion = MatchingCriterion(name="animal")
         assert criterion.option_states(Application()) == []

@@ -4,6 +4,11 @@ from app_allocator.classes.option_state import OptionState
 
 
 class JudgeCriterion(FieldCriterion):
+    type = "judge"
+
+    def __init__(self, name):
+        super().__init__(name)
+
     def setup(self, judges, applications):
         pass
 
@@ -13,6 +18,6 @@ class JudgeCriterion(FieldCriterion):
         super().add_option(option, count, weight)
 
     def as_need(self, application):
-        return FieldNeed(self.name,
+        return FieldNeed(self.name(),
                          [OptionState(spec.option, spec.count)
                           for spec in self.option_specs])

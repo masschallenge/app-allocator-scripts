@@ -6,7 +6,12 @@ from app_allocator.classes.entity import csv_output
 from app_allocator.classes.generator import Generator
 
 
-generator = Generator(judge_count=int(sys.argv[1]),
+filename = "distributions.csv"
+if len(sys.argv) > 3:
+    filename = sys.argv[3]
+
+generator = Generator(filename=filename,
+                      judge_count=int(sys.argv[1]),
                       application_count=int(sys.argv[2]))
 
 

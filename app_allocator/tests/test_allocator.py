@@ -10,21 +10,21 @@ from app_allocator.tests.utils import (
 )
 
 
-def _allocator(filepath="some/file/path", heuristic="linear"):
-    allocator = Allocator(filepath, heuristic)
+def _allocator(entity_path="some/file/path", heuristic="linear"):
+    allocator = Allocator(entity_path=entity_path, heuristic=heuristic)
     allocator.read_entities()
     return allocator
 
 
-def set_up_allocator(filepath="some/file/path", heuristic="linear"):
-    allocator = _allocator(filepath, heuristic)
+def set_up_allocator(entity_path="some/file/path", heuristic="linear"):
+    allocator = _allocator(entity_path=entity_path, heuristic=heuristic)
     allocator.setup()
     return allocator
 
 
 class TestAllocator(object):
 
-    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+    @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 simple_test_scenario_csv)
     def test_read_entities_creates_applications(self):
         allocator = _allocator()
@@ -32,7 +32,7 @@ class TestAllocator(object):
         application = allocator.applications[0]
         assert application['name'] == EXAMPLE_APPLICATION_DATA.name
 
-    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+    @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 simple_test_scenario_csv)
     def test_read_entities_creates_judges(self):
         allocator = _allocator()
@@ -40,7 +40,7 @@ class TestAllocator(object):
         judge = allocator.judges[0]
         assert judge['name'] == EXAMPLE_JUDGE_DATA.name
 
-    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+    @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 simple_test_scenario_csv)
     def test_allocator_setup_calls_heuristic_setup(self):
         allocator = set_up_allocator()
@@ -53,24 +53,24 @@ class TestAllocator(object):
         allocator.assign_applications(judge)
         assert len(judge.current_applications) == expected
 
-    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+    @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 multiple_application_scenario_csv)
     def test_allocator_assign_applications_applications_available(self):
         self.allocator_assign_applications_helper(10)
 
-    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+    @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 no_application_scenario_csv)
     def test_allocator_assign_applications_no_applications_available(self):
         self.allocator_assign_applications_helper(0)
 
-    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+    @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 multiple_application_scenario_csv)
     def test_allocate_all_judges(self):
         allocator = set_up_allocator()
         allocator.allocate()
         assert len(allocator.judges) == 0
 
-    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+    @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 simple_test_scenario_csv)
     def test_linear_assess(self):
         allocator = _allocator(heuristic="linear")

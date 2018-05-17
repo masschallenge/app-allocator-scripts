@@ -1,20 +1,14 @@
 from csv import DictReader
+from app_allocator.classes.feature import Feature
 from app_allocator.classes.judge_criterion import JudgeCriterion
 from app_allocator.classes.matching_criterion import MatchingCriterion
-from app_allocator.classes.feature_distribution import FeatureDistribution
 from app_allocator.classes.reads_criterion import ReadsCriterion
 
 
-DEFAULT_FILENAME = "criteria.csv"
-
-
 class CriteriaReader(object):
-    def __init__(self, filename):
+    def __init__(self, file):
         self.criteria = {}
-        self.filename = filename
-        if not self.filename:
-            self.filename = DEFAULT_FILENAME
-        self.read_data()
+        self.read_data(file)
 
     def all(self):
         result = []
@@ -23,8 +17,7 @@ class CriteriaReader(object):
                 result.append(criterion)
         return result
 
-    def read_data(self):
-        file = open(self.filename)
+    def read_data(self, file):
         for row in DictReader(file):
             self.process_row(row)
         file.close()
@@ -48,10 +41,9 @@ class CriteriaReader(object):
 
 
 def create_criterion(type, name):
-    if name not in FeatureDistribution.all_distributions:
-        FeatureDistribution(type, name)
-    if type == "judge":
+    Feature.find_feature(type, name)
+    if type == JudgeCriterion.type:
         return JudgeCriterion(name)
-    if type == "matching":
+    if type == MatchingCriterion.type:
         return MatchingCriterion(name)
     return ReadsCriterion(name)

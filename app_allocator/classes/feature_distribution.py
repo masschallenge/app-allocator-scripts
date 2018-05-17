@@ -1,5 +1,6 @@
 from csv import DictReader
 from random import random
+from app_allocator.classes.feature import Feature
 
 
 JUDGE_TYPE = "judge"
@@ -13,8 +14,7 @@ class FeatureDistribution(object):
     matching_distributions = []
 
     def __init__(self, type, name, values=None):
-        self.type = type
-        self.name = name
+        self.feature = Feature.find_feature(type, name)
         self.values = values
         self.weights = {}
         self.total = 0
@@ -23,7 +23,7 @@ class FeatureDistribution(object):
             FeatureDistribution.matching_distributions.append(self)
 
     @classmethod
-    def load_distributions(cls, filename="distributions.csv"):
+    def load_distributions(cls, filename):
         file = open(filename)
         cls.read_from_file(file)
         file.close()
@@ -37,6 +37,9 @@ class FeatureDistribution(object):
             if not distribution:
                 distribution = FeatureDistribution(row["type"], name)
             distribution.add_option(row["option"], row["weight"])
+
+    def name(self):
+        return self.feature.name
 
     def add_option(self, option, weight):
         if option in self.weights:
@@ -52,12 +55,3 @@ class FeatureDistribution(object):
                 return option
             target_weight -= weight
         return None
-
-
-name = FeatureDistribution(NAME_TYPE, "name")
-
-
-def feature_value(feature, data):
-    if data:
-        return data.get(feature.name)
-    return feature.select_random_value()

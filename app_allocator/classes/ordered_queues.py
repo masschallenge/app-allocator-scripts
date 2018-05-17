@@ -1,6 +1,5 @@
 from random import choice
 from app_allocator.classes.event import Event
-from app_allocator.classes.criteria_reader import CriteriaReader
 from app_allocator.classes.needs_queue import NeedsQueue
 
 
@@ -8,8 +7,9 @@ class OrderedQueues(object):
     name = "ordered_queues"
     relevant_actions = ["finished", "pass"]
 
-    def __init__(self, criteria_file=None):
-        self.criteria = CriteriaReader(criteria_file).all()
+    def __init__(self, criteria):
+        super().__init__()
+        self.criteria = criteria
         self.queues = []
         self.field_queues = {}
         self.application_queues = {}
