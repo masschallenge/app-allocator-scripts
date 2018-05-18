@@ -32,9 +32,9 @@ class FeatureDistribution(object):
         reader = DictReader(file)
         for row in reader:
             name = row["name"]
-            distribution = FeatureDistribution.all_distributions.get(name)
+            distribution = cls.all_distributions.get(name)
             if not distribution:
-                distribution = FeatureDistribution(row["type"], name)
+                distribution = cls(row["type"], name)
             distribution.add_option(row["option"], row["weight"])
 
     def name(self):
