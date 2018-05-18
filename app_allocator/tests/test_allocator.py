@@ -10,7 +10,9 @@ from app_allocator.tests.utils import (
 )
 
 
-def _allocator(entity_path="some/file/path", heuristic="linear", run_setup=True):
+def _allocator(entity_path="some/file/path",
+               heuristic="linear",
+               run_setup=True):
     allocator = Allocator(entity_path=entity_path, heuristic=heuristic)
     allocator.read_entities()
     if run_setup:

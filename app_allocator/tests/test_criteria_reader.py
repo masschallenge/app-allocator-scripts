@@ -18,7 +18,7 @@ class TestCriteriaReader(object):
     def test_conflict_criteria_reader(self):
         exception_thrown = False
         try:
-            reader = CriteriaReader(file=conflicting_criteria_csv())
+            CriteriaReader(file=conflicting_criteria_csv())
         except TypeError:
             exception_thrown = True
         assert exception_thrown
