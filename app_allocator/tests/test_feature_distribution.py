@@ -2,7 +2,7 @@ from app_allocator.classes.feature_distribution import FeatureDistribution
 
 
 DEFAULT_WEIGHT = 1
-LIGHT_WEIGHT = 1
+LIGHT_WEIGHT = 0.5
 
 
 class TestFeatureDistribution(object):
