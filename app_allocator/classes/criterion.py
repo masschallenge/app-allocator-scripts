@@ -17,8 +17,8 @@ class Criterion(object):
     def setup(self, judges, applications):
         pass
 
-    def add_option(self, option, count=None, weight=None):
-        if count:
+    def add_option(self, option, count, weight):
+        if count != "":
             self.count = int(count)
-        if weight:
+        if weight != "":
             self.weight = float(weight)
