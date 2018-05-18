@@ -24,9 +24,8 @@ class FeatureDistribution(object):
 
     @classmethod
     def load_distributions(cls, filename):
-        file = open(filename)
-        cls.read_from_file(file)
-        file.close()
+        with open(filename) as file:
+            cls.read_from_file(file)
 
     @classmethod
     def read_from_file(cls, file):
