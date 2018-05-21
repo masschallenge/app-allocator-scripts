@@ -110,10 +110,11 @@ class DynamicMatrixHeuristic(Heuristic):
         return can_assign_to_judge
 
     def _feature_values(self, entity_sets):
-        return tuple(set([(feature, entity[feature.field])
-                          for entities in entity_sets
-                          for entity in entities
-                          for feature in self.features]))
+        return tuple(sorted(set([(feature, entity[feature.field])
+                                 for entities in entity_sets
+                                 for entity in entities
+                                 for feature in self.features]),
+                            key=lambda t:t[1]))
 
     def _feature_weights(self):
         return {(feature.field, value):
