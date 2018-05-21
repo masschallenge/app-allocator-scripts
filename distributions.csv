@@ -1,0 +1,29 @@
+type,name,option,weight
+matching,industry,Energy / Clean Tech,1
+matching,industry,General,7
+matching,industry,Healthcare / Life Sciences,3
+matching,industry,High Tech,8
+matching,industry,Social Impact,1
+matching,program,Boston,3
+matching,program,Switzerland,1
+matching,program,Israel,1
+judge,role,Executive,2
+judge,role,Investor,2
+judge,role,Lawyer,2
+judge,role,Other,4
+judge,gender,female,1
+judge,gender,male,3
+judge,commitment,30,1
+judge,commitment,40,2
+judge,commitment,50,4
+judge,commitment,60,2
+judge,commitment,70,1
+judge,zscore,-2.0,2
+judge,zscore,-1.0,14
+judge,zscore,-0.5,15
+judge,zscore,-0.25,9
+judge,zscore,0,20
+judge,zscore,0.25,9
+judge,zscore,0.5,15
+judge,zscore,1.0,14
+judge,zscore,2.0,2

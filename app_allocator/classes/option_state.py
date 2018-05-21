@@ -1,7 +1,7 @@
 class OptionState(object):
     def __init__(self, option, count):
         self.option = option
-        self.count = count
+        self.count = int(count)
 
     def __str__(self):
         return "O(%s,%s)" % (self.option,

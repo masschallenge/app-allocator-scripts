@@ -10,70 +10,69 @@ from app_allocator.tests.utils import (
 )
 
 
-def _allocator(filepath="some/file/path", heuristic="linear"):
-    allocator = Allocator(filepath, heuristic)
+def _allocator(entity_path="some/file/path",
+               heuristic="linear",
+               run_setup=True):
+    allocator = Allocator(entity_path=entity_path, heuristic=heuristic)
     allocator.read_entities()
+    if run_setup:
+        allocator.setup()
     return allocator
 
 
-def set_up_allocator(filepath="some/file/path", heuristic="linear"):
-    allocator = _allocator(filepath, heuristic)
-    allocator.setup()
-    return allocator
+def _check_for_entities(entity_list, example):
+    assert len(entity_list) == 1
+    assert entity_list[0]['name'] == example.name
 
 
 class TestAllocator(object):
 
-    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+    @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 simple_test_scenario_csv)
     def test_read_entities_creates_applications(self):
-        allocator = _allocator()
-        assert len(allocator.applications) == 1
-        application = allocator.applications[0]
-        assert application['name'] == EXAMPLE_APPLICATION_DATA.name
+        _check_for_entities(_allocator(run_setup=False).applications,
+                            EXAMPLE_APPLICATION_DATA)
 
-    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+    @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 simple_test_scenario_csv)
     def test_read_entities_creates_judges(self):
-        allocator = _allocator()
-        assert len(allocator.judges) == 1
-        judge = allocator.judges[0]
-        assert judge['name'] == EXAMPLE_JUDGE_DATA.name
+        _check_for_entities(_allocator(run_setup=False).judges,
+                            EXAMPLE_JUDGE_DATA)
 
-    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+    @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 simple_test_scenario_csv)
     def test_allocator_setup_calls_heuristic_setup(self):
-        allocator = set_up_allocator()
+        allocator = _allocator()
         assert allocator.heuristic.applications == allocator.applications
         assert allocator.heuristic.judges == allocator.judges
 
     def allocator_assign_applications_helper(self, expected):
-        allocator = set_up_allocator()
+        allocator = _allocator()
         judge = allocator.judges[0]
         allocator.assign_applications(judge)
         assert len(judge.current_applications) == expected
 
-    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+    @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 multiple_application_scenario_csv)
     def test_allocator_assign_applications_applications_available(self):
         self.allocator_assign_applications_helper(10)
 
-    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+    @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 no_application_scenario_csv)
     def test_allocator_assign_applications_no_applications_available(self):
         self.allocator_assign_applications_helper(0)
 
-    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+    @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 multiple_application_scenario_csv)
     def test_allocate_all_judges(self):
-        allocator = set_up_allocator()
+        allocator = _allocator()
         allocator.allocate()
         assert len(allocator.judges) == 0
 
-    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+    @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 simple_test_scenario_csv)
     def test_linear_assess(self):
-        allocator = _allocator(heuristic="linear")
+        allocator = _allocator(heuristic="linear", run_setup=False)
         event_count = len(Event.all_events)
         allocator.assess()
         assert event_count + 1 == len(Event.all_events)

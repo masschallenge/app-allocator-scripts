@@ -11,16 +11,21 @@ from app_allocator.classes.allocator import Allocator
 from app_allocator.classes.event import Event
 
 
-filename = None
+criteria_path = None
+entity_path = None
 heuristic = ""
 
 if len(sys.argv) > 1:
-    filepath = sys.argv[1]
+    entity_path = sys.argv[1]
 if len(sys.argv) > 2:
     heuristic = sys.argv[2]
+if len(sys.argv) > 3:
+    criteria_path = sys.argv[3]
 
 
-allocator = Allocator(filepath, heuristic)
+allocator = Allocator(criteria_path=criteria_path,
+                      entity_path=entity_path,
+                      heuristic=heuristic)
 allocator.read_entities()
 allocator.setup()
 allocator.allocate()

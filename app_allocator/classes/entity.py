@@ -1,5 +1,3 @@
-from app_allocator.classes.property import property_value
-
 CSV_COLUMNS = ["type",
                "name",
                "industry",
@@ -16,14 +14,27 @@ CSV_FORMAT = "{%s}" % ("},{".join(CSV_COLUMNS))
 class Entity(object):
     count = 0
 
-    def __init__(self):
+    def __init__(self, type="entity", data=None, dists=None):
         Entity.count += 1
+        self.type = type
         self.properties = {"id": Entity.count}
-        self.type = "entity"
+        if dists:
+            self._apply_dists(dists)
+        if data:
+            self._apply_data(data)
 
     def __str__(self):
         return self.properties.get(
             "name", "{type} {id}".format(type=self.type, id=self.id()))
+
+    def _apply_dists(self, dists):
+        for dist in dists:
+            self.properties[dist.name()] = dist.select_random_value()
+
+    def _apply_data(self, data):
+        for key, value in data.items():
+            if value is not '':
+                self.properties[key] = value
 
     def id(self):
         return self.properties["id"]
@@ -40,10 +51,11 @@ class Entity(object):
             completed=self.properties.get("completed", ""),
             zscore=self.properties.get("zscore", ""))
 
-    def add_property(self, property, data=None):
-        value = property_value(property, data)
-        if value is not None:
-            self.properties[property.name] = value
+    def add_property(self, feature, data=None):
+        if data:
+            value = data.get(feature.name)
+            if value is not None:
+                self.properties[feature.name] = value
 
     def __getitem__(self, key):
         return self.properties.get(key, "")

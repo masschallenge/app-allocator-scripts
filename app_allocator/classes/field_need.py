@@ -15,7 +15,7 @@ class FieldNeed(object):
         return NotImplemented  # pragma: nocover
 
     def process_action(self, action, judge):
-        option = judge.properties[self.field]
+        option = judge.properties.get(self.field)
         for state in self.option_states:
             if option == state.option:
                 state.process_action(action)
@@ -37,5 +37,9 @@ class FieldNeed(object):
             if judge.properties[self.field] == option:
                 count += 1
             if count > 2:
-                return 0
+                # Cut off if there are more than two assignments
+                # Need more complex test cases to get here in the tests
+                return 0  # pragma: nocover
+        # It's debatable if this function is doing the right thing.
+        # Another option would be Product(judge.chance_of_pass)
         return 1/(count + 1)
