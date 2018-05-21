@@ -124,9 +124,9 @@ class DynamicMatrixHeuristic(Heuristic):
         needs = OrderedDict()
 
         for application in self.applications:
-            row = OrderedDict({(feature.field, value):
-                               feature.initial_need(application, value)
-                               for feature, value in self.feature_values})
+            row = OrderedDict([((feature.field, value),
+                                feature.initial_need(application, value))
+                               for feature, value in self.feature_values])
 
             needs[application] = row
         return needs
@@ -169,8 +169,8 @@ class DynamicMatrixHeuristic(Heuristic):
         return self._judge_features[judge]
 
     def _calc_judge_features(self, judge):
-        row = OrderedDict({feature_value: 0
-                           for feature_value in self.feature_values})
+        row = OrderedDict([(feature_value, 0)
+                           for feature_value in self.feature_values])
         for feature in self.features:
             if (feature, judge[feature.field]) in self.feature_values:
                 row[(feature, judge[feature.field])] = 1
