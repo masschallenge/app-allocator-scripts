@@ -144,11 +144,11 @@ class DynamicMatrixHeuristic(Heuristic):
         for key, val in judge.properties.items():
             self._update_specific_need(needs_dict, key, val, adjustment)
 
-    def _update_specific_need(self, needs_dict, key, val, adjustment_amount):
+    def _update_specific_need(self, needs_dict, key, val, adjustment):
         if (key, val) in needs_dict.keys():
             needs_dict[(key, val)] = (
                 max(0,
-                    needs_dict[(key, val)] - adjustment_amount))
+                    needs_dict[(key, val)] - adjustment))
             if needs_dict[(key, val)] == 0:
                 self.update_needs_and_features(key, val)
 
