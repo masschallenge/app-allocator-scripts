@@ -11,7 +11,6 @@ ZSCORE_REPORT = False
 
 
 class OrderedQueues(Heuristic):
-    BATCH_HEURISTIC = False
     name = "ordered_queues"
 
     features = [MatchingFeature("industry"),

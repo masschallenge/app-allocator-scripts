@@ -4,7 +4,6 @@ from app_allocator.classes.heuristic import Heuristic
 
 class LinearSelection(Heuristic):
     'Simple and predictable heuristic for testing'
-    BATCH_HEURISTIC = False
     name = "linear"
 
     def setup(self, judges, applications):

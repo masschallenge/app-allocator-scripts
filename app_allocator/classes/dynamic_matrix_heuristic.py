@@ -14,7 +14,6 @@ FINISHED_VALUE = CHANCE_OF_PASS
 
 
 class DynamicMatrixHeuristic(Heuristic):
-    BATCH_HEURISTIC = True
     name = "dynamic_matrix"
     features = [MatchingFeature("industry",
                                 weight=.6),
@@ -114,7 +113,7 @@ class DynamicMatrixHeuristic(Heuristic):
                                  for entities in entity_sets
                                  for entity in entities
                                  for feature in self.features]),
-                            key=lambda t:t[1]))
+                            key=lambda t: t[1]))
 
     def _feature_weights(self):
         return {(feature.field, value):

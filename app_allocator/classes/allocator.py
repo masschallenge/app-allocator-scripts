@@ -51,12 +51,6 @@ class Allocator(object):
                 self.judges.remove(judge)
 
     def assign_applications(self, judge):
-        if self.heuristic.BATCH_HEURISTIC:
-            self.batch_assignment(judge)
-        else:
-            self.request_apps_until_done(judge)
-
-    def batch_assignment(self, judge):
         apps = judge.request_batch(self.heuristic)
         for app in apps:
             assign(judge, app)

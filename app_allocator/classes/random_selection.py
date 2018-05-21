@@ -5,7 +5,6 @@ from app_allocator.classes.heuristic import Heuristic
 
 class RandomSelection(Heuristic):
     name = "random"
-    BATCH_HEURISTIC = False
 
     def setup(self, judges, applications):
         self.applications = applications

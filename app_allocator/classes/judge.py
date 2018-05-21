@@ -39,7 +39,7 @@ class Judge(Entity):
 
     def request_batch(self, heuristic):
         batch_size = min(self.remaining, self.MAX_PANEL_SIZE)
-        return heuristic.request_batch(self, batch_size)
+        return heuristic.find_n_applications(self, batch_size)
 
     def needs_another_application(self):
         return (self.remaining > 0 and
