@@ -22,4 +22,6 @@ class ReadNeed(object):
             count = len(assignments)
             if count <= 2:
                 return 1/(count + 1)
-        return 0
+        # We don't have a test yet that's complicated enough
+        # to need this case
+        return 0  # pragma: nocover

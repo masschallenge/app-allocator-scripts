@@ -6,9 +6,13 @@ from app_allocator.classes.heuristic import Heuristic
 class RandomSelection(Heuristic):
     name = "random"
 
+    def __init__(self, criteria=None):
+        super().__init__()
+
     def setup(self, judges, applications):
         self.applications = applications
-
+        self.judges = judges
+        
     def work_left(self):
         return True
 

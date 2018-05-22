@@ -13,7 +13,7 @@ from app_allocator.tests.utils import (
     satisfiable_scenario_csv,
 )
 
-_allocator = allocator_getter(DynamicMatrixHeuristic)
+_allocator = allocator_getter(DynamicMatrixHeuristic.name)
 
 
 class TestDynamicMatrixHeuristic(object):
@@ -25,36 +25,36 @@ class TestDynamicMatrixHeuristic(object):
         allocator = _allocator(applications=[])
         assert not allocator.heuristic.work_left()
 
-    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+    @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 multiple_application_scenario_csv)
     def test_request_batch(self):
-        allocator = _allocator(filepath=DUMMY_FILEPATH)
+        allocator = _allocator(entity_path=DUMMY_FILEPATH)
         judge = allocator.heuristic.judges[0]
         judge.request_batch(allocator.heuristic)
         assignments = allocator.heuristic.judge_assignments[judge]
         applications = allocator.heuristic.applications
         assert all([app in assignments for app in applications])
 
-    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+    @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 lazy_judge_scenario_csv)
     def test_request_batch_respects_judge_capacity(self):
-        allocator = _allocator(filepath=DUMMY_FILEPATH)
+        allocator = _allocator(entity_path=DUMMY_FILEPATH)
         judge = allocator.judges[0]
         batch = judge.request_batch(allocator.heuristic)
         assert len(batch) == int(judge['commitment'])
 
-    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+    @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 satisfiable_scenario_csv)
     def test_find_one_application(self):
-        allocator = _allocator(filepath=DUMMY_FILEPATH)
+        allocator = _allocator(entity_path=DUMMY_FILEPATH)
         judge = allocator.judges[0]
         app = allocator.heuristic.find_one_application(judge)
         assert app['name'] == BOS_HIGH_TECH_APP
 
-    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+    @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 satisfiable_scenario_csv)
     def test_find_one_application_returns_none_if_no_unassigned_apps(self):
-        allocator = _allocator(filepath=DUMMY_FILEPATH)
+        allocator = _allocator(entity_path=DUMMY_FILEPATH)
         heuristic = allocator.heuristic
         judge = allocator.judges[0]
         heuristic.judge_assignments[judge] = allocator.applications[:]

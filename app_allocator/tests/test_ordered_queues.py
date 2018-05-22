@@ -1,8 +1,8 @@
 import mock
 
 from app_allocator.classes.event import Event
+from app_allocator.classes.judge import Judge
 from app_allocator.classes.ordered_queues import OrderedQueues
-
 from app_allocator.tests.utils import (
     DUMMY_FILEPATH,
     allocator_getter,
@@ -10,7 +10,15 @@ from app_allocator.tests.utils import (
     simple_test_scenario_csv,
 )
 
+
 _allocator = allocator_getter(OrderedQueues.name)
+
+def _calc_default(current, arg, klass):
+    if not current and arg is None:
+        return [klass()]
+    if isinstance(arg, list):
+        return arg
+    return current
 
 
 def _finished_allocator():
@@ -49,26 +57,26 @@ class TestOrderedQueues(object):
                    object=allocator.applications[0])])
         assert heuristic.work_left()
 
-    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+    @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 simple_test_scenario_csv)
     def test_run_allocator(self):
-        allocator = _allocator(filepath=DUMMY_FILEPATH)
+        allocator = _allocator(entity_path=DUMMY_FILEPATH)
         allocator.allocate()
         assert allocator.heuristic.work_left()
 
-    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+    @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 satisfiable_scenario_csv)
     def test_run_allocator_to_with_no_passes(self):
-        allocator = _allocator(filepath=DUMMY_FILEPATH)
+        allocator = _allocator(entity_path=DUMMY_FILEPATH)
         for judge in allocator.judges:
             judge.chance_of_pass = 0
         allocator.allocate()
         assert not allocator.heuristic.work_left()
 
-    @mock.patch('app_allocator.classes.allocator.Allocator._file',
+    @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 satisfiable_scenario_csv)
     def test_run_allocator_to_with_only_passes(self):
-        allocator = _allocator(filepath="some/file/path")
+        allocator = _allocator(entity_path="some/file/path")
         for judge in allocator.judges:
             judge.chance_of_pass = 1
         allocator.allocate()
@@ -92,9 +100,14 @@ class TestOrderedQueues(object):
     def test_assess_success(self):
         self.assess_helper(_finished_allocator(), "complete")
 
-    def assess_helper(self, allocator, expected):
+    def test_assess_zscore(self):
+        self.assess_helper(_finished_allocator(),
+                           "final_zscore",
+                           zscore_report=True)
+
+    def assess_helper(self, allocator, expected, zscore_report=False):
         event_count = len(Event.all_events)
-        allocator.heuristic.assess()
-        assert event_count + 1 == len(Event.all_events)
+        allocator.heuristic.assess(zscore_report=zscore_report)
+        assert event_count < len(Event.all_events)
         assert any([event.fields["action"] == expected
                     for event in Event.all_events])

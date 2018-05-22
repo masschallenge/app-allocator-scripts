@@ -1,38 +1,23 @@
 from random import choice
 from app_allocator.classes.event import Event
-from app_allocator.classes.judge_feature import JudgeFeature
-from app_allocator.classes.matching_feature import MatchingFeature
 from app_allocator.classes.needs_queue import NeedsQueue
-from app_allocator.classes.option_spec import OptionSpec
-from app_allocator.classes.reads_feature import ReadsFeature
 from app_allocator.classes.heuristic import Heuristic
-
-ZSCORE_REPORT = False
-
 
 class OrderedQueues(Heuristic):
     name = "ordered_queues"
-
-    features = [MatchingFeature("industry"),
-                MatchingFeature("program"),
-                JudgeFeature("role",
-                             option_specs=[OptionSpec("Executive", 2),
-                                           OptionSpec("Investor"),
-                                           OptionSpec("Lawyer")]),
-                JudgeFeature("gender", option_specs=[OptionSpec("female"),
-                                                     OptionSpec("male")]),
-                ReadsFeature(count=4)]
     relevant_actions = ["finished", "pass"]
 
-    def __init__(self):
+    def __init__(self, criteria):
+        super().__init__()
+        self.criteria = criteria
         self.queues = []
         self.field_queues = {}
         self.application_queues = {}
         self.application_needs = {}
 
-    def setup(self, judges=None, applications=None):
-        for feature in OrderedQueues.features:
-            feature.setup(judges, applications)
+    def setup(self, judges, applications):
+        for criterion in self.criteria:
+            criterion.setup(judges, applications)
         self.add_applications(applications)
 
     def add_applications(self, applications):
@@ -65,8 +50,8 @@ class OrderedQueues(Heuristic):
         return queue
 
     def _initial_needs(self, application):
-        return [feature.as_need(application)
-                for feature in OrderedQueues.features]
+        return [criterion.as_need(application)
+                for criterion in self.criteria]
 
     def work_left(self):
         for queue in self.queues:
@@ -115,7 +100,7 @@ class OrderedQueues(Heuristic):
         application = queue.assign_next_application(judge)
         return application
 
-    def assess(self):
+    def assess(self, zscore_report=False):
         for queue in self.queues:
             remaining = queue.remaining()
             if remaining > 0:
@@ -128,14 +113,14 @@ class OrderedQueues(Heuristic):
             else:
                 Event(action="complete",
                       subject=queue)
-        if ZSCORE_REPORT:
+        if zscore_report:
             self.assess_zscore()
 
     def assess_zscore(self):
         for application in self.application_needs.keys():
             Event(action="final_zscore", subject=application,
-                  object=application.zscore(),
-                  description=application.read_count())
+                  object=application.estimated_zscore(),
+                  description=application.zscore_count)
 
 
 def _calc_new_needs(needs, action, judge):

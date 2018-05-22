@@ -21,7 +21,9 @@ class NeedsQueue(object):
 
     def add_application(self, application, at_front=True):
         if at_front:
-            self.items.insert(0, application)
+            # We don't have a test yet that's complicated enough
+            # to need this case
+            self.items.insert(0, application)  # pragma: nocover
         else:
             self.items.append(application)
 
@@ -64,13 +66,13 @@ class NeedsQueue(object):
         for application in self.items:
             if self._assign(judge, application):
                 return application
-        return None
+        return None  # pragma: nocover
 
     def _assign(self, judge, application):
         if can_be_assigned(judge, application):
             self._add_assignment(judge, application)
             return application
-        return None
+        return None  # pragma: nocover
 
     def _add_assignment(self, judge, application):
         assignments = self.assignments.get(application, [])

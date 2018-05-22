@@ -1,3 +1,4 @@
+from app_allocator.classes.criteria_reader import CriteriaReader
 from app_allocator.classes.dynamic_matrix_heuristic import (
     DynamicMatrixHeuristic,
 )
@@ -11,20 +12,20 @@ from app_allocator.classes.ordered_queues import (
 from app_allocator.classes.random_selection import (
     RandomSelection,
 )
+DEFAULT_CRITERIA_PATH = "criteria.csv"
 
+HEURISTICS = [DynamicMatrixHeuristic,
+              LinearSelection,
+              OrderedQueues,
+              RandomSelection]
 
-CURRENT_HEURISTICS = [DynamicMatrixHeuristic,
-                      LinearSelection,
-                      OrderedQueues,
-                      RandomSelection]
+HEURISTICS_DICT = {heuristic.name: heuristic for heuristic in HEURISTICS}
 
-
-for heuristic in CURRENT_HEURISTICS:
-    Heuristic.register_heuristic(heuristic)
-
-
-def find_heuristic(name):
-    for heuristic in Heuristic.registered_heuristics:
-        if heuristic.name == name:
-            return heuristic()
-    return Heuristic.registered_heuristics[0]()
+def find_heuristic(name, criteria_path):
+    if not criteria_path:
+        criteria_path = DEFAULT_CRITERIA_PATH
+    file = open(criteria_path)
+    criteria = CriteriaReader(file).all()
+    file.close()
+    heuristic_instance = HEURISTICS_DICT.get(name, RandomSelection)(criteria)
+    return heuristic_instance

@@ -2,9 +2,6 @@ from collections import defaultdict, OrderedDict
 from numpy import matrix, array
 from app_allocator.classes.judge import DEFAULT_CHANCE_OF_PASS
 from app_allocator.classes.heuristic import Heuristic
-from app_allocator.classes.judge_feature import JudgeFeature
-from app_allocator.classes.reads_feature import ReadsFeature
-from app_allocator.classes.matching_feature import MatchingFeature
 from app_allocator.classes.option_spec import OptionSpec
 
 
@@ -15,35 +12,22 @@ FINISHED_VALUE = CHANCE_OF_PASS
 
 class DynamicMatrixHeuristic(Heuristic):
     name = "dynamic_matrix"
-    features = [MatchingFeature("industry",
-                                weight=.6),
-                MatchingFeature("program",
-                                weight=1),
-                JudgeFeature("role",
-                             weight=.7,
-                             option_specs=[OptionSpec("Executive", 2),
-                                           OptionSpec("Investor"),
-                                           OptionSpec("Lawyer")]),
-                JudgeFeature("gender",
-                             weight=1,
-                             option_specs=[OptionSpec("female"),
-                                           OptionSpec("male")]),
-                ReadsFeature(count=4, weight=1)]
 
     expected_reads = 4
+    def __init__(self, criteria):
+        super().__init__()
+        self.criteria = criteria
 
     def setup(self, judges, applications):
         self.judges = tuple(judges)
         for judge in self.judges:
             judge.properties["reads"] = ""
         self.applications = tuple(applications)
-        self.feature_values = self._feature_values([judges, applications])
+        self.criteria_weights = self._criteria_weights([judges, applications])
+        self.criteria_values = self.criteria_weights.keys()
         self._judge_features = {}
-        self.feature_weights = self._feature_weights()
         self.judge_assignments = defaultdict(list)
-
         self.completed_judge_assignments = defaultdict(list)
-
         self.judge_capacities = self._calc_judge_capacities()
         self.application_needs = self.initial_application_needs()
 
@@ -54,7 +38,7 @@ class DynamicMatrixHeuristic(Heuristic):
         return len(self.applications) > 0
 
     def _calc_judge_capacities(self):
-        return {judge: int(judge['commitment']) for judge in self.judges}
+        return {judge: int(judge['commitment'] or 0) for judge in self.judges}
 
     def _calc_needs_matrix(self):
         return matrix([list(row.values())
@@ -78,9 +62,9 @@ class DynamicMatrixHeuristic(Heuristic):
 
             needs_array = array([list(row.values()) for _, row
                                  in self.application_needs.items()])
-            feature_weights_array = array([v for v in
-                                           self.feature_weights.values()])
-            needs_matrix = matrix(needs_array * feature_weights_array)
+            criteria_weights_array = array([v for v in
+                                           self.criteria_weights.values()])
+            needs_matrix = matrix(needs_array * criteria_weights_array)
             application_preferences = judge_features * needs_matrix.transpose()
             apps = self.choose_n_applications(judge,
                                               application_preferences,
@@ -108,25 +92,20 @@ class DynamicMatrixHeuristic(Heuristic):
 
         return can_assign_to_judge
 
-    def _feature_values(self, entity_sets):
-        return tuple(sorted(set([(feature, entity[feature.field])
-                                 for entities in entity_sets
-                                 for entity in entities
-                                 for feature in self.features]),
-                            key=lambda t: t[1]))
-
-    def _feature_weights(self):
-        return {(feature.field, value):
-                feature.weight for feature, value in self.feature_values}
+    def _criteria_weights(self, entity_sets):
+        criteria_weights = {}
+        for criterion in self.criteria:
+            for spec in criterion.option_specs:
+                criteria_weights[(criterion, spec.option)] = float(spec.weight)
+        return criteria_weights
 
     def initial_application_needs(self):
         needs = OrderedDict()
 
         for application in self.applications:
-            row = OrderedDict([((feature.field, value),
-                                feature.initial_need(application, value))
-                               for feature, value in self.feature_values])
-
+            row = OrderedDict()
+            for criterion in self.criteria:
+                row.update(criterion.initial_needs(application))
             needs[application] = row
         return needs
 
@@ -150,16 +129,16 @@ class DynamicMatrixHeuristic(Heuristic):
                 max(0,
                     needs_dict[(key, val)] - adjustment))
             if needs_dict[(key, val)] == 0:
-                self.update_needs_and_features(key, val)
+                self.update_needs_and_criteria(key, val)
 
-    def update_needs_and_features(self, key, val):
+    def update_needs_and_criteria(self, key, val):
         needs = [row[(key, val)] for row in self.application_needs.values()]
         if not any(needs):
             for app in self.application_needs.keys():
                 del(self.application_needs[app][(key, val)])
-            self.feature_values = tuple([(k, v) for k, v in self.feature_values
-                                         if not(k.field == key and v == val)])
-            self.feature_weights = self._feature_weights()
+            self.criteria_values = tuple([(k, v) for k, v in self.criteria_values
+                                         if not(k.name() == key and v == val)])
+            self.criteria_weights = self._criteria_weights()
             self._judge_features = {}
 
     def judge_features(self, judge):
@@ -169,8 +148,8 @@ class DynamicMatrixHeuristic(Heuristic):
 
     def _calc_judge_features(self, judge):
         row = OrderedDict([(feature_value, 0)
-                           for feature_value in self.feature_values])
-        for feature in self.features:
-            if (feature, judge[feature.field]) in self.feature_values:
-                row[(feature, judge[feature.field])] = 1
+                           for feature_value in self.criteria_values])
+        for criterion in self.criteria:
+            if (criterion, judge[criterion.name()]) in self.criteria_values:
+                row[(criterion, judge[criterion.name()])] = 1
         self._judge_features[judge] = matrix(list(row.values()))

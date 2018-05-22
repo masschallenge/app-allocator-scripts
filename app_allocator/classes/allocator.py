@@ -16,20 +16,23 @@ from app_allocator.classes.judge import Judge
 
 
 class Allocator(object):
-    def __init__(self, filepath=None, heuristic="random"):
-        self.filepath = filepath
+    def __init__(self,
+                 criteria_path=None,
+                 entity_path=None,
+                 heuristic="random"):
+        self.entity_path = entity_path
         self.judges = []
         self.applications = []
-        self.heuristic = find_heuristic(heuristic)
+        self.heuristic = find_heuristic(heuristic, criteria_path)
 
-    def _file(self):
-        if self.filepath is None:  # pragma: nocover
+    def _entity_file(self):
+        if self.entity_path is None:  # pragma: nocover
             return sys.stdin  # pragma: nocover
         else:
-            return open(self.filepath)  # pragma: nocover
+            return open(self.entity_path)  # pragma: nocover
 
     def read_entities(self):
-        with self._file() as file:
+        with self._entity_file() as file:
             reader = csv.DictReader(file)
             for row in reader:
                 if row["type"] == "judge":

@@ -6,6 +6,9 @@ class LinearSelection(Heuristic):
     'Simple and predictable heuristic for testing'
     name = "linear"
 
+    def __init__(self, criteria=None):
+        super().__init__()
+
     def setup(self, judges, applications):
         self.applications = applications
         self.judges = judges

@@ -1,34 +1,38 @@
-from app_allocator.classes.feature import Feature
+from collections import OrderedDict
+from app_allocator.classes.field_criterion import FieldCriterion
 from app_allocator.classes.field_need import FieldNeed
 from app_allocator.classes.option_spec import OptionSpec
 from app_allocator.classes.option_state import OptionState
 
 
-class MatchingFeature(Feature):
-    def __init__(self, field, weight=.5, count=1, option_specs=None):
-        super().__init__(field, weight, option_specs)
-        self.count = count
+class MatchingCriterion(FieldCriterion):
+    type = "matching"
+    all_matching_criteria = {}
+
+    def __init__(self, name):
+        super().__init__(name)
+        MatchingCriterion.all_matching_criteria[name] = self
 
     def as_need(self, application):
-        return FieldNeed(self.field, self.option_states(application))
+        return FieldNeed(self.name(), self.option_states(application))
 
     def option_states(self, application):
-        option = application.properties.get(self.field)
+        option = application.properties.get(self.name())
         if option is not None:
-            if self.option_specs is None:
-                return [OptionState(option, self.count)]
-            else:
+            if self.option_specs:
                 return self._states_from_specs(option)
+            else:
+                return [OptionState(option, self.count)]
         return []
 
     def _states_from_specs(self, option):
         for spec in self.option_specs:
             if spec.option == option:
                 return [OptionState(option, spec.count)]
-        return []
+        return []  # pragma: nocover
 
     def setup(self, judges, applications):
-        if self.option_specs is None:
+        if not self.option_specs:
             self.option_specs = self._infer_option_specs(judges, applications)
 
     def _infer_option_specs(self, judges, applications):
@@ -39,18 +43,20 @@ class MatchingFeature(Feature):
     def _options_with_counts(self, entities):
         options = {}
         for entity in entities:
-            option = entity.properties.get(self.field)
+            option = entity.properties.get(self.name())
             if option:
                 value = options.get(option, 0) + 1
                 options[option] = value
         return options
 
-    def initial_need(self, startup, value):
-        if startup.properties.get(self.field) == value:
-            return float(self.count)
-        else:
-            return 0.0
-
+    def initial_needs(self, application):
+        needs = OrderedDict()
+        for spec in self.option_specs:
+            if application[self.name] == spec.option:
+                needs[spec.option] = float(spec.count)
+            else:
+                needs[spec.option] = 0.0
+        return needs
 
 def _shared_options_by_scarcity(options1, options2):
     '''options1 and options2 are expected to be dictionaries of

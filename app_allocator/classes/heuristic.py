@@ -1,6 +1,6 @@
-class Heuristic(object):
-    registered_heuristics = []
 
+class Heuristic(object):
+    
     def process_judge_events(self, events):
         for event in events:
             action = event.fields.get("action")
@@ -8,6 +8,7 @@ class Heuristic(object):
             application = event.fields.get("object")
             if action and judge and application:
                 self._update_needs(action, judge, application)
+
 
     def find_n_applications(self, judge, n):
         batch = []
@@ -19,6 +20,4 @@ class Heuristic(object):
                 break
         return batch
 
-    @classmethod
-    def register_heuristic(klass, heuristic):
-        klass.registered_heuristics.append(heuristic)
+

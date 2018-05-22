@@ -1,5 +1,20 @@
 class Feature(object):
-    def __init__(self, field, weight=.5, option_specs=None):
-        self.field = field
-        self.weight = weight
-        self.option_specs = option_specs
+    all_features = {}
+
+    def __init__(self, type, name):
+        self.type = type
+        self.name = name
+        Feature.all_features[name] = self
+
+    @classmethod
+    def find_feature(self, type, name):
+        result = Feature.all_features.get(name)
+        if result:
+            if type != result.type:
+                raise TypeError
+            return result
+        return Feature(type, name)
+
+
+name_feature = Feature(type="name", name="name")
+
