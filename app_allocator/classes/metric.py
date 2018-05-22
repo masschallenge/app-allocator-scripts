@@ -13,8 +13,7 @@ class Metric(object):
         judge, application = assignment
         if self.condition(judge, application):
             self.total += 1
-            self.increment_read_count(application,
-                                      counts_dict)
+            self.increment_read_count(application, counts_dict)
         self.update_max(application['name'], counts_dict)
         if self.satisfied(application, counts_dict):
             self.unsatisfied_apps.discard(application)

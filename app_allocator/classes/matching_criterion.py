@@ -53,9 +53,9 @@ class MatchingCriterion(FieldCriterion):
         needs = OrderedDict()
         for spec in self.option_specs:
             if application[self.name] == spec.option:
-                needs[spec.option] = float(spec.count)
+                needs[(self.name(), spec.option)] = float(spec.count)
             else:
-                needs[spec.option] = 0.0
+                needs[(self.name(), spec.option)] = 0.0
         return needs
 
 def _shared_options_by_scarcity(options1, options2):

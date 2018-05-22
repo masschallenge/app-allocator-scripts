@@ -1,6 +1,7 @@
 from collections import defaultdict, OrderedDict
 from numpy import matrix, array
 from app_allocator.classes.judge import DEFAULT_CHANCE_OF_PASS
+from app_allocator.classes.criterion import Criterion
 from app_allocator.classes.heuristic import Heuristic
 from app_allocator.classes.option_spec import OptionSpec
 
@@ -23,7 +24,7 @@ class DynamicMatrixHeuristic(Heuristic):
         for judge in self.judges:
             judge.properties["reads"] = ""
         self.applications = tuple(applications)
-        self.criteria_weights = self._criteria_weights([judges, applications])
+        self.criteria_weights = self._criteria_weights()
         self.criteria_values = self.criteria_weights.keys()
         self._judge_features = {}
         self.judge_assignments = defaultdict(list)
@@ -51,7 +52,7 @@ class DynamicMatrixHeuristic(Heuristic):
         else:
             return None
 
-    def request_batch(self, judge, batch_size):
+    def find_n_applications(self, judge, batch_size):
         if len(self.applications) <= batch_size:
             can_assign = self._can_assign_func(judge)
             apps = [app for app in self.applications if can_assign(app)]
@@ -92,7 +93,7 @@ class DynamicMatrixHeuristic(Heuristic):
 
         return can_assign_to_judge
 
-    def _criteria_weights(self, entity_sets):
+    def _criteria_weights(self):
         criteria_weights = {}
         for criterion in self.criteria:
             for spec in criterion.option_specs:
@@ -136,9 +137,8 @@ class DynamicMatrixHeuristic(Heuristic):
         if not any(needs):
             for app in self.application_needs.keys():
                 del(self.application_needs[app][(key, val)])
-            self.criteria_values = tuple([(k, v) for k, v in self.criteria_values
-                                         if not(k.name() == key and v == val)])
-            self.criteria_weights = self._criteria_weights()
+            self.criteria_weights.pop((Criterion.by_name(key), val))                
+            self.criteria_values = self.criteria_weights.keys()
             self._judge_features = {}
 
     def judge_features(self, judge):
