@@ -3,6 +3,7 @@ from numpy import matrix, array
 from app_allocator.classes.judge import DEFAULT_CHANCE_OF_PASS
 from app_allocator.classes.criterion import Criterion
 from app_allocator.classes.heuristic import Heuristic
+from app_allocator.classes.matching_criterion import MatchingCriterion
 from app_allocator.classes.option_spec import OptionSpec
 
 
@@ -24,6 +25,7 @@ class DynamicMatrixHeuristic(Heuristic):
         for judge in self.judges:
             judge.properties["reads"] = ""
         self.applications = tuple(applications)
+        MatchingCriterion.set_up_all(judges, applications)
         self.criteria_weights = self._criteria_weights()
         self.criteria_values = self.criteria_weights.keys()
         self._judge_features = {}
@@ -60,7 +62,6 @@ class DynamicMatrixHeuristic(Heuristic):
             available_batch_size = min(batch_size,
                                        self.judge_capacities[judge])
             judge_features = self.judge_features(judge)
-
             needs_array = array([list(row.values()) for _, row
                                  in self.application_needs.items()])
             criteria_weights_array = array([v for v in

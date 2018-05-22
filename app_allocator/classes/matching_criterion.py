@@ -40,6 +40,11 @@ class MatchingCriterion(FieldCriterion):
         application_options = self._options_with_counts(applications)
         return _shared_options_by_scarcity(judge_options, application_options)
 
+    @classmethod
+    def set_up_all(cls, judges, applications):
+        for criterion in cls.all_matching_criteria.values():
+            criterion.setup(judges, applications)
+            
     def _options_with_counts(self, entities):
         options = {}
         for entity in entities:
