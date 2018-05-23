@@ -47,13 +47,6 @@ class DynamicMatrixHeuristic(Heuristic):
         return matrix([list(row.values())
                        for _, row in self.application_needs.items()])
 
-    def find_one_application(self, judge):
-        result = self.request_batch(judge, 1)
-        if len(result) > 0:
-            return result[0]
-        else:
-            return None
-
     def find_n_applications(self, judge, batch_size):
         if len(self.applications) <= batch_size:
             can_assign = self._can_assign_func(judge)
