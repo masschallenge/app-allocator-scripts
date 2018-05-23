@@ -1,3 +1,4 @@
+from random import choices
 from collections import defaultdict, OrderedDict
 from numpy import matrix, array
 from app_allocator.classes.judge import DEFAULT_CHANCE_OF_PASS
@@ -65,6 +66,8 @@ class DynamicMatrixHeuristic(Heuristic):
                                               application_preferences,
                                               available_batch_size)
         for app in apps:
+            if len(app.judges) > 10:
+                import pdb; pdb.set_trace()
             self.judge_assignments[judge].append(app)
             self.judge_capacities[judge] -= 1
             self._update_needs("assigned", judge, app)
@@ -120,15 +123,13 @@ class DynamicMatrixHeuristic(Heuristic):
 
     def _update_specific_need(self, needs_dict, key, val, adjustment):
         if (key, val) in needs_dict.keys():
-            needs_dict[(key, val)] = (
-                max(0,
-                    needs_dict[(key, val)] - adjustment))
+            needs_dict[(key, val)] = needs_dict[(key, val)] - adjustment
             if needs_dict[(key, val)] == 0:
                 self.update_needs_and_criteria(key, val)
 
     def update_needs_and_criteria(self, key, val):
         needs = [row[(key, val)] for row in self.application_needs.values()]
-        if not any(needs):
+        if not all([need > 0 for need in needs]):
             for app in self.application_needs.keys():
                 del(self.application_needs[app][(key, val)])
             self.criteria_weights.pop((Criterion.by_name(key), val))                
