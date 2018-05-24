@@ -2,15 +2,15 @@ import mock
 
 from app_allocator.classes.dynamic_matrix_heuristic import (
     DynamicMatrixHeuristic,
+    ASSIGNED_VALUE,
+    FINISHED_VALUE,
 )
 from app_allocator.classes.event import Event
 from app_allocator.tests.utils import (
     allocator_getter,
-    BOS_HIGH_TECH_APP,
     DUMMY_FILEPATH,
     lazy_judge_scenario_csv,
     multiple_application_scenario_csv,
-    satisfiable_scenario_csv,
 )
 
 _allocator = allocator_getter(DynamicMatrixHeuristic.name)
@@ -43,13 +43,45 @@ class TestDynamicMatrixHeuristic(object):
         batch = judge.request_batch(allocator.heuristic)
         assert len(batch) == int(judge['commitment'])
 
-    def test_process_finished_judge_event_adds_app_to_assignments(self):
+    def test_process_assigned_judge_event_updates_judge_assignments(self):
+        application, judge, allocator = self._process_judge_event("assigned")
+        assert application in allocator.heuristic.judge_assignments[judge]
+
+    def test_process_assigned_judge_event_updates_app_needs(self):
+        application, judge, allocator = self._process_judge_event("assigned")
+        _assert_needs(application, judge, allocator, ASSIGNED_VALUE)
+
+    def test_process_finished_judge_event_updates_app_needs(self):
+        application, judge, allocator = self._process_judge_event("finished")
+        _assert_needs(application, judge, allocator, FINISHED_VALUE)
+
+    def test_process_pass_judge_event_does_not_change_app_needs(self):
+        application, judge, allocator = self._process_judge_event("pass")
+        _assert_needs(application, judge, allocator, 0)
+
+    def _process_judge_event(self, action):
         allocator = _allocator()
         heuristic = allocator.heuristic
         judge = heuristic.judges[0]
         application = heuristic.applications[0]
         heuristic.process_judge_events(
-            [Event(action="assigned",
+            [Event(action=action,
                    subject=judge,
                    object=application)])
-        assert application in heuristic.judge_assignments[judge]
+        return application, judge, allocator
+
+
+def _assert_needs(application, judge, allocator, adjustment):
+    heuristic = allocator.heuristic
+    needs_dict = heuristic.application_needs[application]
+    for criterion, option in judge.properties.items():
+        key = (criterion, option)
+        if key in needs_dict:
+            initial_value = _initial_value(heuristic,
+                                           key,
+                                           application)
+            assert needs_dict[key] == initial_value - adjustment
+
+
+def _initial_value(heuristic, key, application):
+    return heuristic.initial_application_needs()[application][key]

@@ -2,7 +2,6 @@ from app_allocator.classes.criteria_reader import CriteriaReader
 from app_allocator.classes.dynamic_matrix_heuristic import (
     DynamicMatrixHeuristic,
 )
-from app_allocator.classes.heuristic import Heuristic
 from app_allocator.classes.linear_selection import (
     LinearSelection,
 )
@@ -20,6 +19,7 @@ HEURISTICS = [DynamicMatrixHeuristic,
               RandomSelection]
 
 HEURISTICS_DICT = {heuristic.name: heuristic for heuristic in HEURISTICS}
+
 
 def find_heuristic(name, criteria_path):
     if not criteria_path:

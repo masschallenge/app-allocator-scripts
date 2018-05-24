@@ -17,4 +17,3 @@ class Feature(object):
 
 
 name_feature = Feature(type="name", name="name")
-

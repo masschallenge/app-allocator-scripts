@@ -12,7 +12,7 @@ class RandomSelection(Heuristic):
     def setup(self, judges, applications):
         self.applications = applications
         self.judges = judges
-        
+
     def work_left(self):
         return True
 

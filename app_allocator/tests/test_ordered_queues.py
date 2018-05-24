@@ -1,7 +1,6 @@
 import mock
 
 from app_allocator.classes.event import Event
-from app_allocator.classes.judge import Judge
 from app_allocator.classes.ordered_queues import OrderedQueues
 from app_allocator.tests.utils import (
     DUMMY_FILEPATH,
@@ -12,6 +11,7 @@ from app_allocator.tests.utils import (
 
 
 _allocator = allocator_getter(OrderedQueues.name)
+
 
 def _calc_default(current, arg, klass):
     if not current and arg is None:

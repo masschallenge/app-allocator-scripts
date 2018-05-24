@@ -3,6 +3,7 @@ from app_allocator.classes.event import Event
 from app_allocator.classes.needs_queue import NeedsQueue
 from app_allocator.classes.heuristic import Heuristic
 
+
 class OrderedQueues(Heuristic):
     name = "ordered_queues"
     relevant_actions = ["finished", "pass"]

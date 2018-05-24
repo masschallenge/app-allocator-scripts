@@ -4,6 +4,7 @@ from app_allocator.classes.criterion import (
     DEFAULT_WEIGHT,
 )
 
+
 @total_ordering
 class OptionSpec(object):
     def __init__(self, option, count=DEFAULT_COUNT, weight=DEFAULT_WEIGHT):

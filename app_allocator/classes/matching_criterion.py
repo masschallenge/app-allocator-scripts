@@ -44,7 +44,7 @@ class MatchingCriterion(FieldCriterion):
     def set_up_all(cls, judges, applications):
         for criterion in cls.all_matching_criteria.values():
             criterion.setup(judges, applications)
-            
+
     def _options_with_counts(self, entities):
         options = {}
         for entity in entities:
@@ -62,6 +62,7 @@ class MatchingCriterion(FieldCriterion):
             else:
                 needs[(self.name(), spec.option)] = 0.0
         return needs
+
 
 def _shared_options_by_scarcity(options1, options2):
     '''options1 and options2 are expected to be dictionaries of
