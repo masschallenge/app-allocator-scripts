@@ -13,14 +13,6 @@ from app_allocator.tests.utils import (
 _allocator = allocator_getter(OrderedQueues.name)
 
 
-def _calc_default(current, arg, klass):
-    if not current and arg is None:
-        return [klass()]
-    if isinstance(arg, list):
-        return arg
-    return current
-
-
 def _finished_allocator():
     allocator = _allocator()
     for queue in allocator.heuristic.queues:
