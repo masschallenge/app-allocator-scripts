@@ -41,9 +41,8 @@ class Allocator(object):
                     self.applications.append(Application(data=row))
 
     def setup(self):
-        heuristic = self.heuristic
-
-        heuristic.setup(judges=self.judges, applications=self.applications)
+        self.heuristic.setup(judges=self.judges,
+                             applications=self.applications)
 
     def allocate(self):
         while self.heuristic.work_left() and self.judges:
