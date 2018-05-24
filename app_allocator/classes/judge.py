@@ -55,4 +55,4 @@ class Judge(Entity):
         self.remaining = 0
 
     def zscore(self):
-        return float(self.properties.get("zscore", 0.0))
+        return float(self.properties.get("zscore") or 0.0)
