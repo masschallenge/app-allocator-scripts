@@ -1,36 +1,16 @@
 import mock
-from app_allocator.classes.allocator import Allocator
-from app_allocator.classes.application import Application
+
 from app_allocator.classes.event import Event
-from app_allocator.classes.judge import Judge
-from app_allocator.classes.ordered_queues import (
-    OrderedQueues,
-)
+from app_allocator.classes.ordered_queues import OrderedQueues
 from app_allocator.tests.utils import (
+    DUMMY_FILEPATH,
+    allocator_getter,
     satisfiable_scenario_csv,
     simple_test_scenario_csv,
 )
 
 
-def _allocator(entity_path=None, applications=None, judges=None):
-    allocator = Allocator(entity_path=entity_path,
-                          heuristic=OrderedQueues.name)
-    if entity_path:
-        allocator.read_entities()
-    allocator.applications = _calc_default(allocator.applications,
-                                           applications,
-                                           Application)
-    allocator.judges = _calc_default(allocator.judges, judges, Judge)
-    allocator.setup()
-    return allocator
-
-
-def _calc_default(current, arg, klass):
-    if not current and arg is None:
-        return [klass()]
-    if isinstance(arg, list):
-        return arg
-    return current
+_allocator = allocator_getter(OrderedQueues.name)
 
 
 def _finished_allocator():
@@ -72,14 +52,14 @@ class TestOrderedQueues(object):
     @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 simple_test_scenario_csv)
     def test_run_allocator(self):
-        allocator = _allocator(entity_path="some/file/path")
+        allocator = _allocator(entity_path=DUMMY_FILEPATH)
         allocator.allocate()
         assert allocator.heuristic.work_left()
 
     @mock.patch('app_allocator.classes.allocator.Allocator._entity_file',
                 satisfiable_scenario_csv)
     def test_run_allocator_to_with_no_passes(self):
-        allocator = _allocator(entity_path="some/file/path")
+        allocator = _allocator(entity_path=DUMMY_FILEPATH)
         for judge in allocator.judges:
             judge.chance_of_pass = 0
         allocator.allocate()

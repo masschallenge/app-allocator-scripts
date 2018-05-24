@@ -1,9 +1,10 @@
 from random import choice
 from app_allocator.classes.event import Event
 from app_allocator.classes.needs_queue import NeedsQueue
+from app_allocator.classes.heuristic import Heuristic
 
 
-class OrderedQueues(object):
+class OrderedQueues(Heuristic):
     name = "ordered_queues"
     relevant_actions = ["finished", "pass"]
 
@@ -58,14 +59,6 @@ class OrderedQueues(object):
             if queue.work_left() > 0:
                 return True
         return False
-
-    def process_judge_events(self, events):
-        for event in events:
-            action = event.fields.get("action")
-            judge = event.fields.get("subject")
-            application = event.fields.get("object")
-            if action and judge and application:
-                self._update_needs(action, judge, application)
 
     def _update_needs(self, action, judge, application):
         if action in OrderedQueues.relevant_actions:

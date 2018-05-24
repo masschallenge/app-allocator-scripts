@@ -27,6 +27,9 @@ class Entity(object):
         return self.properties.get(
             "name", "{type} {id}".format(type=self.type, id=self.id()))
 
+    def __repr__(self):
+        return str(self)
+
     def _apply_dists(self, dists):
         for dist in dists:
             self.properties[dist.name()] = dist.select_random_value()

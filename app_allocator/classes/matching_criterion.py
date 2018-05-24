@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from app_allocator.classes.field_criterion import FieldCriterion
 from app_allocator.classes.field_need import FieldNeed
 from app_allocator.classes.option_spec import OptionSpec
@@ -39,6 +40,11 @@ class MatchingCriterion(FieldCriterion):
         application_options = self._options_with_counts(applications)
         return _shared_options_by_scarcity(judge_options, application_options)
 
+    @classmethod
+    def set_up_all(cls, judges, applications):
+        for criterion in cls.all_matching_criteria.values():
+            criterion.setup(judges, applications)
+
     def _options_with_counts(self, entities):
         options = {}
         for entity in entities:
@@ -48,12 +54,22 @@ class MatchingCriterion(FieldCriterion):
                 options[option] = value
         return options
 
+    def initial_needs(self, application):
+        needs = OrderedDict()
+        for spec in self.option_specs:
+            if application[self.name] == spec.option:
+                needs[(self.name(), spec.option)] = float(spec.count)
+            else:
+                needs[(self.name(), spec.option)] = 0.0
+        return needs
 
-# options1 and options2 are expected to be dictionaries of
-# options with counts.  E.g., {"Israel": 100, "Boston": 200}
-# The result is the set of shared options ordered by the ratio
-# of the count in options1 divided by the count in options2.
+
 def _shared_options_by_scarcity(options1, options2):
+    '''options1 and options2 are expected to be dictionaries of
+    options with counts.  E.g., {"Israel": 100, "Boston": 200}
+    The result is the set of shared options ordered by the ratio
+    of the count in options1 divided by the count in options2.
+    '''
     shared_options = set(options1.keys()).intersection(options2.keys())
     weighted_options = [(options1[option]/float(options2[option]),
                          option) for option in shared_options]

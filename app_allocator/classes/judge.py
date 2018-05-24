@@ -36,6 +36,10 @@ class Judge(Entity):
     def passes(self, application):
         return random() <= self.chance_of_pass
 
+    def request_batch(self, heuristic):
+        batch_size = min(self.remaining, self.MAX_PANEL_SIZE)
+        return heuristic.find_n_applications(self, batch_size)
+
     def needs_another_application(self):
         return (self.remaining > 0 and
                 len(self.current_applications) < Judge.MAX_PANEL_SIZE)

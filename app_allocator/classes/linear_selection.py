@@ -1,9 +1,9 @@
 from app_allocator.classes.event import Event
+from app_allocator.classes.heuristic import Heuristic
 
 
-class LinearSelection(object):
+class LinearSelection(Heuristic):
     'Simple and predictable heuristic for testing'
-
     name = "linear"
 
     def __init__(self, criteria=None):

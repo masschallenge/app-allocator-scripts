@@ -11,7 +11,7 @@ from random import choice
 
 from app_allocator.classes.application import Application
 from app_allocator.classes.assignments import assign
-from app_allocator.classes.heuristic import find_heuristic
+from app_allocator.classes.find_heuristic import find_heuristic
 from app_allocator.classes.judge import Judge
 
 
@@ -41,7 +41,8 @@ class Allocator(object):
                     self.applications.append(Application(data=row))
 
     def setup(self):
-        self.heuristic.setup(self.judges, self.applications)
+        self.heuristic.setup(judges=self.judges,
+                             applications=self.applications)
 
     def allocate(self):
         while self.heuristic.work_left() and self.judges:
@@ -52,12 +53,9 @@ class Allocator(object):
                 self.judges.remove(judge)
 
     def assign_applications(self, judge):
-        while judge.needs_another_application():
-            application = self.heuristic.find_one_application(judge)
-            if application:
-                assign(judge, application)
-            else:
-                break
+        apps = judge.request_batch(self.heuristic)
+        for app in apps:
+            assign(judge, app)
         if not judge.current_applications:
             judge.mark_as_done()
 

@@ -53,42 +53,43 @@ class AllocationAnalyzer(object):
     def process_allocations_from_csv(self, input_file):
         reader = open_csv_reader(input_file)
         for row in reader:
-            judge = self.judges.get(row['subject'])
-            application = self.applications.get(row['object'])
-            if row['action'] == "assigned":
+            judge = self.judges.get(row.get('subject'))
+            application = self.applications.get(row.get('object'))
+            if row.get('action') == "assigned":
                 self.assigned.append(Assignment(judge, application))
 
-            elif row['action'] == "finished":
+            elif row.get('action') == "finished":
                 self.completed.append(Assignment(judge, application))
 
     def analyze(self, assignments):
+        for metric in self.metrics:
+            metric.total = 0
         read_counts = {application['name']: defaultdict(int)
                        for application in self.applications.values()}
         for assignment in assignments:
             for metric in self.metrics:
                 metric.evaluate(assignment, read_counts)
-
         return read_counts
 
-    def summarize(self, read_counts):
-        summary = defaultdict(int)
-        maxes = defaultdict(int)
-        total_applications = len(self.applications)
-        total_judges = len(self.judges)
-        for metric, count in list(summary.items()):
-            summary['average %s' % metric] = count / total_applications
-        for metric, val in list(maxes.items()):
-            summary['max %s' % metric] = val
-        for metric in self.metrics:
-            summary['total %s' % metric.output_key()] = metric.total
-            summary['max %s' % metric.output_key()] = metric.max_count
-            summary['max app %s' % metric.output_key()] = metric.max_app
-            missed_count = len(metric.unsatisfied_apps)
-            summary['missed %s' % metric.output_key()] = missed_count
-
-        summary['total_applications'] = total_applications
-        summary['total_judges'] = total_judges
+    def summarize(self, assignments, prefix=""):
+        self.analyze(assignments)
+        summary = metrics_summary(self.metrics, prefix)
+        summary['total_applications'] = len(self.applications)
+        summary['total_judges'] = len(self.judges)
         return summary
+
+
+def metrics_summary(metrics, prefix):
+    summary = defaultdict(int)
+    for metric in metrics:
+        summary['%s: total %s' % (prefix,
+                                  metric.output_key())] = metric.total
+        summary['%s: max %s (%s)' % (prefix,
+                                     metric.output_key(),
+                                     metric.max_app)] = metric.max_count
+        missed_count = len(metric.unsatisfied_apps)
+        summary['%s: missed %s' % (prefix, metric.output_key())] = missed_count
+    return summary
 
 
 def quick_setup(scenario='example.csv', allocation='tmp.out'):

@@ -1,7 +1,11 @@
 from collections import namedtuple
 from io import StringIO
 
+from app_allocator.classes.allocator import Allocator
+from app_allocator.classes.application import Application
+from app_allocator.classes.judge import Judge
 
+DUMMY_FILEPATH = "some/file/path"
 SCENARIO_HEADERS = ['type',
                     'name',
                     'industry',
@@ -23,6 +27,16 @@ EXAMPLE_JUDGE_DATA = EntityData('judge',
                                 'female',
                                 '10',
                                 '10')
+
+LAZY_JUDGE_DATA = EntityData('judge',
+                             '27-user@example.com',
+                             'High Tech',
+                             'Boston',
+                             'Executive',
+                             'female',
+                             '1',
+                             '1')
+
 FULL_JUDGE_SET = [
     EntityData('judge',
                'high-tech-boston-executive-female',
@@ -67,6 +81,7 @@ FULL_JUDGE_SET = [
 ]
 
 
+BOS_HIGH_TECH_APP = 'Boston High Tech App'
 FULL_APPLICATION_SET = [
     EntityData('application',
                'Boston Clean Tech App',
@@ -84,7 +99,7 @@ FULL_APPLICATION_SET = [
                'Israel',
                '', '', '', ''),
     EntityData('application',
-               'Boston High Tech App',
+               BOS_HIGH_TECH_APP,
                'High Tech',
                'Boston',
                '', '', '', ''),
@@ -151,6 +166,10 @@ def satisfiable_scenario_csv(*args):
     return pseudofile(data_rows=FULL_JUDGE_SET + FULL_APPLICATION_SET)
 
 
+def lazy_judge_scenario_csv(*args):
+    return pseudofile(data_rows=[LAZY_JUDGE_DATA] + FULL_APPLICATION_SET)
+
+
 def assert_only_these_fields_in_csv_row(fields, csv_row):
     csv_fields = set(csv_row.split(","))
     fields = [str(field) for field in fields]
@@ -158,3 +177,26 @@ def assert_only_these_fields_in_csv_row(fields, csv_row):
     assert len(csv_fields) == len(fields)
     for field in fields:
         assert field in csv_fields
+
+
+def allocator_getter(heuristic):
+    def _allocator(entity_path=None, applications=None, judges=None):
+
+        allocator = Allocator(entity_path=entity_path, heuristic=heuristic)
+        if entity_path:
+            allocator.read_entities()
+        allocator.applications = _calc_default(allocator.applications,
+                                               applications,
+                                               Application)
+        allocator.judges = _calc_default(allocator.judges, judges, Judge)
+        allocator.setup()
+        return allocator
+    return _allocator
+
+
+def _calc_default(current, arg, klass):
+    if not current and arg is None:
+        return [klass()]
+    if isinstance(arg, list):
+        return arg
+    return current

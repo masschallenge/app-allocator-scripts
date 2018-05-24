@@ -43,8 +43,9 @@ class TestAllocator(object):
                 simple_test_scenario_csv)
     def test_allocator_setup_calls_heuristic_setup(self):
         allocator = _allocator()
-        assert allocator.heuristic.applications == allocator.applications
-        assert allocator.heuristic.judges == allocator.judges
+        assert (set(allocator.heuristic.applications) ==
+                set(allocator.applications))
+        assert set(allocator.heuristic.judges) == set(allocator.judges)
 
     def allocator_assign_applications_helper(self, expected):
         allocator = _allocator()
