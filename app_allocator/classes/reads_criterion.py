@@ -13,5 +13,5 @@ class ReadsCriterion(Criterion):
         return ReadNeed(count=self.count)
 
     def add_option(self, option, count, weight):
-        super().add_option(option, count,weight)
+        super().add_option(option, count, weight)
         self.option_specs.add(OptionSpec(option, count, weight))
