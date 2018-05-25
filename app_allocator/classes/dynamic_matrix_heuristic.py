@@ -98,13 +98,13 @@ class DynamicMatrixHeuristic(Heuristic):
 
     def _update_needs(self, action, judge, application):
         needs_dict = self.application_needs[application]
-        if action == "pass":
-            return
         if action == "assigned":
             self.judge_assignments[judge].append(application)
             adjustment = ASSIGNED_VALUE
         elif action == "finished":
             adjustment = FINISHED_VALUE
+        elif action == "pass":
+            adjustment = -ASSIGNED_VALUE
         for key, val in judge.properties.items():
             self._update_specific_need(needs_dict, key, val, adjustment)
 
