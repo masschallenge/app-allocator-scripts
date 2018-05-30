@@ -21,6 +21,7 @@ class DynamicMatrixHeuristic(Heuristic):
     def __init__(self, criteria):
         super().__init__()
         self.criteria = criteria
+        self.find_count = 0
 
     def setup(self, judges, applications):
         self.judges = tuple(judges)
@@ -44,6 +45,24 @@ class DynamicMatrixHeuristic(Heuristic):
     def _calc_judge_capacities(self):
         return {judge: int(judge['commitment'] or 0) for judge in self.judges}
 
+    def evaluate_application(self, app, application_preferences, needs_matrix):
+        index = self.applications.index(app)
+        print(application_preferences.flat[index])
+        print(needs_matrix[index])
+
+    def evaluate_apps(self, apps, application_preferences, needs_matrix):
+        for app in apps:
+            self.evaluate_application(app, application_preferences,
+                                      needs_matrix)
+
+    def find_app_needing_industry(self, exclude):
+        for app in self.applications:
+            if app not in exclude:
+                industry = app.properties["industry"]
+                if all([industry != judge.properties["industry"]
+                        for judge in app.judges]):
+                    return app
+
     def find_n_applications(self, judge, batch_size):
         if len(self.applications) <= batch_size:
             can_assign = self._can_assign_func(judge)
@@ -61,6 +80,11 @@ class DynamicMatrixHeuristic(Heuristic):
             apps = self.choose_n_applications(judge,
                                               application_preferences,
                                               available_batch_size)
+        # if apps:  # self.find_count > 1600
+        #     app = self.find_app_needing_industry(apps)
+        #     import pdb; pdb.set_trace()
+        #     self.find_count = 0
+        self.find_count += 1
         for app in apps:
             self.judge_assignments[judge].append(app)
             self.judge_capacities[judge] -= 1

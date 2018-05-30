@@ -1,9 +1,9 @@
 type,name,count,weight,option
 reads,reads,4,1,
-matching,industry,1,1,
-matching,program,1,1,
-judge,role,2,1,Executive
-judge,role,1,1,Investor
-judge,role,1,1,Lawyer
-judge,gender,1,1,female
-judge,gender,1,1,male
+matching,industry,1,0.9,
+matching,program,1,0.8,
+judge,role,2,0.7,Executive
+judge,role,1,0.6,Investor
+judge,role,1,0.6,Lawyer
+judge,gender,1,0.5,female
+judge,gender,1,0.4,male

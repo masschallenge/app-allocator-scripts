@@ -13,7 +13,7 @@ class TestMatchingCriterion(object):
 
     def test_criterion_with_option_specs(self):
         criterion = MatchingCriterion("program")
-        criterion.add_option(option="Boston", count=1)
+        criterion.add_option(option="Boston", count=1, weight=1)
         assert criterion.option_states(Application({"program": "Boston"}))
 
     def test_criterion_without_option_specs(self):
