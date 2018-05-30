@@ -4,10 +4,15 @@ from app_allocator.classes.judge import DEFAULT_CHANCE_OF_PASS
 from app_allocator.classes.heuristic import Heuristic
 from app_allocator.classes.matching_criterion import MatchingCriterion
 
-
 CHANCE_OF_PASS = DEFAULT_CHANCE_OF_PASS
 ASSIGNED_VALUE = 1 - CHANCE_OF_PASS
 FINISHED_VALUE = CHANCE_OF_PASS
+
+ACTION_TO_ADJUSTMENT = {
+    "assigned": ASSIGNED_VALUE,
+    "finished": FINISHED_VALUE,
+    "pass": -ASSIGNED_VALUE,
+}
 
 
 class DynamicMatrixHeuristic(Heuristic):
@@ -97,14 +102,10 @@ class DynamicMatrixHeuristic(Heuristic):
         return needs
 
     def _update_needs(self, action, judge, application):
-        needs_dict = self.application_needs[application]
-        if action == "pass":
-            return
         if action == "assigned":
             self.judge_assignments[judge].append(application)
-            adjustment = ASSIGNED_VALUE
-        elif action == "finished":
-            adjustment = FINISHED_VALUE
+        adjustment = ACTION_TO_ADJUSTMENT[action]
+        needs_dict = self.application_needs[application]
         for key, val in judge.properties.items():
             self._update_specific_need(needs_dict, key, val, adjustment)
 
