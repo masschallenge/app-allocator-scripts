@@ -14,13 +14,11 @@ class OptionSpec(object):
         self.weight = weight
 
 
-    def evaluate(self, assignments, applications, match_function):
-        counts = defaultdict(int)
-        counts.update({app:0 for app in applications.values()})
+    def evaluate(self, assignments, needs, match_function):
         for judge, app in assignments:
             if match_function(judge, app):
-                counts[app] += 1
-        return counts
+                needs[app] -= 1
+        return needs
                 
     def __eq__(self, other):
         return self.option == other.option

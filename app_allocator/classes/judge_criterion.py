@@ -25,7 +25,6 @@ class JudgeCriterion(FieldCriterion):
     
 
     def match_function(self, feature, option):
-        import pdb; pdb.set_trace()
         def fn(judge, application):
             return judge[feature] == option
         return fn

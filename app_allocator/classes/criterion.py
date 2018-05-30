@@ -42,21 +42,23 @@ class Criterion(object):
     def evaluate(self,
                  assignments,
                  applications):
-        app_option_totals = {} 
-        app_option_totals['total'] = defaultdict(int)
-        app_option_totals['total'].update({app:0 for app in applications.values()})
+        app_needs_by_option = {}
+        
         for spec in self.option_specs:
-            spec_evaluation = spec.evaluate(assignments,
-                                            applications,
-                                            self.match_function(self.name(), spec.option))
-            app_option_totals[spec.option] = spec_evaluation
-            for key, val in spec_evaluation.items():
-                app_option_totals['total'][key] += val
-        evaluation = {key: Counter(vals.values()) for key, vals in app_option_totals.items()}
+            needs = self._calc_initial_needs(applications, spec)
+            spec_needs = spec.evaluate(assignments,
+                                       needs,
+                                       self.match_function(self.name(), spec.option))
+            app_needs_by_option[spec.option] = spec_needs
+        evaluation = {key: Counter(vals.values()) for key, vals in app_needs_by_option.items()}
         return {self.name(): evaluation}
 
+    def _calc_initial_needs(self, applications, option_spec):
+        needs = defaultdict(int)
+        needs.update( {app: int(option_spec.count) for app in applications.values()})
+        return needs
+    
     def match_function(self, feature, option):
-        import pdb; pdb.set_trace()
         def fn(judge, application):
             return True
         return fn
