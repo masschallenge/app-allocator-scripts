@@ -9,7 +9,7 @@ DEFAULT_WEIGHT = 1
 
 class Criterion(object):
     all_criteria = {}
-
+    
     def __init__(self, name):
         self.feature = Feature(type=self.type, name=name)
         self.count = DEFAULT_COUNT
@@ -39,20 +39,25 @@ class Criterion(object):
             needs[(self.name(), spec.option)] = float(spec.count)
         return needs
 
-    def evaluate(self, assignments, applications):
+    def evaluate(self,
+                 assignments,
+                 applications):
         app_option_totals = {} 
         app_option_totals['total'] = defaultdict(int)
         app_option_totals['total'].update({app:0 for app in applications.values()})
         for spec in self.option_specs:
-            option = spec.option            
-            app_option_totals[option] = defaultdict(int)
-            app_option_totals[option].update({app:0 for app in applications.values()})
-            for judge, app in assignments:
-
-                if judge[option] == app[option]:
-                    app_option_totals[option][app] += 1
-                    app_option_totals["total"][app] += 1
-            
+            spec_evaluation = spec.evaluate(assignments,
+                                            applications,
+                                            self.match_function(self.name(), spec.option))
+            app_option_totals[spec.option] = spec_evaluation
+            for key, val in spec_evaluation.items():
+                app_option_totals['total'][key] += val
         evaluation = {key: Counter(vals.values()) for key, vals in app_option_totals.items()}
         return {self.name(): evaluation}
-    
+
+    def match_function(self, feature, option):
+        import pdb; pdb.set_trace()
+        def fn(judge, application):
+            return True
+        return fn
+

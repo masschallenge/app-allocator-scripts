@@ -4,11 +4,10 @@ from app_allocator.classes.field_need import FieldNeed
 from app_allocator.classes.option_spec import OptionSpec
 from app_allocator.classes.option_state import OptionState
 
-
 class MatchingCriterion(FieldCriterion):
     type = "matching"
     all_matching_criteria = {}
-
+    
     def __init__(self, name):
         super().__init__(name)
         MatchingCriterion.all_matching_criteria[name] = self
@@ -63,6 +62,13 @@ class MatchingCriterion(FieldCriterion):
                 needs[(self.name(), spec.option)] = 0.0
         return needs
 
+    
+    def match_function(self, feature, option):
+        def fn(judge, application):
+            return judge[feature] == option and application[feature] == option
+        return fn
+
+
 
 def _shared_options_by_scarcity(options1, options2):
     '''options1 and options2 are expected to be dictionaries of
@@ -75,3 +81,5 @@ def _shared_options_by_scarcity(options1, options2):
                          option) for option in shared_options]
     return [OptionSpec(option) for _, option in
             sorted(weighted_options, key=lambda pair: pair[0])]
+
+

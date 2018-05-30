@@ -1,3 +1,4 @@
+from collections import defaultdict
 from functools import total_ordering
 from app_allocator.classes.criterion import (
     DEFAULT_COUNT,
@@ -12,6 +13,15 @@ class OptionSpec(object):
         self.count = count
         self.weight = weight
 
+
+    def evaluate(self, assignments, applications, match_function):
+        counts = defaultdict(int)
+        counts.update({app:0 for app in applications.values()})
+        for judge, app in assignments:
+            if match_function(judge, app):
+                counts[app] += 1
+        return counts
+                
     def __eq__(self, other):
         return self.option == other.option
 
