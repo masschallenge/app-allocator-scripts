@@ -62,6 +62,10 @@ class AllocationAnalyzer(object):
                 self.completed.append(Assignment(judge, application))
 
     def analyze(self, assignments):
+        # analysis = {}
+        # for criterion in self.criteria:
+        #     analysis.update(criterion.evaluate(assignments, self.applications))
+        # return analysis
         for metric in self.metrics:
             metric.total = 0
         read_counts = {application['name']: defaultdict(int)

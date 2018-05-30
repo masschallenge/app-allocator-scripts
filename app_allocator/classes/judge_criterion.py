@@ -21,3 +21,5 @@ class JudgeCriterion(FieldCriterion):
         return FieldNeed(self.name(),
                          [OptionState(spec.option, spec.count)
                           for spec in self.option_specs])
+
+    
