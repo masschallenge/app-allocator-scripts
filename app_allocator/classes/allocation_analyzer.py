@@ -62,8 +62,9 @@ class AllocationAnalyzer(object):
                 output_lines.append("%s: %s" % (option or criterion.name(), counts_string))
         return "\n".join(output_lines)
 
-
-
+    def to_json(self):
+        return json.dumps(analyze(self.completed))
+    
 
 def quick_setup(scenario='example.csv', allocation='tmp.out', criteria="criteria.csv"):
     aa = AllocationAnalyzer()
