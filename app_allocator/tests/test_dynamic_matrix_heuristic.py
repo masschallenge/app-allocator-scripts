@@ -57,7 +57,7 @@ class TestDynamicMatrixHeuristic(object):
 
     def test_process_pass_judge_event_does_not_change_app_needs(self):
         application, judge, allocator = self._process_judge_event("pass")
-        _assert_needs(application, judge, allocator, 0)
+        _assert_needs(application, judge, allocator, -ASSIGNED_VALUE)
 
     def _process_judge_event(self, action):
         allocator = _allocator()
