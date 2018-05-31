@@ -1,3 +1,4 @@
+import json
 from csv import DictReader
 from collections import (
     defaultdict,
@@ -63,7 +64,7 @@ class AllocationAnalyzer(object):
         return "\n".join(output_lines)
 
     def to_json(self):
-        return json.dumps(analyze(self.completed))
+        return json.dumps(self.analyze(self.completed))
     
 
 def quick_setup(scenario='example.csv', allocation='tmp.out', criteria="criteria.csv"):
