@@ -37,8 +37,14 @@ class MatchingCriterion(FieldCriterion):
 
     def _infer_option_specs(self, judges, applications):
         judge_options = self._options_with_counts(judges)
-        application_options = self._options_with_counts(applications)
-        return _shared_options_by_scarcity(judge_options, application_options)
+        judge_keys = set(judge_options.keys())
+        app_options = self._options_with_counts(applications)
+        app_keys = set(app_options.keys())
+        shared_options = judge_keys.intersection(app_keys)
+        weighted_options = [(judge_options[option]/float(app_options[option]),
+                             option) for option in shared_options]
+        return [OptionSpec(option=option, weight=self.weight) for _, option in
+                sorted(weighted_options, key=lambda pair: pair[0])]
 
     @classmethod
     def set_up_all(cls, judges, applications):
@@ -57,7 +63,7 @@ class MatchingCriterion(FieldCriterion):
     def initial_needs(self, application):
         needs = OrderedDict()
         for spec in self.option_specs:
-            if application[self.name] == spec.option:
+            if application[self.name()] == spec.option:
                 needs[(self.name(), spec.option)] = float(spec.count)
             else:
                 needs[(self.name(), spec.option)] = 0.0
