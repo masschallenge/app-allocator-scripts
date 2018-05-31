@@ -9,7 +9,7 @@ DEFAULT_WEIGHT = 1
 
 class Criterion(object):
     all_criteria = {}
-    
+
     def __init__(self, name):
         self.feature = Feature(type=self.type, name=name)
         self.count = DEFAULT_COUNT
@@ -43,23 +43,25 @@ class Criterion(object):
                  assignments,
                  applications):
         app_needs_by_option = {}
-        
+
         for spec in self.option_specs:
             needs = self._calc_initial_needs(applications, spec)
             spec_needs = spec.evaluate(assignments,
                                        needs,
-                                       self.match_function(self.name(), spec.option))
+                                       self.match_function(self.name(),
+                                                           spec.option))
             app_needs_by_option[spec.option] = spec_needs
-        evaluation = {key: Counter(vals.values()) for key, vals in app_needs_by_option.items()}
+        evaluation = {key: Counter(vals.values()) for
+                      (key, vals) in app_needs_by_option.items()}
         return {self.name(): evaluation}
 
     def _calc_initial_needs(self, applications, option_spec):
         needs = defaultdict(int)
-        needs.update( {app: int(option_spec.count) for app in applications.values()})
+        needs.update({app: int(option_spec.count)
+                      for app in applications.values()})
         return needs
-    
+
     def match_function(self, feature, option):
         def fn(judge, application):
             return True
         return fn
-

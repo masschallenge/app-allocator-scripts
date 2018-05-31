@@ -1,9 +1,7 @@
 import json
 from csv import DictReader
-from collections import (
-    defaultdict,
-    namedtuple,
-)
+from collections import namedtuple
+
 from app_allocator.classes.judge import Judge
 from app_allocator.classes.application import Application
 from app_allocator.classes.criteria_reader import CriteriaReader
@@ -18,10 +16,10 @@ class AllocationAnalyzer(object):
         self.applications = {}
         self.assigned = []
         self.completed = []
-        
+
     def read_criteria(self, criteria_file):
         self.criteria = CriteriaReader(criteria_file).all()
-    
+
     def process_scenario_from_csv(self, input_file):
         reader = open_csv_reader(input_file)
         for row in reader:
@@ -57,16 +55,24 @@ class AllocationAnalyzer(object):
         for criterion in self.criteria:
             row = analysis[criterion.name()]
             for option, counts in row.items():
-                counts_string = ", ".join([": ".join((str(k), str(v))) for k, v in sorted(counts.items(), reverse=True)])
-                
-                output_lines.append("%s: %s" % (option or criterion.name(), counts_string))
+                counts_string = _counts_to_string(counts)
+                output_lines.append("%s: %s" % (option or criterion.name(),
+                                                counts_string))
         return "\n".join(output_lines)
 
     def to_json(self):
         return json.dumps(self.analyze(self.completed))
-    
 
-def quick_setup(scenario='example.csv', allocation='tmp.out', criteria="criteria.csv"):
+
+def _counts_to_string(counts):
+    return ", ".join([": ".join((str(k), str(v)))
+                      for k, v in sorted(counts.items(),
+                                         reverse=True)])
+
+
+def quick_setup(scenario='example.csv',
+                allocation='tmp.out',
+                criteria="criteria.csv"):
     aa = AllocationAnalyzer()
     aa.process_scenario_from_csv(scenario)
     aa.process_allocations_from_csv(allocation)

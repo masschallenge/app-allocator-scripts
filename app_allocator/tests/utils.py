@@ -169,6 +169,7 @@ def satisfiable_scenario_csv(*args):
 def lazy_judge_scenario_csv(*args):
     return pseudofile(data_rows=[LAZY_JUDGE_DATA] + FULL_APPLICATION_SET)
 
+
 def standard_criteria(*args):
     return pseudofile("\n".join(["type,name,count,weight,option",
                                  "reads,reads,4,1,",
@@ -179,6 +180,7 @@ def standard_criteria(*args):
                                  "judge,role,1,1,Lawyer",
                                  "judge,gender,1,1,female",
                                  "judge,gender,1,1,male"]))
+
 
 def assert_only_these_fields_in_csv_row(fields, csv_row):
     csv_fields = set(csv_row.split(","))

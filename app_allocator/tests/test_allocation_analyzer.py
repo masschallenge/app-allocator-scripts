@@ -2,7 +2,6 @@ from csv import DictReader
 from mock import patch
 from app_allocator.classes.allocation_analyzer import AllocationAnalyzer
 from app_allocator.tests.utils import (
-    DUMMY_FILEPATH,
     simple_test_scenario_csv,
     simple_allocation_csv,
     standard_criteria,
@@ -11,6 +10,7 @@ from app_allocator.tests.utils import (
 
 def fake_open_csv_reader(input_file):
     return DictReader(input_file)
+
 
 def get_analyzer(scenario=None, allocations=None, criteria=standard_criteria):
     analyzer = AllocationAnalyzer()
@@ -50,7 +50,6 @@ class TestAllocationAnalyzer(object):
     def test_analyze_simple_allocation_analysis(self):
         analyzer = get_analyzer(scenario=simple_test_scenario_csv(),
                                 allocations=simple_allocation_csv())
-        application = analyzer.assigned[0].application
         analysis = analyzer.analyze(analyzer.assigned)
         assert analysis['reads'][''][3] == 1
 
@@ -59,7 +58,6 @@ class TestAllocationAnalyzer(object):
     def test_summarize_simple_allocation_analysis(self):
         analyzer = get_analyzer(scenario=simple_test_scenario_csv(),
                                 allocations=simple_allocation_csv())
-        application = analyzer.assigned[0].application
-        analysis = analyzer.analyze(analyzer.assigned)        
+        analysis = analyzer.analyze(analyzer.assigned)
         summary = analyzer.summarize(analyzer.assigned)
         assert "Executive: 1: %d" % analysis['role']['Executive'][1] in summary
