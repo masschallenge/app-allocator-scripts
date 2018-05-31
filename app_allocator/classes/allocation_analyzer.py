@@ -20,8 +20,7 @@ class AllocationAnalyzer(object):
         self.completed = []
         
     def read_criteria(self, criteria_file):
-        with open(criteria_file) as file:
-            self.criteria = CriteriaReader(file).all()
+        self.criteria = CriteriaReader(criteria_file).all()
     
     def process_scenario_from_csv(self, input_file):
         reader = open_csv_reader(input_file)
@@ -52,7 +51,7 @@ class AllocationAnalyzer(object):
             analysis.update(criterion.evaluate(assignments, self.applications))
         return analysis
 
-    def summarize(self, assignments, prefix=""):
+    def summarize(self, assignments):
         analysis = self.analyze(assignments)
         output_lines = []
         for criterion in self.criteria:
@@ -71,7 +70,8 @@ def quick_setup(scenario='example.csv', allocation='tmp.out', criteria="criteria
     aa = AllocationAnalyzer()
     aa.process_scenario_from_csv(scenario)
     aa.process_allocations_from_csv(allocation)
-    aa.read_criteria(criteria)
+    criteria_file = open(criteria)
+    aa.read_criteria(criteria_file)
     return aa
 
 
