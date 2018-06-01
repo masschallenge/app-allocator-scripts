@@ -1,5 +1,15 @@
-from app_allocator.classes.allocation_analyzer import quick_setup
+from app_allocator.classes.allocation_analyzer import AllocationAnalyzer
 from sys import argv
+
+def set_up_allocator(scenario='example.csv',
+                allocation='tmp.out',
+                criteria="criteria.csv"):
+    aa = AllocationAnalyzer()
+    aa.process_scenario_from_csv(scenario)
+    aa.process_allocations_from_csv(allocation)
+    criteria_file = open(criteria)
+    aa.read_criteria(criteria_file)
+    return aa
 
 
 if len(argv) > 1:
@@ -15,7 +25,7 @@ if len(argv) > 3:
 else:
     criteria = "criteria.csv"
 
-aa = quick_setup(scenario, allocation, criteria)
+aa = set_up_allocator(scenario, allocation, criteria)
 print ("Assigned: ")
 print (aa.summarize(aa.assigned))
 print ("Completed: ")
