@@ -20,10 +20,6 @@ class Criterion(object):
     def name(self):
         return self.feature.name
 
-    @classmethod
-    def by_name(cls, name):
-        return cls.all_criteria[name]
-
     def setup(self, judges, applications):
         pass
 
