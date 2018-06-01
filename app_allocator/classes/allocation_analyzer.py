@@ -60,25 +60,11 @@ class AllocationAnalyzer(object):
                                                 counts_string))
         return "\n".join(output_lines)
 
-    def to_json(self):
-        return json.dumps(self.analyze(self.completed))
-
 
 def _counts_to_string(counts):
     return ", ".join([": ".join((str(k), str(v)))
                       for k, v in sorted(counts.items(),
                                          reverse=True)])
-
-
-def quick_setup(scenario='example.csv',
-                allocation='tmp.out',
-                criteria="criteria.csv"):
-    aa = AllocationAnalyzer()
-    aa.process_scenario_from_csv(scenario)
-    aa.process_allocations_from_csv(allocation)
-    criteria_file = open(criteria)
-    aa.read_criteria(criteria_file)
-    return aa
 
 
 def open_csv_reader(input_file):
