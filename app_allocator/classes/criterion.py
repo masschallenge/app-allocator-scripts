@@ -45,7 +45,9 @@ class Criterion(object):
         app_needs_by_option = {}
 
         for spec in self.option_specs:
-            needs = self._calc_initial_needs(applications, spec)
+            needs = defaultdict(int)
+            needs.update({app: int(spec.count)
+                          for app in applications.values()})
             spec_needs = spec.evaluate(assignments,
                                        needs,
                                        self.match_function(self.name(),
@@ -54,12 +56,6 @@ class Criterion(object):
         evaluation = {key: Counter(vals.values()) for
                       (key, vals) in app_needs_by_option.items()}
         return {self.name(): evaluation}
-
-    def _calc_initial_needs(self, applications, option_spec):
-        needs = defaultdict(int)
-        needs.update({app: int(option_spec.count)
-                      for app in applications.values()})
-        return needs
 
     def match_function(self, feature, option):
         def fn(judge, application):
