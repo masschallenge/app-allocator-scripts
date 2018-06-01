@@ -39,7 +39,6 @@ class Criterion(object):
                  assignments,
                  applications):
         app_needs_by_option = {}
-
         for spec in self.option_specs:
             needs = self._calc_initial_needs(applications, spec)
             spec_needs = spec.evaluate(assignments,

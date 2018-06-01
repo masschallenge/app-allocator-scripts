@@ -46,6 +46,8 @@ class AllocationAnalyzer(object):
     def analyze(self, assignments):
         analysis = {}
         for criterion in self.criteria:
+            criterion.setup(self.applications.values(),
+                            self.judges.values())
             analysis.update(criterion.evaluate(assignments, self.applications))
         return analysis
 
