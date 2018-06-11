@@ -79,5 +79,3 @@ class MatchingCriterion(FieldCriterion):
         def fn(judge, application):
             return judge[feature] == application[feature] == option
         return fn
-
-

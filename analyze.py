@@ -1,9 +1,10 @@
 from app_allocator.classes.allocation_analyzer import AllocationAnalyzer
 from sys import argv
 
+
 def set_up_allocator(scenario='example.csv',
-                allocation='tmp.out',
-                criteria="criteria.csv"):
+                     allocation='tmp.out',
+                     criteria="criteria.csv"):
     aa = AllocationAnalyzer()
     aa.process_scenario_from_csv(scenario)
     aa.process_allocations_from_csv(allocation)

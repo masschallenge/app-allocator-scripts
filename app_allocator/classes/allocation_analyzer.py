@@ -1,4 +1,3 @@
-import json
 from csv import DictReader
 from collections import namedtuple
 
