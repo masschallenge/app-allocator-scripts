@@ -14,6 +14,6 @@ class TestAssignments(object):
         assert not closer_by_half(-2, 1.1)
 
     def test_second_read(self):
-        current = .4
-        expected = .1
+        current = 0.4
+        expected = 0.1
         assert second_read(current, expected)
