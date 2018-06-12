@@ -12,11 +12,17 @@ class OptionSpec(object):
         self.count = count
         self.weight = weight
 
+    def evaluate(self, assignments, needs, match_function):
+        for judge, app in assignments:
+            if match_function(judge, app):
+                needs[app] -= 1
+        return needs
+
     def __eq__(self, other):
-        return self.option == other.option
+        return self.option == other.option  # pragma: nocover
 
     def __ne__(self, other):
-        return self.option != other.option
+        return self.option != other.option  # pragma: nocover
 
     def __lt__(self, other):
         return self.option < other.option

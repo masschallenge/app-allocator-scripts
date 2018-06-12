@@ -4,6 +4,7 @@ from app_allocator.classes.allocation_analyzer import AllocationAnalyzer
 from app_allocator.tests.utils import (
     simple_test_scenario_csv,
     simple_allocation_csv,
+    standard_criteria,
 )
 
 
@@ -11,12 +12,13 @@ def fake_open_csv_reader(input_file):
     return DictReader(input_file)
 
 
-def get_analyzer(scenario=None, allocations=None):
+def get_analyzer(scenario=None, allocations=None, criteria=standard_criteria):
     analyzer = AllocationAnalyzer()
     if scenario:
         analyzer.process_scenario_from_csv(scenario)
     if allocations:
         analyzer.process_allocations_from_csv(allocations)
+    analyzer.read_criteria(criteria())
     return analyzer
 
 
@@ -45,22 +47,17 @@ class TestAllocationAnalyzer(object):
 
     @patch('app_allocator.classes.allocation_analyzer.open_csv_reader',
            fake_open_csv_reader)
-    def test_analyze_simple_allocation(self):
+    def test_analyze_simple_allocation_analysis(self):
         analyzer = get_analyzer(scenario=simple_test_scenario_csv(),
                                 allocations=simple_allocation_csv())
-        application = analyzer.assigned[0].application
-        read_counts = analyzer.analyze(analyzer.assigned)
-        assert application['name'] in read_counts.keys()
+        analysis = analyzer.analyze(analyzer.assigned)
+        assert analysis['reads'][''][3] == 1
 
     @patch('app_allocator.classes.allocation_analyzer.open_csv_reader',
            fake_open_csv_reader)
     def test_summarize_simple_allocation_analysis(self):
-        analyzer = AllocationAnalyzer()
-        analyzer.process_scenario_from_csv(simple_test_scenario_csv())
-        analyzer.process_allocations_from_csv(simple_allocation_csv())
-        application = analyzer.assigned[0].application
-        read_counts = analyzer.analyze(analyzer.assigned)
-        application_counts = read_counts[application['name']]
+        analyzer = get_analyzer(scenario=simple_test_scenario_csv(),
+                                allocations=simple_allocation_csv())
+        analysis = analyzer.analyze(analyzer.assigned)
         summary = analyzer.summarize(analyzer.assigned)
-        assert all([val == summary[": total %s" % key]
-                    for key, val in application_counts.items()])
+        assert "Executive: 1: %d" % analysis['role']['Executive'][1] in summary

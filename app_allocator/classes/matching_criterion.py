@@ -1,4 +1,4 @@
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 from app_allocator.classes.field_criterion import FieldCriterion
 from app_allocator.classes.field_need import FieldNeed
 from app_allocator.classes.option_spec import OptionSpec
@@ -68,3 +68,14 @@ class MatchingCriterion(FieldCriterion):
             else:
                 needs[(self.name(), spec.option)] = 0.0
         return needs
+
+    def _calc_initial_needs(self, applications, option_spec):
+        needs = defaultdict(int)
+        needs.update({app: option_spec.count for app in applications.values()
+                      if app[self.name()] == option_spec.option})
+        return needs
+
+    def match_function(self, feature, option):
+        def fn(judge, application):
+            return judge[feature] == application[feature] == option
+        return fn

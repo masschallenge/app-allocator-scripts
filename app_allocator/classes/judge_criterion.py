@@ -21,3 +21,8 @@ class JudgeCriterion(FieldCriterion):
         return FieldNeed(self.name(),
                          [OptionState(spec.option, spec.count)
                           for spec in self.option_specs])
+
+    def match_function(self, feature, option):
+        def fn(judge, application):
+            return judge[feature] == option
+        return fn

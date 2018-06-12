@@ -28,7 +28,7 @@ class Entity(object):
             "name", "{type} {id}".format(type=self.type, id=self.id()))
 
     def __repr__(self):
-        return str(self)
+        return str(self)  # pragma: nocover
 
     def _apply_dists(self, dists):
         for dist in dists:
